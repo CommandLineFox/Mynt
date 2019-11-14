@@ -1,0 +1,26 @@
+{
+  "name": "mynt",
+  "version": "1.0.0",
+  "description": "Alex's main multi-purpose bot",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "tslint": "^5.20.1",
+    "tslint-eslint-rules": "^5.4.0",
+    "typescript": "^3.7.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexArcticFox/Mynt.git"
+  },
+  "author": "Alex",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexArcticFox/Mynt/issues"
+  },
+  "homepage": "https://github.com/AlexArcticFox/Mynt#readme"
+}
