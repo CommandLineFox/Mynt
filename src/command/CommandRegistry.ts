@@ -1,9 +1,17 @@
 import Command from "./Command";
 import Group from "./Group";
-import Echo from "../commands/Basic/Echo";
+import Ping from "../commands/Basic/Ping";
+import ReplyLast from "../commands/Mod Mail/ReplyLast";
+import ReplyTo from "../commands/Mod Mail/ReplyTo";
+import Echo from "../commands/OwnerOnly/Echo";
+import Help from "../commands/Basic/Help";
 
 class CommandRegistry {
     readonly commands: ReadonlyArray<Command> = [
+        new Help(),
+        new Ping(),
+        new ReplyLast(),
+        new ReplyTo(),
         new Echo()
     ];
     readonly groups: ReadonlyArray<Group> = this.commands.map((command) => command.group).filter((group, index, self) => self.indexOf(group) === index);

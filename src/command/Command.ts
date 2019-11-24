@@ -29,8 +29,6 @@ export default abstract class Command implements CommandOptions {
         this.group = options.group;
         this.guildOnly = this.group.guildOnly || options.guildOnly || false;
         this.ownerOnly = this.group.ownerOnly || options.ownerOnly || false;
-
-        
     }
 
     execute(event: CommandEvent) : void {

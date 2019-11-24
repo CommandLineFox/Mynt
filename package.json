@@ -4,12 +4,18 @@
   "description": "Alex's main multi-purpose bot",
   "main": "index.js",
   "dependencies": {
+    "@types/deep-equal": "^1.0.1",
+    "deep-equal": "^1.1.1",
+    "deep-equals": "0.0.2",
     "discord.js": "^11.5.1",
+    "node": "^13.1.0",
     "tslint": "^5.20.1",
     "tslint-eslint-rules": "^5.4.0",
     "typescript": "^3.7.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/node": "^12.12.12"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

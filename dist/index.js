@@ -1,9 +1,19 @@
 "use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs = require("fs");
-const Config_1 = require("./Config");
+const fs = __importStar(require("fs"));
+const Config_1 = __importDefault(require("./Config"));
 const ConfigHandler_1 = require("./ConfigHandler");
-const MyntClient_1 = require("./MyntClient");
+const MyntClient_1 = __importDefault(require("./MyntClient"));
 function main() {
     const configFile = "config.json";
     if (!fs.existsSync(configFile)) {
@@ -22,6 +32,7 @@ function main() {
     client.login(config.token);
     client.on("ready", () => {
         console.log(`Logged in as ${client.user.tag}`);
+        client.user.setActivity("with Alex", { type: "PLAYING" });
     });
 }
 main();

@@ -1,10 +1,10 @@
 import Command from "../../command/Command";
-import { Basic } from "../../Groups";
+import { OwnerOnly } from "../../Groups";
 import CommandEvent from "../../command/CommandEvent";
 
 export default class Echo extends Command {
     constructor () {
-        super({name: "Echo", triggers: ["echo", "say"], group: Basic})
+        super({name: "Echo", triggers: ["echo", "say"], group: OwnerOnly});
     }
 
     run(event: CommandEvent) {
