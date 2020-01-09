@@ -16,7 +16,9 @@ class ReplyTo extends Command_1.default {
             event.reply("invalid arguments.");
             return;
         }
+        console.log(args);
         const [member, text] = args;
+        console.log(member);
         member.user.send(text)
             .catch(() => {
             event.reply("the specified user has their DMs disabled or has me blocked.");

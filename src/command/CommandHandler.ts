@@ -11,7 +11,9 @@ export default class CommandHandler {
         this.client = client;
         this.mentions = [ `<@${this.client.user.id}>`, `<@!${this.client.user.id}>` ];
         client.on("message", (message) => {
-            this.handleMessage(message);
+            if (!message.author.bot) {
+                this.handleMessage(message);
+            }
         });
     }
 
@@ -49,7 +51,7 @@ export default class CommandHandler {
 
     private handleMention(message: Message, content: string) {
         if (content.length === 0) {
-            message.reply(`My prefix here is \`${this.client.getPrefix(message.guild)}>\``);
+            message.reply(`My prefix here is \`${this.client.getPrefix(message.guild)}\``);
             return;
         }
         this.handlePrefix(message, content);
