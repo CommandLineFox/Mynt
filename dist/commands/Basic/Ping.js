@@ -8,7 +8,7 @@ const Groups_1 = require("../../Groups");
 const discord_js_1 = require("discord.js");
 class Ping extends Command_1.default {
     constructor() {
-        super({ name: "Ping", triggers: ["ping"], group: Groups_1.Basic });
+        super({ name: "Ping", triggers: ["ping"], description: "Shows the bot's response time", group: Groups_1.Basic });
     }
     run(event) {
         event.send(`Pinging...`)

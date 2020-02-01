@@ -27,19 +27,19 @@ class MemberArgument {
             return [undefined, message];
         }
         let result = await MemberArgument.handleId(event, message);
-        if (result[0] !== undefined) {
+        if (result[0]) {
             return result;
         }
         result = await MemberArgument.handleMention(event, message);
-        if (result[0] !== undefined) {
+        if (result[0]) {
             return result;
         }
         result = MemberArgument.handleTag(event, message);
-        if (result[0] !== undefined) {
+        if (result[0]) {
             return result;
         }
         result = MemberArgument.handleNickname(event, message);
-        if (result[0] !== undefined) {
+        if (result[0]) {
             return result;
         }
         return MemberArgument.handleUsername(event, message);

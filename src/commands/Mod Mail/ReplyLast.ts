@@ -5,7 +5,7 @@ import CommandEvent from "../../command/CommandEvent";
 export default class ReplyLast extends Command {
 
     constructor () {
-        super({name: "ReplyLast", triggers: ["replylast"], group: ModMail});
+        super({name: "ReplyLast", triggers: ["replylast"], description: "Replies to the last received DM", group: ModMail});
     }
 
     run(event: CommandEvent) {

@@ -7,7 +7,7 @@ const Command_1 = __importDefault(require("../../command/Command"));
 const Groups_1 = require("../../Groups");
 class ReplyLast extends Command_1.default {
     constructor() {
-        super({ name: "ReplyLast", triggers: ["replylast"], group: Groups_1.ModMail });
+        super({ name: "ReplyLast", triggers: ["replylast"], description: "Replies to the last received DM", group: Groups_1.ModMail });
     }
     run(event) {
         const argument = event.argument;

@@ -5,6 +5,7 @@ import Group from "./Group";
 interface CommandOptions {
     readonly name: string;
     readonly triggers: string[];
+    readonly description: string;
     readonly botPermissions?: PermissionResolvable;
     readonly userPermissions?: PermissionResolvable;
     readonly group: Group;
@@ -15,6 +16,7 @@ interface CommandOptions {
 export default abstract class Command implements CommandOptions {
     readonly name: string;
     readonly triggers: string[];
+    readonly description: string;
     readonly botPermissions: PermissionResolvable;
     readonly userPermissions: PermissionResolvable;
     readonly group: Group;
@@ -24,6 +26,7 @@ export default abstract class Command implements CommandOptions {
     protected constructor (options: CommandOptions) {
         this.name = options.name;
         this.triggers = options.triggers;
+        this.description = options.description;
         this.botPermissions = options.botPermissions || [];
         this.userPermissions = options.userPermissions || [];
         this.group = options.group;

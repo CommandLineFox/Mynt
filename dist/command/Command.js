@@ -4,6 +4,7 @@ class Command {
     constructor(options) {
         this.name = options.name;
         this.triggers = options.triggers;
+        this.description = options.description;
         this.botPermissions = options.botPermissions || [];
         this.userPermissions = options.userPermissions || [];
         this.group = options.group;

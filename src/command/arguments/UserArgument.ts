@@ -27,15 +27,15 @@ export default class UserArgument implements Argument<User> {
         }
 
         let result = await UserArgument.handleId(event, message);
-        if (result[0] !== undefined) {
+        if (result[0]) {
             return result;
         }
         result = await UserArgument.handleMention(event, message);
-        if (result[0] !== undefined) {
+        if (result[0]) {
             return result;
         }
         result = UserArgument.handleTag(event, message);
-        if (result[0] !== undefined) {
+        if (result[0]) {
             return result;
         }
         return UserArgument.handleUsername(event, message);

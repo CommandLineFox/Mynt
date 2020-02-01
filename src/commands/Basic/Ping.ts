@@ -5,7 +5,7 @@ import { RichEmbed, Message } from "discord.js";
 
 export default class Ping extends Command {
     constructor () {
-        super({name: "Ping", triggers: ["ping"], group: Basic});
+        super({name: "Ping", triggers: ["ping"], description: "Shows the bot's response time", group: Basic});
     }
 
     run(event: CommandEvent) {

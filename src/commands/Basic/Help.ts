@@ -2,10 +2,11 @@ import Command from "../../command/Command";
 import { Basic } from "../../Groups";
 import CommandEvent from "../../command/CommandEvent";
 import { RichEmbed } from "discord.js";
+import CommandRegistry from "../../command/CommandRegistry";
 
 export default class Help extends Command {
     constructor () {
-        super({name: "Help", triggers: ["help", "commands", "cmds"], group: Basic});
+        super({name: "Help", triggers: ["help", "commands", "cmds"], description: "Displays all my commands", group: Basic});
     }
 
     run(event: CommandEvent) {
@@ -13,6 +14,20 @@ export default class Help extends Command {
             .setTitle("Here's the list of all my commands")
             .setColor("#61e096")
             .setFooter(`Requested by ${event.author.tag}`, event.author.avatarURL);
-        event.send(help);
+        CommandRegistry.groups.forEach((group) => {
+            if (group.ownerOnly) {
+                return;
+            }
+            
+            const commands = group.commands.filter((command) => !command.ownerOnly).map((command) => `${command.name} (\`${command.triggers.join('`,`')}\`) -> ${command.description}`);
+            
+            if (commands.length === 0) {
+                return;
+            }
+            
+            help.addField(group.name, commands.join('\n'));
+        })
+        
+        event.send({ embed: help });
     }
 }

@@ -5,7 +5,7 @@ import ArgumentHandler from "../../command/ArgumentHandler";
 
 export default class ReplyTo extends Command {
     constructor () {
-        super({name: "ReplyTo", triggers: ["replyto"], group: ModMail});
+        super({name: "ReplyTo", triggers: ["replyto"], description: "Sends a message to a specified user", group: ModMail});
     }
 
     async run(event: CommandEvent) {
@@ -14,10 +14,8 @@ export default class ReplyTo extends Command {
             event.reply("invalid arguments.");
             return;
         }
-        // Debugging
-        console.log(args);
+
         const [member, text] = args;
-        console.log(member);
         member.user.send(text)
             .catch(() => {
                 event.reply("the specified user has their DMs disabled or has me blocked.");
