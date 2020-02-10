@@ -1,8 +1,8 @@
-import { Client, ClientOptions, User, Guild, RichEmbed, Message, TextChannel } from "discord.js";
+import { Client, ClientOptions, User, Guild, GuildMember, RichEmbed, Message, TextChannel } from "discord.js";
 import configTemplate from "./Config";
 import { IFunctionType } from "./ConfigHandler";
-import CommandHandler from "./command/CommandHandler"
-type configTemplate = typeof configTemplate
+import CommandHandler from "./command/CommandHandler";
+type configTemplate = typeof configTemplate;
 
 export default class MyntClient extends Client {
     readonly config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> };
@@ -20,6 +20,10 @@ export default class MyntClient extends Client {
                 this.generateReceivedMessage(message);
             }
         })
+    }
+    
+    isStaff(member: GuildMember): boolean {
+        return member.roles.some(r => this.config.staff.includes(r.id));
     }
 
     isOwner(user: User): boolean {
@@ -39,6 +43,7 @@ export default class MyntClient extends Client {
         }
         return this.config.modlog;
     }
+
     private generateReceivedMessage(message: Message) {
         const client = message.client;
         const author = message.author;
@@ -53,7 +58,7 @@ export default class MyntClient extends Client {
         
         const channel = client.channels.find(channel => channel.id == this.getModLog()) as TextChannel;
         
-        if(channel){
+        if(channel) {
             channel.send(embed)
         }
     }

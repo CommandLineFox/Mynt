@@ -19,6 +19,9 @@ class MyntClient extends discord_js_1.Client {
             }
         });
     }
+    isStaff(member) {
+        return member.roles.some(r => this.config.staff.includes(r.id));
+    }
     isOwner(user) {
         return this.config.owners.includes(user.id);
     }

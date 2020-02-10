@@ -22,7 +22,7 @@ export default class ReplyTo extends Command {
                 return;
             })
             .then(() => {
-                event.send(`Successfully sent the meswsage to ${member.user.tag}.`);
+                event.send(`Successfully sent the message to ${member.user.tag}.`);
             })
     }
 }

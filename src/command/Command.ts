@@ -10,6 +10,7 @@ interface CommandOptions {
     readonly userPermissions?: PermissionResolvable;
     readonly group: Group;
     readonly guildOnly?: boolean;
+    readonly staffOnly?: boolean;
     readonly ownerOnly?: boolean;
 }
 
@@ -21,6 +22,7 @@ export default abstract class Command implements CommandOptions {
     readonly userPermissions: PermissionResolvable;
     readonly group: Group;
     readonly guildOnly?: boolean;
+    readonly staffOnly?: boolean;
     readonly ownerOnly?: boolean;
 
     protected constructor (options: CommandOptions) {
@@ -30,6 +32,7 @@ export default abstract class Command implements CommandOptions {
         this.botPermissions = options.botPermissions || [];
         this.userPermissions = options.userPermissions || [];
         this.group = options.group;
+        this.staffOnly = this.group.staffOnly || options.staffOnly || false;
         this.guildOnly = this.group.guildOnly || options.guildOnly || false;
         this.ownerOnly = this.group.ownerOnly || options.ownerOnly || false;
     }
@@ -39,6 +42,12 @@ export default abstract class Command implements CommandOptions {
             event.reply(' you do not own me!');
             return;
         }
+        
+        if (this.staffOnly && !event.client.isStaff(event.member)) {
+            event.reply(' you do not have permission to run this command.');
+            return;
+        }
+
         if (this.guildOnly && !event.isFromGuild) {
             event.reply(' this command can only be used in servers.');
             return;

@@ -10,6 +10,7 @@ class Group {
         this.description = options.description;
         this.ownerOnly = options.ownerOnly || false;
         this.guildOnly = options.guildOnly || false;
+        this.staffOnly = options.staffOnly || false;
     }
     get commands() {
         return this._commands || (this._commands = CommandRegistry_1.default.getCommands(this));

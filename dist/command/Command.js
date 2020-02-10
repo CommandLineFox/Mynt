@@ -8,12 +8,17 @@ class Command {
         this.botPermissions = options.botPermissions || [];
         this.userPermissions = options.userPermissions || [];
         this.group = options.group;
+        this.staffOnly = this.group.staffOnly || options.staffOnly || false;
         this.guildOnly = this.group.guildOnly || options.guildOnly || false;
         this.ownerOnly = this.group.ownerOnly || options.ownerOnly || false;
     }
     execute(event) {
         if (this.ownerOnly && !event.client.isOwner(event.author)) {
             event.reply(' you do not own me!');
+            return;
+        }
+        if (this.staffOnly && !event.client.isStaff(event.member)) {
+            event.reply(' you do not have permission to run this command.');
             return;
         }
         if (this.guildOnly && !event.isFromGuild) {

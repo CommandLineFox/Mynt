@@ -1,10 +1,13 @@
 import Command from "./Command";
 import Group from "./Group";
+import Help from "../commands/Basic/Help";
 import Ping from "../commands/Basic/Ping";
 import ReplyLast from "../commands/Mod Mail/ReplyLast";
 import ReplyTo from "../commands/Mod Mail/ReplyTo";
+import Avatar from "../commands/Moderation/Avatar";
 import Echo from "../commands/OwnerOnly/Echo";
-import Help from "../commands/Basic/Help";
+import LogOff from "../commands/OwnerOnly/LogOff"
+import Restart from "../commands/OwnerOnly/Restart";
 
 class CommandRegistry {
     readonly commands: ReadonlyArray<Command> = [
@@ -12,7 +15,10 @@ class CommandRegistry {
         new Ping(),
         new ReplyLast(),
         new ReplyTo(),
-        new Echo()
+        new Avatar(),
+        new Echo(),
+        new LogOff(),
+        new Restart()
     ];
     readonly groups: ReadonlyArray<Group> = this.commands.map((command) => command.group).filter((group, index, self) => self.indexOf(group) === index);
 

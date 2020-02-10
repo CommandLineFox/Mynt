@@ -17,10 +17,10 @@ class Help extends Command_1.default {
             .setColor("#61e096")
             .setFooter(`Requested by ${event.author.tag}`, event.author.avatarURL);
         CommandRegistry_1.default.groups.forEach((group) => {
-            if (group.ownerOnly) {
+            if (group.ownerOnly && !event.client.isOwner(event.author)) {
                 return;
             }
-            const commands = group.commands.filter((command) => !command.ownerOnly).map((command) => `${command.name} (\`${command.triggers.join('`,`')}\`) -> ${command.description}`);
+            const commands = group.commands.map((command) => `${command.name} (\`${command.triggers.join('`,`')}\`) -> ${command.description}`);
             if (commands.length === 0) {
                 return;
             }

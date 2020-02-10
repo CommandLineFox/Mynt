@@ -25,7 +25,7 @@ class ReplyLast extends Command_1.default {
             return;
         })
             .then(() => {
-            event.send(`Successfully sent the meswsage to ${lastDm.tag}.`);
+            event.send(`Successfully sent the message to ${lastDm.tag}.`);
         });
     }
 }

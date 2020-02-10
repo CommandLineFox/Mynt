@@ -5,6 +5,7 @@ exports.default = {
     token: ConfigHandler_1.string(""),
     prefix: ConfigHandler_1.string("!"),
     owners: ConfigHandler_1.array(ConfigHandler_1.base.string),
+    staff: ConfigHandler_1.array(ConfigHandler_1.base.string),
     modlog: ConfigHandler_1.string("")
 };
 //# sourceMappingURL=Config.js.map
