@@ -6,6 +6,7 @@ import ReplyLast from "../commands/Mod Mail/ReplyLast";
 import ReplyTo from "../commands/Mod Mail/ReplyTo";
 import Avatar from "../commands/Moderation/Avatar";
 import Echo from "../commands/OwnerOnly/Echo";
+import Eval from "../commands/OwnerOnly/Eval";
 import LogOff from "../commands/OwnerOnly/LogOff"
 import Restart from "../commands/OwnerOnly/Restart";
 
@@ -17,6 +18,7 @@ class CommandRegistry {
         new ReplyTo(),
         new Avatar(),
         new Echo(),
+        new Eval(),
         new LogOff(),
         new Restart()
     ];

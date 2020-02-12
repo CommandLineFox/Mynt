@@ -9,6 +9,7 @@ const ReplyLast_1 = __importDefault(require("../commands/Mod Mail/ReplyLast"));
 const ReplyTo_1 = __importDefault(require("../commands/Mod Mail/ReplyTo"));
 const Avatar_1 = __importDefault(require("../commands/Moderation/Avatar"));
 const Echo_1 = __importDefault(require("../commands/OwnerOnly/Echo"));
+const Eval_1 = __importDefault(require("../commands/OwnerOnly/Eval"));
 const LogOff_1 = __importDefault(require("../commands/OwnerOnly/LogOff"));
 const Restart_1 = __importDefault(require("../commands/OwnerOnly/Restart"));
 class CommandRegistry {
@@ -20,6 +21,7 @@ class CommandRegistry {
             new ReplyTo_1.default(),
             new Avatar_1.default(),
             new Echo_1.default(),
+            new Eval_1.default(),
             new LogOff_1.default(),
             new Restart_1.default()
         ];

@@ -5,10 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const CommandHandler_1 = __importDefault(require("./command/CommandHandler"));
+const Formatter_1 = require("./utils/Formatter");
 class MyntClient extends discord_js_1.Client {
     constructor(config, options) {
         super(options);
         this.config = config;
+        this.format = Formatter_1.formatter;
         this.once("ready", () => {
             new CommandHandler_1.default(this);
         });

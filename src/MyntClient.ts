@@ -2,15 +2,19 @@ import { Client, ClientOptions, User, Guild, GuildMember, RichEmbed, Message, Te
 import configTemplate from "./Config";
 import { IFunctionType } from "./ConfigHandler";
 import CommandHandler from "./command/CommandHandler";
+import { formatter, IReplacer } from "./utils/Formatter";
+
 type configTemplate = typeof configTemplate;
 
 export default class MyntClient extends Client {
     readonly config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> };
     lastDmAuthor?: User;
+    format: (str: string, replace: IReplacer) => string;
     
     constructor(config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> }, options?: ClientOptions) {
         super(options);
         this.config = config;
+        this.format = formatter;
         this.once("ready", () => {
             new CommandHandler (this)
         });
