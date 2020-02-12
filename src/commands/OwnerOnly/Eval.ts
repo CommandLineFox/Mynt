@@ -1,9 +1,13 @@
 import Command from "../../command/Command";
 import { OwnerOnly } from "../../Groups";
 import CommandEvent from "../../command/CommandEvent";
-import util from "util";
-import vm from "vm";
-//import { RichEmbed } from "discord.js";
+import { RichEmbed } from 'discord.js';
+import { inspect } from "util";
+import { runInNewContext } from 'vm';
+
+function makeCodeBlock(data: string, lang?: string) {
+  return `\`\`\`${lang}\n${data}\n\`\`\``;
+}
 
 export default class Eval extends Command {
     constructor () {
@@ -12,63 +16,45 @@ export default class Eval extends Command {
 
     async run(event: CommandEvent) {
         const client = event.client;
-        const argument = event.argument;
         const message = event.message;
-        try {
-            function parseBlock(data: string) {
-                if (data.startsWith("```") && data.endsWith("```")) {
-                    const removeBlock = data.replace("```", "").replace("```", "");
-                    if (removeBlock.startsWith("js")) {
-                        return removeBlock.replace("js", "");
-                    }
-                    return removeBlock;
-                }
-                return data;
-            }
+        const argument = event.argument;
+        const author = event.author;
+        const start = Date.now();
+        const script = parseBlock(argument);
+        const exec = await run(script, { client, message, RichEmbed, author, }, { filename: message.guild?.id.toString() });
+        const end = Date.now();
 
-            const token = new RegExp(client.token, "g");
-
-            const code = parseBlock(argument);
-            if (code) {
-                const evaled = await vm.runInNewContext(code, { client, message });
-
-                let func = evaled;
-                if (typeof func !== "string") {
-                    func = util.inspect(func);
-                }
-
-                if (func) {
-                    /*const embed = new RichEmbed({
-                    fields: [
-                        {
-                        name: "Input",
-                        value: client.format("```js\n${code}\n```", { code })
-                        },
-                        {
-                        name: "Output",
-                        value: client.format("```js\n{code}\n```", {
-                            code: func.replace(token, "Secret")
-                        })
-                        }
-                    ]
-                    
-                    });*/
-                    console.log(client.format("```js\n{code}\n```", {
-                        code: func.replace(token, "Secret")
-                    }))
-                    //message.channel.send(embed);
-                }
-            }
-            else {
-                return message.channel.send(
-                    client.format("Failure", {
-                    reason: "Parsing failure"
-                    })
-                );
-            }
-        }
-        catch (err) {
-            return console.error(err);
+        if (typeof exec === 'string') {
+        const embed = new RichEmbed()
+            .addField('Input', makeCodeBlock(script, 'js'))
+            .addField('Output', makeCodeBlock(exec, 'js'))
+            .setFooter(`Script Executed in ${end - start}ms`);
+        event.send(embed)
+        } else {
+        const embed = new RichEmbed()
+            .addField('Input', makeCodeBlock(script, 'js'))
+            .addField('Output', makeCodeBlock(`${exec.name}: ${exec.message}`))
+            .setFooter(`Script Executed in ${end - start}ms`);
+        event.send(embed);
         }
     }
+}
+
+async function run(script: string, ctx: object, opts: object): Promise<string | Error> {
+    try {
+        const result = await runInNewContext(`(async () => { ${script} })()`, ctx, opts);
+        if (typeof result !== 'string') {
+            return inspect(result);
+        }
+        return result;
+    }
+    catch (err) {
+        return err;
+    }
+}
+
+function parseBlock(script: string) {
+    const cbr = /^(([ \t]*`{3,4})([^\n]*)([\s\S]+?)(^[ \t]*\2))/gm;
+    const result = cbr.exec(script);
+    return result?.[4] ?? script;
 }
