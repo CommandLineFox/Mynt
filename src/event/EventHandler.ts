@@ -7,9 +7,11 @@ export async function EventHandler(client: MyntClient) {
 
     const events = await readDir("./dist/events");
     for await (const item of events) {
-        const { event } = require(`../events/${item}`);
-        client.on(event.name, (...args) => {
-            event.func(client, ...args);
-        }); 
+        if (item.endsWith('.js')) {
+            const { event } = require(`../events/${item}`);
+            client.on(event.name, (...args) => {
+                event.func(client, ...args);
+            }); 
+        }
     }
 }
