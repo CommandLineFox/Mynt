@@ -1,11 +1,7 @@
-interface EventOptions {
-    readonly name: string;
-}
+import MyntClient from "../MyntClient";
 
-export default abstract class Event implements EventOptions {
-    readonly name: string;
+type EventFunction = (client: MyntClient, ...args: any[]) => void;
 
-    constructor(options: EventOptions) {
-        this.name = options.name;
-    }
+export default class Event {
+    constructor(public name: string, public func: EventFunction) {}
 }

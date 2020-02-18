@@ -3,6 +3,7 @@ import configTemplate from "./Config";
 import { IFunctionType } from "./ConfigHandler";
 import CommandHandler from "./command/CommandHandler";
 import { formatter, IReplacer } from "./utils/Formatter";
+import { EventHandler } from "./event/EventHandler";
 
 type configTemplate = typeof configTemplate;
 
@@ -16,6 +17,7 @@ export default class MyntClient extends Client {
         this.config = config;
         this.format = formatter;
         this.once("ready", () => {
+            EventHandler(this)
             new CommandHandler (this)
         });
         this.on("message", (message) => {

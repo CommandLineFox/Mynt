@@ -1,10 +1,15 @@
-/*import MyntClient from "../MyntClient";
+import MyntClient from "../MyntClient";
+import { promisify } from "util";
+import { readdir } from "fs";
 
-export default class EventHandler {
-    private readonly client: MyntClient;
+export async function EventHandler(client: MyntClient) {
+    const readDir = promisify(readdir);
 
-    constructor (client: MyntClient) {
-        this.client = client;
-        
+    const events = await readDir("./dist/events");
+    for await (const item of events) {
+        const { event } = require(`../events/${item}`);
+        client.on(event.name, (...args) => {
+            event.func(client, ...args);
+        }); 
     }
-}*/
+}

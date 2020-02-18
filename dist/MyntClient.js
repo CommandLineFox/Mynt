@@ -6,12 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const CommandHandler_1 = __importDefault(require("./command/CommandHandler"));
 const Formatter_1 = require("./utils/Formatter");
+const EventHandler_1 = require("./event/EventHandler");
 class MyntClient extends discord_js_1.Client {
     constructor(config, options) {
         super(options);
         this.config = config;
         this.format = Formatter_1.formatter;
         this.once("ready", () => {
+            EventHandler_1.EventHandler(this);
             new CommandHandler_1.default(this);
         });
         this.on("message", (message) => {
