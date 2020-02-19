@@ -1,1 +1,1 @@
-{"version":3,"file":"message.js","sourceRoot":"","sources":["../../src/events/message.ts"],"names":[],"mappings":";;;;;AAAA,2DAAmC;AAItB,QAAA,KAAK,GAAG,IAAI,eAAK,CAAC,SAAS,EAAE,KAAK,EAAE,OAAmB,EAAE,OAAgB,EAAE,EAAE;IACtF,IAAI,OAAO,CAAC,MAAM,CAAC,EAAE,KAAK,oBAAoB;QAC9C,OAAO,CAAC,KAAK,CAAC,IAAI,CAAC,CAAC;AACxB,CAAC,CAAC,CAAA"}
+{"version":3,"file":"Message.js","sourceRoot":"","sources":["../../src/events/Message.ts"],"names":[],"mappings":";;;;;AAAA,2DAAmC;AAItB,QAAA,KAAK,GAAG,IAAI,eAAK,CAAC,SAAS,EAAE,KAAK,EAAE,OAAmB,EAAE,QAAiB,EAAE,EAAE;AAE3F,CAAC,CAAC,CAAA"}

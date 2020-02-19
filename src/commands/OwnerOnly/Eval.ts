@@ -17,9 +17,14 @@ export default class Eval extends Command {
     async run(event: CommandEvent) {
         const client = event.client;
         const message = event.message;
-        const argument = event.argument;
+        let argument = event.argument;
         const author = event.author;
         const start = Date.now();
+        
+        if (argument.startsWith("```js") && argument.endsWith("```")) {
+            argument = argument.slice(5, argument.length - 3);
+        }
+
         const script = parseBlock(argument);
         const exec = await run(script, { client, message, RichEmbed, author, }, { filename: message.guild?.id.toString() });
         const end = Date.now();

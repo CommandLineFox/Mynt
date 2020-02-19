@@ -19,9 +19,12 @@ class Eval extends Command_1.default {
         var _a;
         const client = event.client;
         const message = event.message;
-        const argument = event.argument;
+        let argument = event.argument;
         const author = event.author;
         const start = Date.now();
+        if (argument.startsWith("```js") && argument.endsWith("```")) {
+            argument = argument.slice(5, argument.length - 3);
+        }
         const script = parseBlock(argument);
         const exec = await run(script, { client, message, RichEmbed: discord_js_1.RichEmbed, author, }, { filename: (_a = message.guild) === null || _a === void 0 ? void 0 : _a.id.toString() });
         const end = Date.now();

@@ -4,6 +4,7 @@
   "description": "Alex's main multi-purpose bot",
   "main": "dist/index.js",
   "dependencies": {
+    "@types/bson": "^4.0.1",
     "@types/deep-equal": "^1.0.1",
     "deep-equal": "^1.1.1",
     "deep-equals": "0.0.2",
