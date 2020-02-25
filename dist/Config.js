@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const ConfigHandler_1 = require("~/ConfigHandler");
+const ConfigHandler_1 = require("./ConfigHandler");
 exports.default = {
     token: ConfigHandler_1.string(""),
     prefix: ConfigHandler_1.string("!"),

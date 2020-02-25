@@ -3,15 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Help_1 = __importDefault(require("@commands/Basic/Help"));
-const Ping_1 = __importDefault(require("@commands/Basic/Ping"));
-const ReplyLast_1 = __importDefault(require("@commands/Mod Mail/ReplyLast"));
-const ReplyTo_1 = __importDefault(require("@commands/Mod Mail/ReplyTo"));
-const Avatar_1 = __importDefault(require("@commands/Moderation/Avatar"));
-const Echo_1 = __importDefault(require("@commands/OwnerOnly/Echo"));
-const Eval_1 = __importDefault(require("@commands/OwnerOnly/Eval"));
-const LogOff_1 = __importDefault(require("@commands/OwnerOnly/LogOff"));
-const Restart_1 = __importDefault(require("@commands/OwnerOnly/Restart"));
+const Help_1 = __importDefault(require("../commands/Basic/Help"));
+const Ping_1 = __importDefault(require("../commands/Basic/Ping"));
+const ReplyLast_1 = __importDefault(require("../commands/Mod Mail/ReplyLast"));
+const ReplyTo_1 = __importDefault(require("../commands/Mod Mail/ReplyTo"));
+const Avatar_1 = __importDefault(require("../commands/Moderation/Avatar"));
+const Echo_1 = __importDefault(require("../commands/OwnerOnly/Echo"));
+const Eval_1 = __importDefault(require("../commands/OwnerOnly/Eval"));
+const LogOff_1 = __importDefault(require("../commands/OwnerOnly/LogOff"));
+const Restart_1 = __importDefault(require("../commands/OwnerOnly/Restart"));
 class CommandRegistry {
     constructor() {
         this.commands = [

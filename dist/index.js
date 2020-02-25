@@ -11,9 +11,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = __importStar(require("fs"));
-const Config_1 = __importDefault(require("~/Config"));
-const ConfigHandler_1 = require("~/ConfigHandler");
-const MyntClient_1 = __importDefault(require("~/MyntClient"));
+const Config_1 = __importDefault(require("./Config"));
+const ConfigHandler_1 = require("./ConfigHandler");
+const MyntClient_1 = __importDefault(require("./MyntClient"));
 function main() {
     const configFile = "config.json";
     if (!fs.existsSync(configFile)) {

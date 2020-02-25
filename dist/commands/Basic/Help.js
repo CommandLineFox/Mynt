@@ -3,10 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Command_1 = __importDefault(require("@command/Command"));
-const Groups_1 = require("~/Groups");
+const Command_1 = __importDefault(require("../../command/Command"));
+const Groups_1 = require("../../Groups");
 const discord_js_1 = require("discord.js");
-const CommandRegistry_1 = __importDefault(require("@command/CommandRegistry"));
+const CommandRegistry_1 = __importDefault(require("../../command/CommandRegistry"));
 class Help extends Command_1.default {
     constructor() {
         super({ name: "Help", triggers: ["help", "commands", "cmds"], description: "Displays all my commands", group: Groups_1.Basic });

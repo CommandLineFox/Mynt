@@ -23,7 +23,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "fixpaths": "tscpaths -p tsconfig.json -s ./src -o ./build",
-    "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./out"
+    "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist"
   },
   "repository": {
     "type": "git",
