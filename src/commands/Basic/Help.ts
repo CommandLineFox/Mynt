@@ -1,8 +1,8 @@
-import Command from "../../command/Command";
-import { Basic } from "../../Groups";
-import CommandEvent from "../../command/CommandEvent";
+import Command from "@command/Command";
+import { Basic } from "~/Groups";
+import CommandEvent from "@command/CommandEvent";
 import { RichEmbed } from "discord.js";
-import CommandRegistry from "../../command/CommandRegistry";
+import CommandRegistry from "@command/CommandRegistry";
 
 export default class Help extends Command {
     constructor () {

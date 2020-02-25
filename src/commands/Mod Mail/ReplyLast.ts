@@ -1,6 +1,6 @@
-import Command from "../../command/Command";
-import { ModMail } from "../../Groups";
-import CommandEvent from "../../command/CommandEvent";
+import Command from "@command/Command";
+import { ModMail } from "~/Groups";
+import CommandEvent from "@command/CommandEvent";
 
 export default class ReplyLast extends Command {
 

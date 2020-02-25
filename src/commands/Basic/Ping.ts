@@ -1,6 +1,6 @@
-import Command from "../../command/Command";
-import { Basic } from "../../Groups";
-import CommandEvent from "../../command/CommandEvent";
+import Command from "@command/Command";
+import { Basic } from "~/Groups";
+import CommandEvent from "@command/CommandEvent";
 import { RichEmbed, Message } from "discord.js";
 
 export default class Ping extends Command {

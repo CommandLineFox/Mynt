@@ -1,14 +1,16 @@
 import { Client, ClientOptions, User, Guild, GuildMember, RichEmbed, Message, TextChannel } from "discord.js";
-import configTemplate from "./Config";
-import { IFunctionType } from "./ConfigHandler";
-import CommandHandler from "./command/CommandHandler";
-import { formatter, IReplacer } from "./utils/Formatter";
-import { EventHandler } from "./event/EventHandler";
+import configTemplate from "~/Config";
+import { IFunctionType } from "~/ConfigHandler";
+import CommandHandler from "@command/CommandHandler";
+import { formatter, IReplacer } from "@utils/Formatter";
+import { EventHandler } from "@event/EventHandler";
+import { Database } from "@utils/Database";
 
 type configTemplate = typeof configTemplate;
 
 export default class MyntClient extends Client {
     readonly config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> };
+    db?: Database;
     lastDmAuthor?: User;
     format: (str: string, replace: IReplacer) => string;
     

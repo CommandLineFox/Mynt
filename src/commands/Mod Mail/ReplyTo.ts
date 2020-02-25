@@ -1,7 +1,7 @@
-import Command from "../../command/Command";
-import { ModMail } from "../../Groups";
-import CommandEvent from "../../command/CommandEvent";
-import ArgumentHandler from "../../command/ArgumentHandler";
+import Command from "@command/Command";
+import { ModMail } from "~/Groups";
+import CommandEvent from "@command/CommandEvent";
+import ArgumentHandler from "@command/ArgumentHandler";
 
 export default class ReplyTo extends Command {
     constructor () {

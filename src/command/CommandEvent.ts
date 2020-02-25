@@ -1,5 +1,5 @@
 import { Message, StringResolvable, MessageOptions, Attachment, RichEmbed, TextChannel, DMChannel, GroupDMChannel, User, Guild, GuildMember } from "discord.js";
-import MyntClient from "../MyntClient";
+import MyntClient from "~/MyntClient";
 
 export default class CommandEvent {
     readonly message: Message;

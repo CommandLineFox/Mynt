@@ -1,6 +1,6 @@
 import { PermissionResolvable } from "discord.js";
-import CommandEvent from "./CommandEvent";
-import Group from "./Group";
+import CommandEvent from "@command/CommandEvent";
+import Group from "@command/Group";
 
 interface CommandOptions {
     readonly name: string;
@@ -10,7 +10,8 @@ interface CommandOptions {
     readonly userPermissions?: PermissionResolvable;
     readonly group: Group;
     readonly guildOnly?: boolean;
-    readonly staffOnly?: boolean;
+    readonly modOnly?: boolean;
+    readonly adminOnly?: boolean;
     readonly ownerOnly?: boolean;
 }
 
@@ -22,7 +23,8 @@ export default abstract class Command implements CommandOptions {
     readonly userPermissions: PermissionResolvable;
     readonly group: Group;
     readonly guildOnly?: boolean;
-    readonly staffOnly?: boolean;
+    readonly modOnly?: boolean;
+    readonly adminOnly?: boolean;
     readonly ownerOnly?: boolean;
 
     protected constructor (options: CommandOptions) {
@@ -32,7 +34,8 @@ export default abstract class Command implements CommandOptions {
         this.botPermissions = options.botPermissions || [];
         this.userPermissions = options.userPermissions || [];
         this.group = options.group;
-        this.staffOnly = this.group.staffOnly || options.staffOnly || false;
+        this.modOnly = this.group.modOnly || options.modOnly || false;
+        this.adminOnly = this.group.adminOnly || options.adminOnly || false;
         this.guildOnly = this.group.guildOnly || options.guildOnly || false;
         this.ownerOnly = this.group.ownerOnly || options.ownerOnly || false;
     }
@@ -43,7 +46,7 @@ export default abstract class Command implements CommandOptions {
             return;
         }
         
-        if (this.staffOnly && !event.client.isStaff(event.member)) {
+        if (this.modOnly && !event.client.isStaff(event.member)) {
             event.reply(' you do not have permission to run this command.');
             return;
         }

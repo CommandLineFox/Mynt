@@ -1,12 +1,12 @@
-import ArrayArgument from "./arguments/ArrayArgument";
-import BooleanArgument from "./arguments/BooleanArgument";
-import GuildArgument from "./arguments/GuildArgument";
-import MemberArgument from "./arguments/MemberArgument";
-import NumberArgument from "./arguments/NumberArgument";
-import StringArgument from "./arguments/StringArgument";
-import UserArgument from "./arguments/UserArgument";
-import CommandEvent from "./CommandEvent";
-import Argument from "./IArgument";
+import ArrayArgument from "@arguments/ArrayArgument";
+import BooleanArgument from "@arguments/BooleanArgument";
+import GuildArgument from "@arguments/GuildArgument";
+import MemberArgument from "@arguments/MemberArgument";
+import NumberArgument from "@arguments/NumberArgument";
+import StringArgument from "@arguments/StringArgument";
+import UserArgument from "@arguments/UserArgument";
+import CommandEvent from "@command/CommandEvent";
+import Argument from "@command/IArgument";
 
 class ArgumentHandlerClass {
     public readonly argumentTypes: Map<string, Argument<any>> = new Map();

@@ -18,16 +18,15 @@ export interface GuildStarboardMessage {
     starboardID: string;
     count: number;
     content: string;
-  }
+}
 
-  
 export interface GuildStarboard {
     emoji: string;
     minCount: number;
     ignoredChannels: string[];
     messages: GuildStarboardMessage[];
 }
-  
+
 export interface GuildConfig {
     blacklisted?: boolean;
     channels?: GuildChannels;
@@ -35,12 +34,12 @@ export interface GuildConfig {
     starboard?: GuildStarboard;
     enabledPlugins?: string[];
 }
-  
+
 export interface GuildDoc {
     id: string;
     config?: GuildConfig;
 }
-  
+
 export class Guild implements GuildDoc {
     _id: ObjectId;
     id: string;

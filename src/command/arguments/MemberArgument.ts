@@ -1,7 +1,7 @@
 import {GuildMember as Member} from "discord.js";
-import {nameCheck, splitMessage, tagCheck} from "../../utils/Utils";
-import CommandEvent from "../CommandEvent";
-import Argument from "../IArgument";
+import {nameCheck, splitMessage, tagCheck} from "@utils/Utils";
+import CommandEvent from "@command/CommandEvent";
+import Argument from "@command/IArgument";
 
 export default class MemberArgument implements Argument<Member> {
     private static handleId(event: CommandEvent, message: string): Promise<[Member?, string?]> {

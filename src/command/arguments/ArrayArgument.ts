@@ -1,5 +1,5 @@
-import CommandEvent from "../CommandEvent";
-import Argument from "../IArgument";
+import CommandEvent from "@command/CommandEvent";
+import Argument from "@command/IArgument";
 
 export default class ArrayArgument<T> implements Argument<T[]> {
     private readonly argument: Argument<T>;

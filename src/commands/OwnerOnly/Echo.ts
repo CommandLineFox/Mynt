@@ -1,6 +1,6 @@
-import Command from "../../command/Command";
-import { OwnerOnly } from "../../Groups";
-import CommandEvent from "../../command/CommandEvent";
+import Command from "@command/Command";
+import { OwnerOnly } from "~/Groups";
+import CommandEvent from "@command/CommandEvent";
 
 export default class Echo extends Command {
     constructor () {

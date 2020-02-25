@@ -1,8 +1,8 @@
-import Command from "../../command/Command";
-import { Moderation } from "../../Groups";
-import CommandEvent from "../../command/CommandEvent";
+import Command from "@command/Command";
+import { Moderation } from "~/Groups";
+import CommandEvent from "@command/CommandEvent";
 import { RichEmbed } from "discord.js";
-import ArgumentHandler from "../../command/ArgumentHandler";
+import ArgumentHandler from "@command/ArgumentHandler";
 
 export default class Avatar extends Command {
     constructor () {

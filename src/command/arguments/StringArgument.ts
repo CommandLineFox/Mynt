@@ -1,6 +1,6 @@
-import {getArgument, splitMessage} from "../../Utils/Utils";
-import CommandEvent from "../CommandEvent";
-import Argument from "../IArgument";
+import {getArgument, splitMessage} from "@utils/Utils";
+import CommandEvent from "@command/CommandEvent";
+import Argument from "@command/IArgument";
 
 export default class StringArgument implements Argument<string> {
     public async toType(_event: CommandEvent, message: string, isLast: boolean): Promise<[string?, string?]> {

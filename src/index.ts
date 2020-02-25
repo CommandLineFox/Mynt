@@ -1,7 +1,7 @@
 import * as fs from "fs";
-import configTemplate from "./Config";
-import { generateConfig, getConfig } from "./ConfigHandler";
-import MyntClient from "./MyntClient";
+import configTemplate from "~/Config";
+import { generateConfig, getConfig } from "~/ConfigHandler";
+import MyntClient from "~/MyntClient";
 
 function main() {
     const configFile = "config.json";

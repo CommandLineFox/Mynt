@@ -1,7 +1,7 @@
 import {User} from "discord.js";
-import {nameCheck, splitMessage, tagCheck} from "../../Utils/Utils";
-import CommandEvent from "../CommandEvent";
-import Argument from "../IArgument";
+import {nameCheck, splitMessage, tagCheck} from "@utils/Utils";
+import CommandEvent from "@command/CommandEvent";
+import Argument from "@command/IArgument";
 
 export default class UserArgument implements Argument<User> {
     private static handleId(event: CommandEvent, message: string): Promise<[User?, string?]> {

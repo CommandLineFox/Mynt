@@ -1,4 +1,4 @@
-import MyntClient from "../MyntClient";
+import MyntClient from "~/MyntClient";
 
 type EventFunction = (client: MyntClient, ...args: any[]) => void;
 

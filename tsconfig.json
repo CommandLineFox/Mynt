@@ -25,6 +25,17 @@
         "strictPropertyInitialization": true,
         "esModuleInterop": true,
         "target": "es2020",
+        "baseUrl": ".",
+        "paths": {
+            "~/*": ["src/*"],
+            "@arguments/*": ["src/command/arguments/*"],
+            "@command/*": ["src/command/*"],
+            "@commands/*": ["src/commands/*"],
+            "@models/*": ["src/models/*"],
+            "@utils/*": ["src/utils/*"],
+            "@event/*": ["src/event/*"],
+            "@classes/*": ["src/utils/classes/*"]
+        },
         "types": [
             "node",
             "discord.js"

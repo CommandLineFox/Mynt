@@ -1,6 +1,6 @@
-import Command from "../../command/Command";
-import { OwnerOnly } from "../../Groups";
-import CommandEvent from "../../command/CommandEvent";
+import Command from "@command/Command";
+import { OwnerOnly } from "~/Groups";
+import CommandEvent from "@command/CommandEvent";
 import { RichEmbed } from 'discord.js';
 import { inspect } from "util";
 import { runInNewContext } from 'vm';

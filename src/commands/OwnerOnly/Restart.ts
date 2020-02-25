@@ -1,10 +1,10 @@
-import Command from "../../command/Command";
-import { OwnerOnly } from "../../Groups";
-import CommandEvent from "../../command/CommandEvent";
+import Command from "@command/Command";
+import { OwnerOnly } from "~/Groups";
+import CommandEvent from "@command/CommandEvent";
 import * as fs from "fs";
-import configTemplate from "../../Config";
-import { generateConfig, getConfig } from "../../ConfigHandler";
-import MyntClient from "../../MyntClient";
+import configTemplate from "~/Config";
+import { generateConfig, getConfig } from "~/ConfigHandler";
+import MyntClient from "~/MyntClient";
 
 export default class Restart extends Command {
     constructor () {

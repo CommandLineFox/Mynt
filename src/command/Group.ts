@@ -1,27 +1,30 @@
-import Command from "./Command";
-import CommandRegistry from "./CommandRegistry";
+import Command from "@command/Command";
+import CommandRegistry from "@command/CommandRegistry";
 
 interface GroupOptions {
     readonly name: string;
     readonly description: string;
-    readonly ownerOnly?: boolean;
     readonly guildOnly?: boolean;
-    readonly staffOnly?: boolean;
+    readonly modOnly?: boolean;
+    readonly adminOnly?: boolean;
+    readonly ownerOnly?: boolean;
 }
 
 export default class Group implements GroupOptions {
     readonly name: string;
     readonly description: string;
-    readonly ownerOnly: boolean;
     readonly guildOnly: boolean;
-    readonly staffOnly: boolean;
+    readonly modOnly: boolean;
+    readonly adminOnly: boolean;
+    readonly ownerOnly: boolean;
     
     constructor (options: GroupOptions) {
         this.name = options.name;
         this.description = options.description;
-        this.ownerOnly = options.ownerOnly || false;
         this.guildOnly = options.guildOnly || false;
-        this.staffOnly = options.staffOnly || false;
+        this.modOnly = options.modOnly || false;
+        this.adminOnly = options.adminOnly || false;
+        this.ownerOnly = options.ownerOnly || false;
     }
 
     private _commands: ReadonlyArray<Command> | undefined;

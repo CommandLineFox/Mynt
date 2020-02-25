@@ -1,4 +1,4 @@
-import MyntClient from "../MyntClient";
+import MyntClient from "~/MyntClient";
 import { promisify } from "util";
 import { readdir } from "fs";
 

@@ -1,7 +1,7 @@
 
-import {splitMessage} from "../../Utils/Utils";
-import CommandEvent from "../CommandEvent";
-import Argument from "../IArgument";
+import {splitMessage} from "@utils/Utils";
+import CommandEvent from "@command/CommandEvent";
+import Argument from "@command/IArgument";
 
 export default class NumberArgument implements Argument<number> {
     public toType(_event: CommandEvent, message: string): Promise<[number?, string?]> {
