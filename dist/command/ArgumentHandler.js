@@ -3,13 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const ArrayArgument_1 = __importDefault(require("./arguments/ArrayArgument"));
-const BooleanArgument_1 = __importDefault(require("./arguments/BooleanArgument"));
-const GuildArgument_1 = __importDefault(require("./arguments/GuildArgument"));
-const MemberArgument_1 = __importDefault(require("./arguments/MemberArgument"));
-const NumberArgument_1 = __importDefault(require("./arguments/NumberArgument"));
-const StringArgument_1 = __importDefault(require("./arguments/StringArgument"));
-const UserArgument_1 = __importDefault(require("./arguments/UserArgument"));
+const ArrayArgument_1 = __importDefault(require("@arguments/ArrayArgument"));
+const BooleanArgument_1 = __importDefault(require("@arguments/BooleanArgument"));
+const GuildArgument_1 = __importDefault(require("@arguments/GuildArgument"));
+const MemberArgument_1 = __importDefault(require("@arguments/MemberArgument"));
+const NumberArgument_1 = __importDefault(require("@arguments/NumberArgument"));
+const StringArgument_1 = __importDefault(require("@arguments/StringArgument"));
+const UserArgument_1 = __importDefault(require("@arguments/UserArgument"));
 class ArgumentHandlerClass {
     constructor() {
         this.argumentTypes = new Map();

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Utils_1 = require("../../Utils/Utils");
+const Utils_1 = require("@utils/Utils");
 class StringArgument {
     async toType(_event, message, isLast) {
         if (isLast) {

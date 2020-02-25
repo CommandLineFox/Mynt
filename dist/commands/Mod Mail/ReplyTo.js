@@ -3,9 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Command_1 = __importDefault(require("../../command/Command"));
-const Groups_1 = require("../../Groups");
-const ArgumentHandler_1 = __importDefault(require("../../command/ArgumentHandler"));
+const Command_1 = __importDefault(require("@command/Command"));
+const Groups_1 = require("~/Groups");
+const ArgumentHandler_1 = __importDefault(require("@command/ArgumentHandler"));
 class ReplyTo extends Command_1.default {
     constructor() {
         super({ name: "ReplyTo", triggers: ["replyto"], description: "Sends a message to a specified user", group: Groups_1.ModMail });

@@ -10,12 +10,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Command_1 = __importDefault(require("../../command/Command"));
-const Groups_1 = require("../../Groups");
+const Command_1 = __importDefault(require("@command/Command"));
+const Groups_1 = require("~/Groups");
 const fs = __importStar(require("fs"));
-const Config_1 = __importDefault(require("../../Config"));
-const ConfigHandler_1 = require("../../ConfigHandler");
-const MyntClient_1 = __importDefault(require("../../MyntClient"));
+const Config_1 = __importDefault(require("~/Config"));
+const ConfigHandler_1 = require("~/ConfigHandler");
+const MyntClient_1 = __importDefault(require("~/MyntClient"));
 class Restart extends Command_1.default {
     constructor() {
         super({ name: "Restart", triggers: ["restart", "reboot"], description: "Restarts the bot", group: Groups_1.OwnerOnly });
