@@ -6,7 +6,7 @@ export async function EventHandler(client: MyntClient) {
     const readDir = promisify(readdir);
 
     const events = await readDir("./dist/events");
-    for await (const item of events) {
+    for (const item of events) {
         if (item.endsWith('.js')) {
             const { event } = require(`../events/${item}`);
             client.on(event.name, (...args) => {

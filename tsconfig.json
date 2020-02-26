@@ -34,7 +34,7 @@
             "@models/*": ["src/models/*"],
             "@utils/*": ["src/utils/*"],
             "@event/*": ["src/event/*"],
-            "@classes/*": ["src/utils/classes/*"]
+            "@config": ["config.json"]
         },
         "types": [
             "node",

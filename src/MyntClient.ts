@@ -5,18 +5,20 @@ import CommandHandler from "@command/CommandHandler";
 import { formatter, IReplacer } from "@utils/Formatter";
 import { EventHandler } from "@event/EventHandler";
 import { Database } from "@utils/Database";
+import { database } from "@config";
 
 type configTemplate = typeof configTemplate;
 
 export default class MyntClient extends Client {
     readonly config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> };
-    db?: Database;
+    db: Database;
     lastDmAuthor?: User;
     format: (str: string, replace: IReplacer) => string;
     
     constructor(config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> }, options?: ClientOptions) {
         super(options);
         this.config = config;
+        this.db = new Database(database);
         this.format = formatter;
         this.once("ready", () => {
             EventHandler(this)

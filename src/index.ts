@@ -22,11 +22,15 @@ function main() {
     }
 
     const client = new MyntClient(config);
+    client.db.connect()
+        .then(() => {
+            console.log("Connected to the Database");
+        });
     client.login(config.token);
     
     client.on("ready", () => {
         console.log(`Logged in as ${client.user.tag}`);
-        client.user.setActivity("with Kyra", { type: "PLAYING" });
+        client.user.setActivity("with Alex", { type: "PLAYING" });
     })
 }
 

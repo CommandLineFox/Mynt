@@ -7,7 +7,11 @@ export default {
     staff: array(base.string),
     modlog: string(""),
     database: object({
-        name: string("Mynt"),
-        url: string("")
+        url: string(""),
+        name: string(""),
+        MongoOptions: object({
+            useNewUrlParser: string(""),
+            useUnifiedTopology: string("")
+        })
     })
 }
