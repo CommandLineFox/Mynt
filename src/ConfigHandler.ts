@@ -37,7 +37,7 @@ function checkObject(object: { [key: string]: any }, template: { [key: string]: 
         }
         else if (!result) {
             if (object[key] === undefined) {
-                errors.push(`${name}${key} does not not exists and must have the type of ${template[key].trueName}`);
+                errors.push(`${name}${key} does not exist and must have the type of ${template[key].trueName}`);
             }
             else {
                 errors.push(`${name}${key} must be the type of ${template[key].trueName}`);

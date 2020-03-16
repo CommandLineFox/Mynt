@@ -13,13 +13,11 @@ export class Database {
     constructor(protected config: DatabaseConfig) {}
 
     async connect() {
-        const client = await connect(
-        this.config.url,
-        this.config.MongoOptions
-        ).catch(err => {
-        throw err;
-    });
-    this.db = client.db(this.config.name);
+        const client = await connect(this.config.url, this.config.MongoOptions)
+            .catch(err => {
+                throw err;
+            });
+        this.db = client.db(this.config.name);
     }
 
     get guilds(): Collection<Guild> {

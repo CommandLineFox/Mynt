@@ -18,7 +18,12 @@ export default class MyntClient extends Client {
     constructor(config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> }, options?: ClientOptions) {
         super(options);
         this.config = config;
-        this.db = new Database(database);
+
+        const name = database.name;
+        const url = database.url;
+        const MongoOptions = database.MongoOptions;
+        this.db = new Database({name, url, MongoOptions});
+        
         this.format = formatter;
         this.once("ready", () => {
             EventHandler(this)

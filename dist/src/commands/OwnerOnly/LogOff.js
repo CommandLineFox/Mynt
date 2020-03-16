@@ -9,8 +9,7 @@ class LogOff extends Command_1.default {
     constructor() {
         super({ name: "LogOff", triggers: ["logoff", "shutdown"], description: "Turns the bot off", group: Groups_1.OwnerOnly });
     }
-    run(event) {
-        event.message.delete(100);
+    async run(event) {
         event.client.destroy();
     }
 }

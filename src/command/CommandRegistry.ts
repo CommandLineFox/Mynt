@@ -8,7 +8,6 @@ import Avatar from "@commands/Moderation/Avatar";
 import Echo from "@commands/OwnerOnly/Echo";
 import Eval from "@commands/OwnerOnly/Eval";
 import LogOff from "@commands/OwnerOnly/LogOff"
-import Restart from "@commands/OwnerOnly/Restart";
 
 class CommandRegistry {
     readonly commands: ReadonlyArray<Command> = [
@@ -19,8 +18,7 @@ class CommandRegistry {
         new Avatar(),
         new Echo(),
         new Eval(),
-        new LogOff(),
-        new Restart()
+        new LogOff()
     ];
     readonly groups: ReadonlyArray<Group> = this.commands.map((command) => command.group).filter((group, index, self) => self.indexOf(group) === index);
 

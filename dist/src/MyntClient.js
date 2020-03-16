@@ -13,7 +13,10 @@ class MyntClient extends discord_js_1.Client {
     constructor(config, options) {
         super(options);
         this.config = config;
-        this.db = new Database_1.Database(_config_1.database);
+        const name = _config_1.database.name;
+        const url = _config_1.database.url;
+        const MongoOptions = _config_1.database.MongoOptions;
+        this.db = new Database_1.Database({ name, url, MongoOptions });
         this.format = Formatter_1.formatter;
         this.once("ready", () => {
             EventHandler_1.EventHandler(this);

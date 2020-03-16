@@ -32,6 +32,9 @@ function main() {
     client.db.connect()
         .then(() => {
         console.log("Connected to the Database");
+    })
+        .catch((err) => {
+        console.log(err);
     });
     client.login(config.token);
     client.on("ready", () => {
