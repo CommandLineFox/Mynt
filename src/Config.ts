@@ -1,4 +1,4 @@
-import { string, base, array, object } from "~/ConfigHandler";
+import { string, base, array, object, objectArray, number } from "~/ConfigHandler";
 
 export default {
     token: string(""),
@@ -7,11 +7,13 @@ export default {
     staff: array(base.string),
     modlog: string(""),
     database: object({
-        url: string(""),
-        name: string(""),
-        MongoOptions: object({
-            useNewUrlParser: string(""),
-            useUnifiedTopology: string("")
+        user: string(""),
+        password: string(""),
+        database: string(""),
+        authenticationDatabase: string("admin"),
+        shards: objectArray({
+            host: string("localhost"),
+            port: number(27017)
         })
     })
 }

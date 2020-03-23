@@ -2,8 +2,9 @@ import * as fs from "fs";
 import configTemplate from "~/Config";
 import { generateConfig, getConfig } from "~/ConfigHandler";
 import MyntClient from "~/MyntClient";
+import Database from "@utils/Database";
 
-function main() {
+async function main() {
     const configFile = "config.json";
 
     if(!fs.existsSync(configFile)) {
@@ -21,14 +22,8 @@ function main() {
         return;
     }
 
-    const client = new MyntClient(config);
-    client.db.connect()
-        .then(() => {
-            console.log("Connected to the Database");
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+    const database = await Database.getDatabase(config);
+    const client = new MyntClient(config, database);
     client.login(config.token);
     
     client.on("ready", () => {

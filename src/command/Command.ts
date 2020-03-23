@@ -31,13 +31,13 @@ export default abstract class Command implements CommandOptions {
         this.name = options.name;
         this.triggers = options.triggers;
         this.description = options.description;
-        this.botPermissions = options.botPermissions || [];
-        this.userPermissions = options.userPermissions || [];
+        this.botPermissions = options.botPermissions ?? [];
+        this.userPermissions = options.userPermissions ?? [];
         this.group = options.group;
-        this.modOnly = this.group.modOnly || options.modOnly || false;
-        this.adminOnly = this.group.adminOnly || options.adminOnly || false;
-        this.guildOnly = this.group.guildOnly || options.guildOnly || false;
-        this.ownerOnly = this.group.ownerOnly || options.ownerOnly || false;
+        this.modOnly = this.group.modOnly ?? options.modOnly ?? false;
+        this.adminOnly = this.group.adminOnly ?? options.adminOnly ?? false;
+        this.guildOnly = this.group.guildOnly ?? options.guildOnly ?? false;
+        this.ownerOnly = this.group.ownerOnly ?? options.ownerOnly ?? false;
     }
 
     execute(event: CommandEvent) : void {

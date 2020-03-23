@@ -4,26 +4,20 @@ import { IFunctionType } from "~/ConfigHandler";
 import CommandHandler from "@command/CommandHandler";
 import { formatter, IReplacer } from "@utils/Formatter";
 import { EventHandler } from "@event/EventHandler";
-import { Database } from "@utils/Database";
-import { database } from "@config";
+import Database from "@utils/Database";
 
 type configTemplate = typeof configTemplate;
 
 export default class MyntClient extends Client {
     readonly config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> };
-    db: Database;
+    readonly database: Database;
     lastDmAuthor?: User;
     format: (str: string, replace: IReplacer) => string;
     
-    constructor(config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> }, options?: ClientOptions) {
+    constructor(config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> }, database: Database, options?: ClientOptions) {
         super(options);
         this.config = config;
-
-        const name = database.name;
-        const url = database.url;
-        const MongoOptions = database.MongoOptions;
-        this.db = new Database({name, url, MongoOptions});
-        
+        this.database = database;
         this.format = formatter;
         this.once("ready", () => {
             EventHandler(this)
