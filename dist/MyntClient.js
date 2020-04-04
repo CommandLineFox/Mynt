@@ -5,13 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const CommandHandler_1 = __importDefault(require("./command/CommandHandler"));
-const Formatter_1 = require("./utils/Formatter");
 const EventHandler_1 = require("./event/EventHandler");
 class MyntClient extends discord_js_1.Client {
-    constructor(config, options) {
+    constructor(config, database, options) {
         super(options);
         this.config = config;
-        this.format = Formatter_1.formatter;
+        this.database = database;
         this.once("ready", () => {
             EventHandler_1.EventHandler(this);
             new CommandHandler_1.default(this);
@@ -42,17 +41,17 @@ class MyntClient extends discord_js_1.Client {
     generateReceivedMessage(message) {
         const client = message.client;
         const author = message.author;
-        const embed = new discord_js_1.RichEmbed()
+        const received = new discord_js_1.RichEmbed()
             .setTitle(author.username)
             .setDescription(message)
             .setColor("#61e096")
             .setFooter("ID: " + author.id, author.avatarURL);
         if (message.attachments && message.attachments.first()) {
-            embed.setImage(message.attachments.first().url);
+            received.setImage(message.attachments.first().url);
         }
         const channel = client.channels.find(channel => channel.id == this.getModLog());
         if (channel) {
-            channel.send(embed);
+            channel.send({ embed: received });
         }
     }
 }

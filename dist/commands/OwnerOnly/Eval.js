@@ -58,9 +58,9 @@ async function run(script, ctx, opts) {
     }
 }
 function parseBlock(script) {
-    var _a, _b;
+    var _a;
     const cbr = /^(([ \t]*`{3,4})([^\n]*)([\s\S]+?)(^[ \t]*\2))/gm;
     const result = cbr.exec(script);
-    return _b = (_a = result) === null || _a === void 0 ? void 0 : _a[4], (_b !== null && _b !== void 0 ? _b : script);
+    return (_a = result === null || result === void 0 ? void 0 : result[4]) !== null && _a !== void 0 ? _a : script;
 }
 //# sourceMappingURL=Eval.js.map

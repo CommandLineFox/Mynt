@@ -2,7 +2,6 @@ import { Client, ClientOptions, User, Guild, GuildMember, RichEmbed, Message, Te
 import configTemplate from "~/Config";
 import { IFunctionType } from "~/ConfigHandler";
 import CommandHandler from "@command/CommandHandler";
-import { formatter, IReplacer } from "@utils/Formatter";
 import { EventHandler } from "@event/EventHandler";
 import Database from "@utils/Database";
 
@@ -12,13 +11,11 @@ export default class MyntClient extends Client {
     readonly config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> };
     readonly database: Database;
     lastDmAuthor?: User;
-    format: (str: string, replace: IReplacer) => string;
     
     constructor(config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> }, database: Database, options?: ClientOptions) {
         super(options);
         this.config = config;
         this.database = database;
-        this.format = formatter;
         this.once("ready", () => {
             EventHandler(this)
             new CommandHandler (this)
@@ -28,7 +25,7 @@ export default class MyntClient extends Client {
                 this.lastDmAuthor = message.author;
                 this.generateReceivedMessage(message);
             }
-        })
+        });
     }
     
     isStaff(member: GuildMember): boolean {
@@ -56,19 +53,19 @@ export default class MyntClient extends Client {
     private generateReceivedMessage(message: Message) {
         const client = message.client;
         const author = message.author;
-        const embed = new RichEmbed()
+        const received = new RichEmbed()
             .setTitle(author.username)
             .setDescription(message)
             .setColor("#61e096")
-            .setFooter("ID: " + author.id, author.avatarURL)
+            .setFooter("ID: " + author.id, author.avatarURL);
         if (message.attachments && message.attachments.first()) {
-            embed.setImage(message.attachments.first().url)
+            received.setImage(message.attachments.first().url);
         }
         
         const channel = client.channels.find(channel => channel.id == this.getModLog()) as TextChannel;
         
         if(channel) {
-            channel.send(embed)
+            channel.send({ embed: received });
         }
     }
 }

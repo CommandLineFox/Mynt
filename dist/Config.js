@@ -8,8 +8,14 @@ exports.default = {
     staff: ConfigHandler_1.array(ConfigHandler_1.base.string),
     modlog: ConfigHandler_1.string(""),
     database: ConfigHandler_1.object({
-        name: ConfigHandler_1.string("Mynt"),
-        url: ConfigHandler_1.string("")
+        user: ConfigHandler_1.string(""),
+        password: ConfigHandler_1.string(""),
+        database: ConfigHandler_1.string(""),
+        authenticationDatabase: ConfigHandler_1.string("admin"),
+        shards: ConfigHandler_1.objectArray({
+            host: ConfigHandler_1.string("localhost"),
+            port: ConfigHandler_1.number(27017)
+        })
     })
 };
 //# sourceMappingURL=Config.js.map

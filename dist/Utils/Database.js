@@ -2,21 +2,33 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongodb_1 = require("mongodb");
 class Database {
-    constructor(config) {
-        this.config = config;
+    constructor(_client, database) {
+        this.database = database;
     }
-    async connect() {
-        const client = await mongodb_1.connect(this.config.url, this.config.MongoOptions).catch(err => {
-            throw err;
-        });
-        this.db = client.db(this.config.name);
+    getAll(collection) {
+        return this.database.collection(collection).find().toArray();
     }
-    get guilds() {
-        return this.db.collection('guilds');
+    getOne(collection, id) {
+        return this.database.collection(collection).findOne({ id: id });
     }
-    get users() {
-        return this.db.collection('users');
+    remove(collection, id) {
+        this.database.collection(collection).findOneAndDelete({ id: id });
+    }
+    save(collection, data) {
+        this.database.collection(collection).updateOne({ id: data.id }, data, { upsert: true });
+    }
+    static async getDatabase(config) {
+        const { user, password, authenticationDatabase, shards } = config.database;
+        function mongoUrlEncoder(str) {
+            return str.replace(/@/g, "%40")
+                .replace(/:/g, "%3A")
+                .replace(/\//g, "%2F")
+                .replace(/%/g, "%25");
+        }
+        const client = await (new mongodb_1.MongoClient(`mongodb://${mongoUrlEncoder(user)}:${mongoUrlEncoder(password)}@${shards.map(({ host, port }) => host + ":" + port).join(",")}/${authenticationDatabase}`, { useUnifiedTopology: true })).connect();
+        const database = client.db(config.database.database);
+        return new Database(client, database);
     }
 }
-exports.Database = Database;
+exports.default = Database;
 //# sourceMappingURL=Database.js.map
