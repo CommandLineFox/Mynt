@@ -2,6 +2,7 @@ import { ObjectId } from "bson";
 
 export interface GuildChannels {
     logging?: string;
+    modmail?: string;
     starboard?: string;
 }
 

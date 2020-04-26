@@ -1,7 +1,7 @@
 import Command from "@command/Command";
 import { Basic } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import { RichEmbed, Message } from "discord.js";
+import { MessageEmbed, Message } from "discord.js";
 
 export default class Ping extends Command {
     constructor () {
@@ -12,9 +12,9 @@ export default class Ping extends Command {
         event.send(`Pinging...`)
         .then((msg) => {
             msg = msg as Message;
-            const ping = new RichEmbed()
+            const ping = new MessageEmbed()
                 .addField(`:hourglass: Response time: `, `${msg.createdTimestamp - event.message.createdTimestamp}ms`, false)
-                .addField(`:heartbeat: Bot ping: `, `${Math.round(event.client.ping)}ms`, true);
+                .addField(`:heartbeat: Bot ping: `, `${Math.round(event.client.ws.ping)}ms`, true);
             msg.edit({ embed: ping });
         });
     }

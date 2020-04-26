@@ -1,7 +1,7 @@
 import Command from "@command/Command";
 import { Moderation } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import { RichEmbed } from "discord.js";
+import { MessageEmbed } from "discord.js";
 import ArgumentHandler from "@command/ArgumentHandler";
 
 export default class Avatar extends Command {
@@ -17,10 +17,10 @@ export default class Avatar extends Command {
         }
         
         const [member] = args;
-        const avatar = new RichEmbed()
+        const avatar = new MessageEmbed()
             .setTitle(`${member.user.tag}'s avatar:`)
             .setImage(member.user.displayAvatarURL)
-            .setFooter(`Requested by ${event.author.username}`, event.author.displayAvatarURL);
+            .setFooter(`Requested by ${event.author.username}`, event.author.displayAvatarURL());
         event.channel.send({ embed: avatar });
     }
 }

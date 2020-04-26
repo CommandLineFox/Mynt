@@ -1,4 +1,4 @@
-import { Client, ClientOptions, User, Guild, GuildMember, RichEmbed, Message, TextChannel } from "discord.js";
+import { Client, ClientOptions, User, Guild, GuildMember, MessageEmbed, Message, TextChannel } from "discord.js";
 import configTemplate from "~/Config";
 import { IFunctionType } from "~/ConfigHandler";
 import CommandHandler from "@command/CommandHandler";
@@ -9,10 +9,10 @@ type configTemplate = typeof configTemplate;
 
 export default class MyntClient extends Client {
     readonly config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> };
-    readonly database: Database;
+    readonly database?: Database;
     lastDmAuthor?: User;
     
-    constructor(config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> }, database: Database, options?: ClientOptions) {
+    constructor(config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> }, database?: Database, options?: ClientOptions) {
         super(options);
         this.config = config;
         this.database = database;
@@ -29,7 +29,11 @@ export default class MyntClient extends Client {
     }
     
     isStaff(member: GuildMember): boolean {
-        return member.roles.some(r => this.config.staff.includes(r.id));
+        let hasRole = false;
+        this.config.staff.forEach(id => {
+            hasRole = member.roles.cache.has(id as string);
+        })
+        return hasRole;
     }
 
     isOwner(user: User): boolean {
@@ -53,16 +57,16 @@ export default class MyntClient extends Client {
     private generateReceivedMessage(message: Message) {
         const client = message.client;
         const author = message.author;
-        const received = new RichEmbed()
+        const received = new MessageEmbed()
             .setTitle(author.username)
             .setDescription(message)
             .setColor("#61e096")
-            .setFooter("ID: " + author.id, author.avatarURL);
+            .setFooter("ID: " + author.id, author.displayAvatarURL());
         if (message.attachments && message.attachments.first()) {
-            received.setImage(message.attachments.first().url);
+            received.setImage(message.attachments.first()!.url);
         }
         
-        const channel = client.channels.find(channel => channel.id == this.getModLog()) as TextChannel;
+        const channel = client.channels.cache.find(channel => channel.id == this.getModLog()) as TextChannel;
         
         if(channel) {
             channel.send({ embed: received });

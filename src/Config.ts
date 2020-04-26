@@ -6,6 +6,7 @@ export default {
     owners: array(base.string),
     staff: array(base.string),
     modlog: string(""),
+    url: string(""),
     database: object({
         user: string(""),
         password: string(""),

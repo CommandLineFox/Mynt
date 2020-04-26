@@ -5,11 +5,11 @@ import Argument from "@command/IArgument";
 
 export default class GuildArgument implements Argument<Guild> {
     private static handleId(event: CommandEvent, message: string): Promise<[Guild?, string?]> {
-        return splitMessage(message, (id) => event.client.guilds.get(id));
+        return splitMessage(message, (id) => event.client.guilds.cache.get(id));
     }
 
     private static handleName(event: CommandEvent, message: string): [Guild?, string?] {
-        return nameCheck(message, event.client.guilds, (guild, name) => guild.name === name);
+        return nameCheck(message, event.client.guilds.cache, (guild: Guild, name: string) => guild.name === name);
     }
 
     public async toType(event: CommandEvent, message: string): Promise<[Guild?, string?]> {

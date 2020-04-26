@@ -4,22 +4,23 @@
   "description": "Alex's main multi-purpose bot",
   "main": "dist/index.js",
   "dependencies": {
-    "@types/bson": "^4.0.1",
+    "@types/bson": "^4.0.2",
     "@types/deep-equal": "^1.0.1",
-    "@types/mongodb": "^3.5.2",
-    "@typescript-eslint/eslint-plugin": "^2.27.0",
-    "@typescript-eslint/parser": "^2.27.0",
+    "@types/mongodb": "^3.5.14",
+    "@types/ws": "^7.2.4",
+    "@typescript-eslint/eslint-plugin": "^2.29.0",
+    "@typescript-eslint/parser": "^2.29.0",
     "deep-equal": "^1.1.1",
     "deep-equals": "0.0.2",
-    "discord.js": "^11.6.2",
+    "discord.js": "^12.2.0",
     "eslint": "^6.8.0",
-    "mongoose": "^5.9.5",
-    "node": "^13.10.1",
+    "mongoose": "^5.9.10",
+    "node": "^13.13.0",
     "tslint-eslint-rules": "^5.4.0",
     "typescript": "^3.8.3"
   },
   "devDependencies": {
-    "@types/node": "^12.12.30",
+    "@types/node": "^12.12.37",
     "tscpaths": "0.0.9"
   },
   "scripts": {

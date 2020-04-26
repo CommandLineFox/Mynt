@@ -1,13 +1,12 @@
-import configTemplate from "../Config";
-import { IFunctionResult } from "../ConfigHandler";
+import configTemplate from "~/Config";
+import { IFunctionResult } from "~/ConfigHandler";
 import { MongoClient, Db } from "mongodb";
+import { url } from "@config";
 
 export default class Database {
-    //private readonly client: MongoClient;
     private readonly database: Db;
 
     private constructor (_client: MongoClient, database: Db) {
-        //this.client = client;
         this.database = database;
     }
     
@@ -28,15 +27,15 @@ export default class Database {
     }
     
     public static async getDatabase(config: IFunctionResult<typeof configTemplate>): Promise<Database> {
-        const { user, password, authenticationDatabase, shards } = config.database;
+        /*const { user, password, authenticationDatabase, shards } = config.database;
         function mongoUrlEncoder(str: string) {
             return str.replace(/@/g, "%40")
                       .replace(/:/g, "%3A")
                       .replace(/\//g, "%2F")
                       .replace(/%/g, "%25")
-        }
-        
-        const client = await (new MongoClient(`mongodb://${mongoUrlEncoder(user)}:${mongoUrlEncoder(password)}@${shards.map(({host, port}) => host + ":" + port).join(",")}/${authenticationDatabase}`, { useUnifiedTopology: true })).connect();
+        }*/
+        const client = await (new MongoClient(url));
+        //const client = await (new MongoClient(`mongodb://${mongoUrlEncoder(user)}:${mongoUrlEncoder(password)}@${shards.map(({host, port}) => host + ":" + port).join(",")}/${authenticationDatabase}`, { useUnifiedTopology: true })).connect();
         const database = client.db(config.database.database);
 
         return new Database(client, database);

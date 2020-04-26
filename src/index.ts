@@ -2,7 +2,7 @@ import * as fs from "fs";
 import configTemplate from "~/Config";
 import { generateConfig, getConfig } from "~/ConfigHandler";
 import MyntClient from "~/MyntClient";
-import Database from "@utils/Database";
+//import Database from "@utils/Database";
 
 async function main() {
     const configFile = "config.json";
@@ -22,13 +22,13 @@ async function main() {
         return;
     }
 
-    const database = await Database.getDatabase(config);
-    const client = new MyntClient(config, database);
+    //const database = await Database.getDatabase(config);
+    const client = new MyntClient(config, /*database*/);
     client.login(config.token);
     
     client.on("ready", () => {
-        console.log(`Logged in as ${client.user.tag}`);
-        client.user.setActivity("with Alex", { type: "PLAYING" });
+        console.log(`Logged in as ${client.user!.tag}`);
+        client.user!.setActivity("with Alex", { type: "PLAYING" });
     })
 }
 

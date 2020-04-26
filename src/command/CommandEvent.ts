@@ -1,4 +1,4 @@
-import { Message, StringResolvable, MessageOptions, Attachment, RichEmbed, TextChannel, DMChannel, GroupDMChannel, User, Guild, GuildMember } from "discord.js";
+import { Message, StringResolvable, MessageOptions, TextChannel, DMChannel, User, Guild, GuildMember, NewsChannel, MessageAttachment, MessageEmbed } from "discord.js";
 import MyntClient from "~/MyntClient";
 
 export default class CommandEvent {
@@ -6,7 +6,7 @@ export default class CommandEvent {
     readonly client: MyntClient;
     readonly author: User;
     readonly argument: string;
-    readonly channel: TextChannel | DMChannel | GroupDMChannel;
+    readonly channel: TextChannel | DMChannel | NewsChannel;
     readonly isFromGuild: boolean;
     readonly textChannel: TextChannel | undefined;
     readonly guild: Guild;
@@ -20,11 +20,11 @@ export default class CommandEvent {
         this.channel = message.channel;
         this.isFromGuild = this.channel.type === "text";
         this.textChannel = this.channel instanceof TextChannel ? this.channel : undefined;
-        this.guild = message.guild;
-        this.member = message.member;
+        this.guild = message.guild!;
+        this.member = message.member!;
     }
 
-    send(content?: StringResolvable, options?: MessageOptions | Attachment | RichEmbed): Promise <Message | Message[]> {
+    send(content?: StringResolvable, options?: MessageOptions | MessageAttachment | MessageEmbed): Promise <Message | Message[]> {
         return this.channel.send(content, options);
     }
 

@@ -8,7 +8,7 @@ export default class Echo extends Command {
     }
 
     run(event: CommandEvent) {
-        event.message.delete(100);
+        event.message.delete({timeout: 100});
         event.send(event.argument);
     }
 }

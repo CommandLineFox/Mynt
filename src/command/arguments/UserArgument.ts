@@ -5,20 +5,20 @@ import Argument from "@command/IArgument";
 
 export default class UserArgument implements Argument<User> {
     private static handleId(event: CommandEvent, message: string): Promise<[User?, string?]> {
-        return splitMessage(message, (id) => event.client.fetchUser(id));
+        return splitMessage(message, (id) => event.client.users.cache.get(id));
     }
 
     private static handleMention(event: CommandEvent, message: string): Promise<[User?, string?]> {
         return splitMessage(message, (mention) =>
-            event.client.users.find((user) => mention === `<@${user.id}>` || mention === `<@!${user.id}>`));
+            event.client.users.cache.find((user: User) => mention === `<@${user.id}>` || mention === `<@!${user.id}>`));
     }
 
     private static handleTag(event: CommandEvent, message: string): [User?, string?] {
-        return tagCheck(message, event.client.users, (user, tag) => user.tag === tag);
+        return tagCheck(message, event.client.users.cache, (user: User, tag: string) => user.tag === tag);
     }
 
     private static handleUsername(event: CommandEvent, message: string): [User?, string?] {
-        return nameCheck(message, event.client.users, (user, name) => user.username === name);
+        return nameCheck(message, event.client.users.cache, (user: User, name: string) => user.username === name);
     }
 
     public async toType(event: CommandEvent, message: string): Promise<[User?, string?]> {

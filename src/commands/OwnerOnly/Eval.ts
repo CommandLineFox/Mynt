@@ -1,7 +1,7 @@
 import Command from "@command/Command";
 import { OwnerOnly } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import { RichEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { inspect } from "util";
 import { runInNewContext } from 'vm';
 
@@ -26,17 +26,17 @@ export default class Eval extends Command {
         }
 
         const script = parseBlock(argument);
-        const exec = await run(script, { client, message, RichEmbed, author, }, { filename: message.guild?.id.toString() });
+        const exec = await run(script, { client, message, MessageEmbed, author, }, { filename: message.guild?.id.toString() });
         const end = Date.now();
 
         if (typeof exec === 'string') {
-        const embed = new RichEmbed()
+        const embed = new MessageEmbed()
             .addField('Input', makeCodeBlock(script, 'js'))
             .addField('Output', makeCodeBlock(exec, 'js'))
             .setFooter(`Script Executed in ${end - start}ms`);
         event.send(embed)
         } else {
-        const embed = new RichEmbed()
+        const embed = new MessageEmbed()
             .addField('Input', makeCodeBlock(script, 'js'))
             .addField('Output', makeCodeBlock(`${exec.name}: ${exec.message}`))
             .setFooter(`Script Executed in ${end - start}ms`);

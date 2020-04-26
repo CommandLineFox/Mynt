@@ -1,7 +1,7 @@
 import Command from "@command/Command";
 import { Basic } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import { RichEmbed } from "discord.js";
+import { MessageEmbed } from "discord.js";
 import CommandRegistry from "@command/CommandRegistry";
 
 export default class Help extends Command {
@@ -10,10 +10,10 @@ export default class Help extends Command {
     }
 
     run(event: CommandEvent) {
-        const help = new RichEmbed()
+        const help = new MessageEmbed()
             .setTitle("Here's the list of all my commands")
             .setColor("#61e096")
-            .setFooter(`Requested by ${event.author.tag}`, event.author.avatarURL);
+            .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
         CommandRegistry.groups.forEach((group) => {
             if (group.ownerOnly && !event.client.isOwner(event.author)) {
                 return;

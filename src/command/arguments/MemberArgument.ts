@@ -26,20 +26,20 @@ export default class MemberArgument implements Argument<Member> {
         check: (member: Member, part: string) => boolean,
     ): Promise<[Member?, string?]> {
         return splitMessage(message, (part) => {
-            return event.guild.members.find((member) => check(member, part));
+            return event.guild.members.cache.find((member: Member) => check(member, part));
         });
     }
 
     private static handleTag(event: CommandEvent, message: string): [Member?, string?] {
-        return tagCheck(message, event.guild.members, (member, tag) => member.user.tag === tag);
+        return tagCheck(message, event.guild.members.cache, (member: Member, tag: string) => member.user.tag === tag);
     }
 
     private static handleNickname(event: CommandEvent, message: string): [Member?, string?] {
-        return nameCheck(message, event.guild.members, (member, nickname) => member.nickname === nickname);
+        return nameCheck(message, event.guild.members.cache, (member: Member, nickname: string) => member.nickname === nickname);
     }
 
     private static handleUsername(event: CommandEvent, message: string): [Member?, string?] {
-        return nameCheck(message, event.guild.members, (member, username) => member.user.username === username);
+        return nameCheck(message, event.guild.members.cache, (member: Member, username: string) => member.user.username === username);
     }
 
     public async toType(event: CommandEvent, message: string): Promise<[Member?, string?]> {
