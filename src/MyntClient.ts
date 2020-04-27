@@ -3,7 +3,7 @@ import configTemplate from "~/Config";
 import { IFunctionType } from "~/ConfigHandler";
 import CommandHandler from "@command/CommandHandler";
 import { EventHandler } from "@event/EventHandler";
-import Database from "@utils/Database";
+import { Database } from "@utils/Database";
 
 type configTemplate = typeof configTemplate;
 

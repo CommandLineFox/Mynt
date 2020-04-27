@@ -14,6 +14,7 @@
         "noImplicitThis": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
+        "rootDir": "src",
         "outDir": "./dist",
         "pretty": true,
         "removeComments": true,
