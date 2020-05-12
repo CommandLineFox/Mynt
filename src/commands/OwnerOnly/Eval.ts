@@ -6,12 +6,12 @@ import { inspect } from "util";
 import { runInNewContext } from 'vm';
 
 function makeCodeBlock(data: string, lang?: string) {
-  return `\`\`\`${lang}\n${data}\n\`\`\``;
+    return `\`\`\`${lang}\n${data}\n\`\`\``;
 }
 
 export default class Eval extends Command {
-    constructor () {
-        super({name: "Eval", triggers: ["eval", "evaluate"], description: "Runs given code", group: OwnerOnly});
+    constructor() {
+        super({ name: "Eval", triggers: ["eval", "evaluate"], description: "Runs given code", group: OwnerOnly });
     }
 
     async run(event: CommandEvent) {
@@ -20,7 +20,7 @@ export default class Eval extends Command {
         let argument = event.argument;
         const author = event.author;
         const start = Date.now();
-        
+
         if (argument.startsWith("```js") && argument.endsWith("```")) {
             argument = argument.slice(5, argument.length - 3);
         }
@@ -30,17 +30,17 @@ export default class Eval extends Command {
         const end = Date.now();
 
         if (typeof exec === 'string') {
-        const embed = new MessageEmbed()
-            .addField('Input', makeCodeBlock(script, 'js'))
-            .addField('Output', makeCodeBlock(exec, 'js'))
-            .setFooter(`Script Executed in ${end - start}ms`);
-        event.send(embed)
+            const embed = new MessageEmbed()
+                .addField('Input', makeCodeBlock(script, 'js'))
+                .addField('Output', makeCodeBlock(exec, 'js'))
+                .setFooter(`Script Executed in ${end - start}ms`);
+            event.send(embed)
         } else {
-        const embed = new MessageEmbed()
-            .addField('Input', makeCodeBlock(script, 'js'))
-            .addField('Output', makeCodeBlock(`${exec.name}: ${exec.message}`))
-            .setFooter(`Script Executed in ${end - start}ms`);
-        event.send(embed);
+            const embed = new MessageEmbed()
+                .addField('Input', makeCodeBlock(script, 'js'))
+                .addField('Output', makeCodeBlock(`${exec.name}: ${exec.message}`))
+                .setFooter(`Script Executed in ${end - start}ms`);
+            event.send(embed);
         }
     }
 }

@@ -5,17 +5,17 @@ interface IFunctionBase {
     readonly theName: string,
 }
 
-export interface IFunction <T> {
+export interface IFunction<T> {
     (value: any, key: string): boolean | string[];
     readonly trueName: string,
     readonly defaultValue: T;
 }
 
-export type IFunctionType <T> = T extends IFunction <infer U> ? U : never;
-type IFunctionTemplate = { [key: string]: IFunction <any> };
-export type IFunctionResult <T> = {[key in keyof T]: IFunctionType<T[key]> }
+export type IFunctionType<T> = T extends IFunction<infer U> ? U : never;
+type IFunctionTemplate = { [key: string]: IFunction<any> };
+export type IFunctionResult<T> = { [key in keyof T]: IFunctionType<T[key]> }
 
-function createBaseType (theName: string, check: (value: any, key: string) => boolean | string[]): IFunctionBase {
+function createBaseType(theName: string, check: (value: any, key: string) => boolean | string[]): IFunctionBase {
     function temp(value: any, key: string) {
         return check(value, key);
     }
@@ -23,7 +23,7 @@ function createBaseType (theName: string, check: (value: any, key: string) => bo
     return temp;
 }
 
-function createType <T> (trueName: string, defaultValue: T, check: (value: any, key: string) => boolean | string[]): IFunction <T> {
+function createType<T>(trueName: string, defaultValue: T, check: (value: any, key: string) => boolean | string[]): IFunction<T> {
     function temp(value: any, key: string) {
         return check(value, key);
     }
@@ -82,7 +82,7 @@ export function object<T extends IFunctionTemplate>(template: T) {
         defaultValue[key] = template[key].defaultValue;
     }
 
-    return createType("Object", defaultValue as IFunctionResult<T>, (value: any, key ? : string) => {
+    return createType("Object", defaultValue as IFunctionResult<T>, (value: any, key?: string) => {
         if (typeof value === "object") {
             const errors = checkObject(value, template, key + ".");
             if (errors.length === 0) {
@@ -98,40 +98,40 @@ export function object<T extends IFunctionTemplate>(template: T) {
     })
 }
 
-export function optional <T> (type: IFunctionBase, defaultValue ? : T | null) {
+export function optional<T>(type: IFunctionBase, defaultValue?: T | null) {
     return createType(type.theName + "?", defaultValue, (value: any, key: string) => value === undefined || value === null || type(value, key));
 }
 
-export function optionalObject<T extends IFunctionTemplate> (template: T, defaultValue=true) {
+export function optionalObject<T extends IFunctionTemplate>(template: T, defaultValue = true) {
     const templateObject = object(template);
-    return createType(templateObject.trueName + "?", defaultValue?templateObject.defaultValue as T | null | undefined : null, (value: any, key: string) => value === undefined || value === null || templateObject(value, key));
+    return createType(templateObject.trueName + "?", defaultValue ? templateObject.defaultValue as T | null | undefined : null, (value: any, key: string) => value === undefined || value === null || templateObject(value, key));
 }
 
-export function arrayWithOptional<T> (type: IFunctionBase, defaultValue: (T|null|undefined)[]) {
+export function arrayWithOptional<T>(type: IFunctionBase, defaultValue: (T | null | undefined)[]) {
     return createType(type.theName + "[]", defaultValue, (value: any, key: string) => value instanceof Array && value.every((it) => it === undefined || it === null || type(it, key) === true));
 }
 
-export function arrayWithOptionalObject<T extends IFunctionTemplate> (template: T, defaultValue=true) {
+export function arrayWithOptionalObject<T extends IFunctionTemplate>(template: T, defaultValue = true) {
     const templateObject = object(template);
-    return createType(templateObject.trueName, defaultValue?[templateObject.defaultValue] as (IFunctionResult<T> | null | undefined)[] : [], (value: any, key: string) => value instanceof Array && value.every((it) => it === undefined || it === null || templateObject(it, key) === true));
+    return createType(templateObject.trueName, defaultValue ? [templateObject.defaultValue] as (IFunctionResult<T> | null | undefined)[] : [], (value: any, key: string) => value instanceof Array && value.every((it) => it === undefined || it === null || templateObject(it, key) === true));
 }
 
-export function array <T> (type: IFunctionBase, defaultValue: T[] = []) {
+export function array<T>(type: IFunctionBase, defaultValue: T[] = []) {
     return createType(type.theName + "[]", defaultValue, (value: any, key: string) => value instanceof Array && value.every((it) => type(it, key) === true));
 }
 
-export function optionalArray<T>(type: IFunctionBase, defaultValue: T[]|null|undefined = []) {
+export function optionalArray<T>(type: IFunctionBase, defaultValue: T[] | null | undefined = []) {
     return createType(type.theName + "[]", defaultValue as T | null | undefined, (value: any, key: string) => value === undefined || value === null || value instanceof Array && value.every((it) => type(it, key) === true));
 }
 
-export function objectArray<T extends IFunctionTemplate> (template: T, defaultValue=true) {
+export function objectArray<T extends IFunctionTemplate>(template: T, defaultValue = true) {
     const templateObject = object(template);
-    return createType(templateObject.trueName, defaultValue?[templateObject.defaultValue] : [], (value: any, key: string) => value instanceof Array && value.every((it) => templateObject(it, key) === true));
+    return createType(templateObject.trueName, defaultValue ? [templateObject.defaultValue] : [], (value: any, key: string) => value instanceof Array && value.every((it) => templateObject(it, key) === true));
 }
 
-export function optionalObjectArray<T extends IFunctionTemplate> (template: T, defaultValue=true) {
+export function optionalObjectArray<T extends IFunctionTemplate>(template: T, defaultValue = true) {
     const templateObject = object(template);
-    return createType(templateObject.trueName, defaultValue?[templateObject.defaultValue] as IFunctionResult<T>[]|null|undefined : [], (value: any, key: string) => value === undefined || value === null || value instanceof Array && value.every((it) => templateObject(it, key) === true));
+    return createType(templateObject.trueName, defaultValue ? [templateObject.defaultValue] as IFunctionResult<T>[] | null | undefined : [], (value: any, key: string) => value === undefined || value === null || value instanceof Array && value.every((it) => templateObject(it, key) === true));
 }
 
 export function generateConfig(file: string, template: IFunctionTemplate) {
@@ -146,7 +146,7 @@ export function generateConfig(file: string, template: IFunctionTemplate) {
     fs.writeFileSync(file, JSON.stringify(config));
 }
 
-export function getConfig <T extends IFunctionTemplate> (file: string, template: T) {
+export function getConfig<T extends IFunctionTemplate>(file: string, template: T) {
     const config = JSON.parse(fs.readFileSync(file).toString());
     const errors = checkObject(config, template);
 

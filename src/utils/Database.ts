@@ -1,6 +1,6 @@
 import { connect, Db, MongoClientOptions, Collection } from 'mongodb';
-import { User } from '../models/User';
-import { Guild } from '../models/Guild';
+import { User } from '@models/User';
+import { Guild } from '@models/Guild';
 
 interface DatabaseConfig {
     url: string;
@@ -10,7 +10,7 @@ interface DatabaseConfig {
 
 export class Database {
     db!: Db;
-    constructor(protected config: DatabaseConfig) {}
+    constructor(protected config: DatabaseConfig) { }
 
     async connect() {
         const client = await connect(this.config.url, this.config.MongoOptions)
@@ -22,10 +22,10 @@ export class Database {
     }
 
     get guilds(): Collection<Guild> {
-    return this.db.collection('guilds');
+        return this.db.collection('guilds');
     }
 
     get users(): Collection<User> {
-    return this.db.collection('users');
+        return this.db.collection('users');
     }
 }

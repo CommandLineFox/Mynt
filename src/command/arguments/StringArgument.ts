@@ -1,4 +1,4 @@
-import {getArgument, splitMessage} from "@utils/Utils";
+import { getArgument, splitMessage } from "@utils/Utils";
 import CommandEvent from "@command/CommandEvent";
 import Argument from "@command/IArgument";
 

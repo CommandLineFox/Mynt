@@ -5,8 +5,8 @@ import { MessageEmbed } from "discord.js";
 import CommandRegistry from "@command/CommandRegistry";
 
 export default class Help extends Command {
-    constructor () {
-        super({name: "Help", triggers: ["help", "commands", "cmds"], description: "Displays all my commands", group: Basic});
+    constructor() {
+        super({ name: "Help", triggers: ["help", "commands", "cmds"], description: "Displays all my commands", group: Basic });
     }
 
     run(event: CommandEvent) {
@@ -18,16 +18,16 @@ export default class Help extends Command {
             if (group.ownerOnly && !event.client.isOwner(event.author)) {
                 return;
             }
-            
+
             const commands = group.commands.map((command) => `${command.name} (\`${command.triggers.join('`,`')}\`) -> ${command.description}`);
-            
+
             if (commands.length === 0) {
                 return;
             }
-            
+
             help.addField(group.name, commands.join('\n'));
         })
-        
+
         event.send({ embed: help });
     }
 }

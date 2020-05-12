@@ -29,6 +29,7 @@ export interface GuildStarboard {
 }
 
 export interface GuildConfig {
+    prefix?: string;
     blacklisted?: boolean;
     channels?: GuildChannels;
     roles?: GuildRoles;

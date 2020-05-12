@@ -1,6 +1,6 @@
 import deepEqual from "deep-equal";
-import {Collection} from "discord.js";
-import {DuplicationError} from "./Errors";
+import { Collection } from "discord.js";
+import { DuplicationError } from "./Errors";
 
 export function checkForDuplicates<T extends object>(values: T[], value: T, properties: string[]) {
     values.forEach((element) => {
@@ -162,5 +162,5 @@ export function tagCheck<T>(
 }
 
 export function merge<T extends object>(defaultValue: Partial<T>, value: T): T {
-    return {...defaultValue, ...value};
+    return { ...defaultValue, ...value };
 }

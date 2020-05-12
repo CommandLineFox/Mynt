@@ -5,8 +5,8 @@ import { MessageEmbed } from "discord.js";
 import ArgumentHandler from "@command/ArgumentHandler";
 
 export default class Avatar extends Command {
-    constructor () {
-        super({name: "Avatar", triggers: ["avatar", "av", "pfp"], description: "Displays the specified user's avatar", group: Moderation});
+    constructor() {
+        super({ name: "Avatar", triggers: ["avatar", "av", "pfp"], description: "Displays the specified user's avatar", group: Moderation });
     }
 
     async run(event: CommandEvent) {
@@ -15,7 +15,7 @@ export default class Avatar extends Command {
             event.reply("invalid arguments.");
             return;
         }
-        
+
         const [member] = args;
         const avatar = new MessageEmbed()
             .setTitle(`${member.user.tag}'s avatar:`)

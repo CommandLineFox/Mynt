@@ -1,5 +1,5 @@
-import {Guild} from "discord.js";
-import {nameCheck, splitMessage} from "@utils/Utils";
+import { Guild } from "discord.js";
+import { nameCheck, splitMessage } from "@utils/Utils";
 import CommandEvent from "@command/CommandEvent";
 import Argument from "@command/IArgument";
 

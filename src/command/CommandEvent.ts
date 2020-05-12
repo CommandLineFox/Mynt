@@ -12,7 +12,7 @@ export default class CommandEvent {
     readonly guild: Guild;
     readonly member: GuildMember;
 
-    constructor (message: Message, client: MyntClient, argument: string) {
+    constructor(message: Message, client: MyntClient, argument: string) {
         this.message = message;
         this.client = client;
         this.author = message.author;
@@ -24,7 +24,7 @@ export default class CommandEvent {
         this.member = message.member!;
     }
 
-    send(content?: StringResolvable, options?: MessageOptions | MessageAttachment | MessageEmbed): Promise <Message | Message[]> {
+    send(content?: StringResolvable, options?: MessageOptions | MessageAttachment | MessageEmbed): Promise<Message | Message[]> {
         return this.channel.send(content, options);
     }
 

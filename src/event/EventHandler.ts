@@ -11,7 +11,7 @@ export async function EventHandler(client: MyntClient) {
             const { event } = require(`../events/${item}`);
             client.on(event.name, (...args) => {
                 event.func(client, ...args);
-            }); 
+            });
         }
     }
 }

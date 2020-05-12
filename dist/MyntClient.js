@@ -22,12 +22,17 @@ class MyntClient extends discord_js_1.Client {
             }
         });
     }
-    isStaff(member) {
-        let hasRole = false;
+    isMod(member) {
+        let mod = false;
         this.config.staff.forEach(id => {
-            hasRole = member.roles.cache.has(id);
+            mod = member.roles.cache.has(id);
         });
-        return hasRole;
+        return mod;
+    }
+    isAdmin(member) {
+        if (member) {
+        }
+        return false;
     }
     isOwner(user) {
         return this.config.owners.includes(user.id);

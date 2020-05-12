@@ -15,7 +15,7 @@ const Config_1 = __importDefault(require("./Config"));
 const ConfigHandler_1 = require("./ConfigHandler");
 const MyntClient_1 = __importDefault(require("./MyntClient"));
 const Database_1 = require("./utils/Database");
-async function main() {
+function main() {
     const configFile = "config.json";
     if (!fs.existsSync(configFile)) {
         ConfigHandler_1.generateConfig(configFile, Config_1.default);
@@ -29,7 +29,8 @@ async function main() {
         console.info("Please use the above errors to fix your config before restarting the bot");
         return;
     }
-    const database = await new Database_1.Database(config.db);
+    const database = new Database_1.Database(config.db);
+    database.connect();
     const client = new MyntClient_1.default(config, database);
     client.login(config.token);
     client.on("ready", () => {

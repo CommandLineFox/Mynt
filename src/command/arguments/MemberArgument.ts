@@ -1,5 +1,5 @@
-import {GuildMember as Member} from "discord.js";
-import {nameCheck, splitMessage, tagCheck} from "@utils/Utils";
+import { GuildMember as Member } from "discord.js";
+import { nameCheck, splitMessage, tagCheck } from "@utils/Utils";
 import CommandEvent from "@command/CommandEvent";
 import Argument from "@command/IArgument";
 

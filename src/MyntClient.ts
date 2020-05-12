@@ -11,14 +11,14 @@ export default class MyntClient extends Client {
     readonly config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> };
     readonly database?: Database;
     lastDmAuthor?: User;
-    
+
     constructor(config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> }, database?: Database, options?: ClientOptions) {
         super(options);
         this.config = config;
         this.database = database;
         this.once("ready", () => {
             EventHandler(this)
-            new CommandHandler (this)
+            new CommandHandler(this)
         });
         this.on("message", (message) => {
             if (!message.guild && !message.author.bot) {
@@ -27,19 +27,26 @@ export default class MyntClient extends Client {
             }
         });
     }
-    
-    isStaff(member: GuildMember): boolean {
-        let hasRole = false;
+
+    isMod(member: GuildMember): boolean {
+        let mod = false;
         this.config.staff.forEach(id => {
-            hasRole = member.roles.cache.has(id as string);
+            mod = member.roles.cache.has(id as string);
         })
-        return hasRole;
+        return mod;
+    }
+
+    isAdmin(member: GuildMember): boolean {
+        if (member) {
+
+        }
+        return false;
     }
 
     isOwner(user: User): boolean {
         return this.config.owners.includes(user.id);
     }
-    
+
     getPrefix(guild?: Guild): string {
         if (guild) {
             
@@ -65,10 +72,10 @@ export default class MyntClient extends Client {
         if (message.attachments && message.attachments.first()) {
             received.setImage(message.attachments.first()!.url);
         }
-        
+
         const channel = client.channels.cache.find(channel => channel.id == this.getModLog()) as TextChannel;
-        
-        if(channel) {
+
+        if (channel) {
             channel.send({ embed: received });
         }
     }
