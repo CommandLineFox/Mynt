@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Guild = void 0;
 const bson_1 = require("bson");
 class Guild {
     constructor(data) {

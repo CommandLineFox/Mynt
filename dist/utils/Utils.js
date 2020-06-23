@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.merge = exports.tagCheck = exports.nameCheck = exports.getArgument = exports.splitMessage = exports.checkForDuplicates = void 0;
 const deep_equal_1 = __importDefault(require("deep-equal"));
 const Errors_1 = require("./Errors");
 function checkForDuplicates(values, value, properties) {

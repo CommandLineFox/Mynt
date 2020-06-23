@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.EventHandler = void 0;
 const util_1 = require("util");
 const fs_1 = require("fs");
 async function EventHandler(client) {

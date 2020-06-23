@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.formatter = void 0;
 function formatter(str, data) {
     const regex = [/\{([^}]+)\}/g, /\{(.*)\}/];
     const matcher = (matched) => {

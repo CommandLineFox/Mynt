@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DuplicationError = void 0;
 class DuplicationError extends Error {
     constructor(duplicates) {
         const duplicateString = [...duplicates.entries()]
