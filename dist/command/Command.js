@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class Command {
+export default class Command {
     constructor(options) {
         var _a, _b, _c, _d, _e, _f, _g, _h;
         this.name = options.name;
@@ -19,7 +17,7 @@ class Command {
             event.reply('you do not own me!');
             return;
         }
-        if ((this.modOnly && !event.client.isMod(event.member)) || (this.adminOnly && !event.client.isAdmin(event.member))) {
+        if ((this.modOnly && !event.client.isMod(event.member, event.guild)) || (this.adminOnly && !event.client.isAdmin(event.member, event.guild))) {
             event.reply('you do not have permission to run this command.');
             return;
         }
@@ -42,5 +40,4 @@ class Command {
         this.run(event);
     }
 }
-exports.default = Command;
 //# sourceMappingURL=Command.js.map

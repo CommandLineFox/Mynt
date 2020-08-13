@@ -1,4 +1,4 @@
-import { string, base, array, object, objectArray, number } from "~/ConfigHandler";
+import { string, base, array, object } from "~/ConfigHandler";
 
 export default {
     token: string(""),
@@ -9,15 +9,5 @@ export default {
     db: object({
         name: string(""),
         url: string("")
-    }),
-    database: object({
-        user: string(""),
-        password: string(""),
-        database: string(""),
-        authenticationDatabase: string("admin"),
-        shards: objectArray({
-            host: string("localhost"),
-            port: number(27017)
-        })
     })
 }

@@ -1,11 +1,6 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const CommandRegistry_1 = __importDefault(require("./CommandRegistry"));
-const CommandEvent_1 = __importDefault(require("./CommandEvent"));
-class CommandHandler {
+import CommandRegistry from "./CommandRegistry";
+import CommandEvent from "./CommandEvent";
+export default class CommandHandler {
     constructor(client) {
         this.client = client;
         this.mentions = [`<@${this.client.user.id}>`, `<@!${this.client.user.id}>`];
@@ -33,11 +28,11 @@ class CommandHandler {
             return;
         }
         const [trigger, args = ""] = content.split(/\s+([\s\S]+)/);
-        const command = CommandRegistry_1.default.getCommand(trigger);
+        const command = CommandRegistry.getCommand(trigger);
         if (command === undefined) {
             return;
         }
-        command.execute(new CommandEvent_1.default(message, this.client, args));
+        command.execute(new CommandEvent(message, this.client, args));
     }
     handleMention(message, content) {
         if (content.length === 0) {
@@ -47,5 +42,4 @@ class CommandHandler {
         this.handlePrefix(message, content);
     }
 }
-exports.default = CommandHandler;
 //# sourceMappingURL=CommandHandler.js.map

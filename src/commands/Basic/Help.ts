@@ -10,15 +10,27 @@ export default class Help extends Command {
     }
 
     run(event: CommandEvent) {
+        const client = event.client;
+        const author = event.author;
+        const member = event.member;
+        const guild = event.guild;
+
         const help = new MessageEmbed()
             .setTitle("Here's the list of all my commands")
             .setColor("#61e096")
-            .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
+            .setFooter(`Requested by ${author.tag}`, author.displayAvatarURL());
         CommandRegistry.groups.forEach((group) => {
-            if (group.ownerOnly && !event.client.isOwner(event.author)) {
+            if (group.ownerOnly && !client.isOwner(event.author)) {
                 return;
             }
 
+            else if (group.adminOnly && !client.isAdmin(member, guild)) {
+                return;
+            }
+
+            else if (group.modOnly && !client.isMod(member, guild)) {
+                return;
+            }
             const commands = group.commands.map((command) => `${command.name} (\`${command.triggers.join('`,`')}\`) -> ${command.description}`);
 
             if (commands.length === 0) {

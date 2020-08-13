@@ -1,5 +1,4 @@
 import { connect, Db, MongoClientOptions, Collection } from 'mongodb';
-import { User } from '@models/User';
 import { Guild } from '@models/Guild';
 
 interface DatabaseConfig {
@@ -23,9 +22,5 @@ export class Database {
 
     get guilds(): Collection<Guild> {
         return this.db.collection('guilds');
-    }
-
-    get users(): Collection<User> {
-        return this.db.collection('users');
     }
 }

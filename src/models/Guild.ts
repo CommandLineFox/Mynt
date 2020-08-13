@@ -1,55 +1,49 @@
 import { ObjectId } from "bson";
 
-export interface GuildChannels {
+export interface Infraction {
+    id: number;
+    action: 'Warn' | 'Kick' | 'Mute' | 'Ban';
+    user: string;
+    moderator: string;
+    reason: string;
+    time: Date;
+    active: boolean;
+}
+export interface Channels {
     logging?: string;
-    modmail?: string;
+    messagelog?: string;
+    updatelog?: string;
+    modlog?: string;
     starboard?: string;
 }
 
-export interface GuildRoles {
-    [key: string]: string | string[] | undefined;
+export interface Roles {
     muted?: string;
     moderator?: string;
-    groupRoles?: string[];
-    lockedRoles?: string[];
-}
-
-export interface GuildStarboardMessage {
-    id: string;
-    starboardID: string;
-    count: number;
-    content: string;
-}
-
-export interface GuildStarboard {
-    emoji: string;
-    minCount: number;
-    ignoredChannels: string[];
-    messages: GuildStarboardMessage[];
 }
 
 export interface GuildConfig {
     prefix?: string;
-    blacklisted?: boolean;
-    channels?: GuildChannels;
-    roles?: GuildRoles;
-    starboard?: GuildStarboard;
-    enabledPlugins?: string[];
+    channels?: Channels;
+    roles?: Roles;
 }
 
 export interface GuildDoc {
     id: string;
     config?: GuildConfig;
+    infractions?: Infraction[];
 }
 
 export class Guild implements GuildDoc {
     _id: ObjectId;
     id: string;
     config: GuildConfig;
+    infractions: Infraction[];
+
     constructor(data: GuildDoc) {
         this._id = new ObjectId();
         this.id = data.id;
         this.config = data.config ?? {};
-        this.config.blacklisted = data.config?.blacklisted ?? false;
+        this.infractions = data.infractions ?? [];
     }
 }

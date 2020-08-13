@@ -1,9 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const Utils_1 = require("../../utils/Utils");
-class BooleanArgument {
+import { splitMessage } from "../../utils/Utils";
+export default class BooleanArgument {
     toType(_event, message) {
-        return Utils_1.splitMessage(message, (part) => {
+        return splitMessage(message, (part) => {
             if (["yes", "y", "enable", "true", "t", "1"].includes(part)) {
                 return true;
             }
@@ -16,5 +14,4 @@ class BooleanArgument {
         });
     }
 }
-exports.default = BooleanArgument;
 //# sourceMappingURL=BooleanArgument.js.map

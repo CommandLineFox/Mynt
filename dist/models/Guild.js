@@ -1,15 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Guild = void 0;
-const bson_1 = require("bson");
-class Guild {
+import { ObjectId } from "bson";
+export class Guild {
     constructor(data) {
-        var _a, _b, _c;
-        this._id = new bson_1.ObjectId();
+        var _a, _b;
+        this._id = new ObjectId();
         this.id = data.id;
         this.config = (_a = data.config) !== null && _a !== void 0 ? _a : {};
-        this.config.blacklisted = (_c = (_b = data.config) === null || _b === void 0 ? void 0 : _b.blacklisted) !== null && _c !== void 0 ? _c : false;
+        this.infractions = (_b = data.infractions) !== null && _b !== void 0 ? _b : [];
     }
 }
-exports.Guild = Guild;
 //# sourceMappingURL=Guild.js.map

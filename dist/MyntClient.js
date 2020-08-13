@@ -1,19 +1,14 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const discord_js_1 = require("discord.js");
-const CommandHandler_1 = __importDefault(require("./command/CommandHandler"));
-const EventHandler_1 = require("./event/EventHandler");
-class MyntClient extends discord_js_1.Client {
+import { Client, MessageEmbed } from "discord.js";
+import CommandHandler from "./command/CommandHandler";
+import { EventHandler } from "./event/EventHandler";
+export default class MyntClient extends Client {
     constructor(config, database, options) {
         super(options);
         this.config = config;
         this.database = database;
         this.once("ready", () => {
-            EventHandler_1.EventHandler(this);
-            new CommandHandler_1.default(this);
+            EventHandler(this);
+            new CommandHandler(this);
         });
         this.on("message", (message) => {
             if (!message.guild && !message.author.bot) {
@@ -22,14 +17,14 @@ class MyntClient extends discord_js_1.Client {
             }
         });
     }
-    isMod(member) {
+    isMod(member, _guild) {
         let mod = false;
         this.config.staff.forEach(id => {
             mod = member.roles.cache.has(id);
         });
         return mod;
     }
-    isAdmin(member) {
+    isAdmin(member, _guild) {
         if (member) {
         }
         return false;
@@ -50,7 +45,7 @@ class MyntClient extends discord_js_1.Client {
     generateReceivedMessage(message) {
         const client = message.client;
         const author = message.author;
-        const received = new discord_js_1.MessageEmbed()
+        const received = new MessageEmbed()
             .setTitle(author.username)
             .setDescription(message)
             .setColor("#61e096")
@@ -64,5 +59,4 @@ class MyntClient extends discord_js_1.Client {
         }
     }
 }
-exports.default = MyntClient;
 //# sourceMappingURL=MyntClient.js.map

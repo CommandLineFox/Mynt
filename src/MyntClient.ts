@@ -28,7 +28,7 @@ export default class MyntClient extends Client {
         });
     }
 
-    isMod(member: GuildMember): boolean {
+    isMod(member: GuildMember, _guild: Guild): boolean {
         let mod = false;
         this.config.staff.forEach(id => {
             mod = member.roles.cache.has(id as string);
@@ -36,7 +36,7 @@ export default class MyntClient extends Client {
         return mod;
     }
 
-    isAdmin(member: GuildMember): boolean {
+    isAdmin(member: GuildMember, _guild: Guild): boolean {
         if (member) {
 
         }

@@ -1,26 +1,4 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getConfig = exports.generateConfig = exports.optionalObjectArray = exports.objectArray = exports.optionalArray = exports.array = exports.arrayWithOptionalObject = exports.arrayWithOptional = exports.optionalObject = exports.optional = exports.object = exports.string = exports.number = exports.boolean = exports.base = void 0;
-const fs = __importStar(require("fs"));
+import * as fs from "fs";
 function createBaseType(theName, check) {
     function temp(value, key) {
         return check(value, key);
@@ -55,24 +33,21 @@ function checkObject(object, template, name = "") {
     }
     return errors;
 }
-exports.base = {
+export const base = {
     boolean: createBaseType("Boolean", (value) => typeof value === "boolean"),
     number: createBaseType("Number", (value) => typeof value === "number"),
     string: createBaseType("String", (value) => typeof value === "string"),
 };
-function boolean(defaultValue) {
-    return createType(exports.base.boolean.theName, defaultValue, exports.base.boolean);
+export function boolean(defaultValue) {
+    return createType(base.boolean.theName, defaultValue, base.boolean);
 }
-exports.boolean = boolean;
-function number(defaultValue) {
-    return createType(exports.base.number.theName, defaultValue, exports.base.number);
+export function number(defaultValue) {
+    return createType(base.number.theName, defaultValue, base.number);
 }
-exports.number = number;
-function string(defaultValue) {
-    return createType(exports.base.string.theName, defaultValue, exports.base.string);
+export function string(defaultValue) {
+    return createType(base.string.theName, defaultValue, base.string);
 }
-exports.string = string;
-function object(template) {
+export function object(template) {
     const defaultValue = {};
     for (const key in template) {
         defaultValue[key] = template[key].defaultValue;
@@ -92,52 +67,42 @@ function object(template) {
         }
     });
 }
-exports.object = object;
-function optional(type, defaultValue) {
+export function optional(type, defaultValue) {
     return createType(type.theName + "?", defaultValue, (value, key) => value === undefined || value === null || type(value, key));
 }
-exports.optional = optional;
-function optionalObject(template, defaultValue = true) {
+export function optionalObject(template, defaultValue = true) {
     const templateObject = object(template);
     return createType(templateObject.trueName + "?", defaultValue ? templateObject.defaultValue : null, (value, key) => value === undefined || value === null || templateObject(value, key));
 }
-exports.optionalObject = optionalObject;
-function arrayWithOptional(type, defaultValue) {
+export function arrayWithOptional(type, defaultValue) {
     return createType(type.theName + "[]", defaultValue, (value, key) => value instanceof Array && value.every((it) => it === undefined || it === null || type(it, key) === true));
 }
-exports.arrayWithOptional = arrayWithOptional;
-function arrayWithOptionalObject(template, defaultValue = true) {
+export function arrayWithOptionalObject(template, defaultValue = true) {
     const templateObject = object(template);
     return createType(templateObject.trueName, defaultValue ? [templateObject.defaultValue] : [], (value, key) => value instanceof Array && value.every((it) => it === undefined || it === null || templateObject(it, key) === true));
 }
-exports.arrayWithOptionalObject = arrayWithOptionalObject;
-function array(type, defaultValue = []) {
+export function array(type, defaultValue = []) {
     return createType(type.theName + "[]", defaultValue, (value, key) => value instanceof Array && value.every((it) => type(it, key) === true));
 }
-exports.array = array;
-function optionalArray(type, defaultValue = []) {
+export function optionalArray(type, defaultValue = []) {
     return createType(type.theName + "[]", defaultValue, (value, key) => value === undefined || value === null || value instanceof Array && value.every((it) => type(it, key) === true));
 }
-exports.optionalArray = optionalArray;
-function objectArray(template, defaultValue = true) {
+export function objectArray(template, defaultValue = true) {
     const templateObject = object(template);
     return createType(templateObject.trueName, defaultValue ? [templateObject.defaultValue] : [], (value, key) => value instanceof Array && value.every((it) => templateObject(it, key) === true));
 }
-exports.objectArray = objectArray;
-function optionalObjectArray(template, defaultValue = true) {
+export function optionalObjectArray(template, defaultValue = true) {
     const templateObject = object(template);
     return createType(templateObject.trueName, defaultValue ? [templateObject.defaultValue] : [], (value, key) => value === undefined || value === null || value instanceof Array && value.every((it) => templateObject(it, key) === true));
 }
-exports.optionalObjectArray = optionalObjectArray;
-function generateConfig(file, template) {
+export function generateConfig(file, template) {
     const config = {};
     for (const key in template) {
         config[key] = template[key].defaultValue;
     }
     fs.writeFileSync(file, JSON.stringify(config));
 }
-exports.generateConfig = generateConfig;
-function getConfig(file, template) {
+export function getConfig(file, template) {
     const config = JSON.parse(fs.readFileSync(file).toString());
     const errors = checkObject(config, template);
     if (errors.length === 0) {
@@ -148,5 +113,4 @@ function getConfig(file, template) {
         return undefined;
     }
 }
-exports.getConfig = getConfig;
 //# sourceMappingURL=ConfigHandler.js.map

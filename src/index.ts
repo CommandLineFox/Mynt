@@ -24,7 +24,7 @@ function main() {
 
     const database = new Database(config.db);
     database.connect();
-    const client = new MyntClient(config, database);
+    const client = new MyntClient(config);
     client.login(config.token);
 
     client.on("ready", () => {
