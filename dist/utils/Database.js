@@ -14,5 +14,8 @@ export class Database {
     get guilds() {
         return this.db.collection('guilds');
     }
+    get users() {
+        return this.db.collection('users');
+    }
 }
 //# sourceMappingURL=Database.js.map
