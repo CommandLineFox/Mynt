@@ -46,7 +46,7 @@ export default abstract class Command implements CommandOptions {
             return;
         }
 
-        if ((this.modOnly && !event.client.isMod(event.member, event.guild)) || (this.adminOnly && !event.client.isAdmin(event.member, event.guild))) {
+        if ((this.modOnly && !event.client.isMod(event.member)) || (this.adminOnly && !event.client.isAdmin(event.member))) {
             event.reply('you do not have permission to run this command.');
             return;
         }

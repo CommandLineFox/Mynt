@@ -1,4 +1,6 @@
-export default class ArrayArgument {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class ArrayArgument {
     constructor(argument) {
         this.argument = argument;
     }
@@ -15,4 +17,5 @@ export default class ArrayArgument {
         return [result, value[1]];
     }
 }
+exports.default = ArrayArgument;
 //# sourceMappingURL=ArrayArgument.js.map

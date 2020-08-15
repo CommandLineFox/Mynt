@@ -5,7 +5,7 @@ import { User } from '@models/User';
 interface DatabaseConfig {
     url: string;
     name: string;
-    MongoOptions?: MongoClientOptions;
+    mongoOptions?: MongoClientOptions;
 }
 
 export class Database {
@@ -13,7 +13,7 @@ export class Database {
     constructor(protected config: DatabaseConfig) { }
 
     async connect() {
-        const client = await connect(this.config.url, this.config.MongoOptions)
+        const client = await connect(this.config.url, this.config.mongoOptions)
             .catch(err => {
                 throw err;
             });
@@ -24,6 +24,7 @@ export class Database {
     get guilds(): Collection<Guild> {
         return this.db.collection('guilds');
     }
+    
     get users(): Collection<User> {
         return this.db.collection('users');
     }

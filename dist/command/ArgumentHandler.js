@@ -1,24 +1,29 @@
-import ArrayArgument from "./arguments/ArrayArgument";
-import BooleanArgument from "./arguments/BooleanArgument";
-import GuildArgument from "./arguments/GuildArgument";
-import MemberArgument from "./arguments/MemberArgument";
-import NumberArgument from "./arguments/NumberArgument";
-import StringArgument from "./arguments/StringArgument";
-import UserArgument from "./arguments/UserArgument";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const ArrayArgument_1 = __importDefault(require("./arguments/ArrayArgument"));
+const BooleanArgument_1 = __importDefault(require("./arguments/BooleanArgument"));
+const GuildArgument_1 = __importDefault(require("./arguments/GuildArgument"));
+const MemberArgument_1 = __importDefault(require("./arguments/MemberArgument"));
+const NumberArgument_1 = __importDefault(require("./arguments/NumberArgument"));
+const StringArgument_1 = __importDefault(require("./arguments/StringArgument"));
+const UserArgument_1 = __importDefault(require("./arguments/UserArgument"));
 class ArgumentHandlerClass {
     constructor() {
         this.argumentTypes = new Map();
-        this.addArgumentType("string", new StringArgument());
-        this.addArgumentType("number", new NumberArgument());
-        this.addArgumentType("boolean", new BooleanArgument());
-        this.addArgumentType("user", new UserArgument());
-        this.addArgumentType("member", new MemberArgument());
-        this.addArgumentType("guild", new GuildArgument());
+        this.addArgumentType("string", new StringArgument_1.default());
+        this.addArgumentType("number", new NumberArgument_1.default());
+        this.addArgumentType("boolean", new BooleanArgument_1.default());
+        this.addArgumentType("user", new UserArgument_1.default());
+        this.addArgumentType("member", new MemberArgument_1.default());
+        this.addArgumentType("guild", new GuildArgument_1.default());
     }
     addArgumentType(type, argument) {
         this.argumentTypes.set(type, argument);
         this.argumentTypes.set(type + "?", argument);
-        this.argumentTypes.set(type + "[]", new ArrayArgument(argument));
+        this.argumentTypes.set(type + "[]", new ArrayArgument_1.default(argument));
     }
     async getArguments(event, message, ...types) {
         const invalidTypes = types.filter((value) => !this.argumentTypes.has(value));
@@ -43,5 +48,5 @@ class ArgumentHandlerClass {
         return results;
     }
 }
-export default new ArgumentHandlerClass();
+exports.default = new ArgumentHandlerClass();
 //# sourceMappingURL=ArgumentHandler.js.map

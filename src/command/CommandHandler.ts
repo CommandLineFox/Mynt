@@ -17,9 +17,9 @@ export default class CommandHandler {
         });
     }
 
-    private handleMessage(message: Message) {
+    private async handleMessage(message: Message) {
         const content = message.content;
-        const prefix = this.client.getPrefix(message.guild!);
+        const prefix = await this.client.getPrefix(message.guild!);
 
         if (content.startsWith(prefix)) {
             this.handlePrefix(message, content.slice(prefix.length).trim());

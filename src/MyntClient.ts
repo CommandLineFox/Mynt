@@ -28,17 +28,19 @@ export default class MyntClient extends Client {
         });
     }
 
-    isMod(member: GuildMember, _guild: Guild): boolean {
+    isMod(member: GuildMember): boolean {
         let mod = false;
         this.config.staff.forEach(id => {
-            mod = member.roles.cache.has(id as string);
+            if (member.roles.cache.some(role => role.id === id)) {
+                mod = true;
+            }
         })
-        return mod;
+        return mod || this.isAdmin(member);
     }
 
-    isAdmin(member: GuildMember, _guild: Guild): boolean {
-        if (member) {
-
+    isAdmin(member: GuildMember): boolean {
+        if (member.permissions.has("ADMINISTRATOR")) {
+            return true;
         }
         return false;
     }
@@ -47,20 +49,19 @@ export default class MyntClient extends Client {
         return this.config.owners.includes(user.id);
     }
 
-    getPrefix(guild?: Guild): string {
+    async getPrefix(guild?: Guild): Promise<string> {
         if (guild) {
-            
+            let guilddb = await this.database!.guilds.findOne({ id: guild.id });
+            if (!guilddb) {
+                return this.config.prefix;
+            }
+
+            if (guilddb.config.prefix) {
+                return guilddb.config.prefix;
+            }
         }
         return this.config.prefix;
     }
-
-    private getModLog(guild?: Guild): string {
-        if (guild) {
-
-        }
-        return this.config.modlog;
-    }
-
     private generateReceivedMessage(message: Message) {
         const client = message.client;
         const author = message.author;
@@ -73,10 +74,10 @@ export default class MyntClient extends Client {
             received.setImage(message.attachments.first()!.url);
         }
 
-        const channel = client.channels.cache.find(channel => channel.id == this.getModLog()) as TextChannel;
+        const channel = client.channels.cache.find(channel => channel.id == this.config.modlog);
 
         if (channel) {
-            channel.send({ embed: received });
+            (channel as TextChannel).send({ embed: received });
         }
     }
 }

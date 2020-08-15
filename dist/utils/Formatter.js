@@ -1,4 +1,7 @@
-export function formatter(str, data) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.formatter = void 0;
+function formatter(str, data) {
     const regex = [/\{([^}]+)\}/g, /\{(.*)\}/];
     const matcher = (matched) => {
         const regexMatch = matched.match(regex[1]);
@@ -12,4 +15,5 @@ export function formatter(str, data) {
     };
     return str.replace(regex[0], matcher);
 }
+exports.formatter = formatter;
 //# sourceMappingURL=Formatter.js.map

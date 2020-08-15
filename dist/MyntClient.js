@@ -1,14 +1,19 @@
-import { Client, MessageEmbed } from "discord.js";
-import CommandHandler from "./command/CommandHandler";
-import { EventHandler } from "./event/EventHandler";
-export default class MyntClient extends Client {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const discord_js_1 = require("discord.js");
+const CommandHandler_1 = __importDefault(require("./command/CommandHandler"));
+const EventHandler_1 = require("./event/EventHandler");
+class MyntClient extends discord_js_1.Client {
     constructor(config, database, options) {
         super(options);
         this.config = config;
         this.database = database;
         this.once("ready", () => {
-            EventHandler(this);
-            new CommandHandler(this);
+            EventHandler_1.EventHandler(this);
+            new CommandHandler_1.default(this);
         });
         this.on("message", (message) => {
             if (!message.guild && !message.author.bot) {
@@ -17,35 +22,40 @@ export default class MyntClient extends Client {
             }
         });
     }
-    isMod(member, _guild) {
+    isMod(member) {
         let mod = false;
         this.config.staff.forEach(id => {
-            mod = member.roles.cache.has(id);
+            if (member.roles.cache.some(role => role.id === id)) {
+                mod = true;
+            }
         });
-        return mod;
+        return mod || this.isAdmin(member);
     }
-    isAdmin(member, _guild) {
-        if (member) {
+    isAdmin(member) {
+        if (member.permissions.has("ADMINISTRATOR")) {
+            return true;
         }
         return false;
     }
     isOwner(user) {
         return this.config.owners.includes(user.id);
     }
-    getPrefix(guild) {
+    async getPrefix(guild) {
         if (guild) {
+            let guilddb = await this.database.guilds.findOne({ id: guild.id });
+            if (!guilddb) {
+                return this.config.prefix;
+            }
+            if (guilddb.config.prefix) {
+                return guilddb.config.prefix;
+            }
         }
         return this.config.prefix;
-    }
-    getModLog(guild) {
-        if (guild) {
-        }
-        return this.config.modlog;
     }
     generateReceivedMessage(message) {
         const client = message.client;
         const author = message.author;
-        const received = new MessageEmbed()
+        const received = new discord_js_1.MessageEmbed()
             .setTitle(author.username)
             .setDescription(message)
             .setColor("#61e096")
@@ -53,10 +63,11 @@ export default class MyntClient extends Client {
         if (message.attachments && message.attachments.first()) {
             received.setImage(message.attachments.first().url);
         }
-        const channel = client.channels.cache.find(channel => channel.id == this.getModLog());
+        const channel = client.channels.cache.find(channel => channel.id == this.config.modlog);
         if (channel) {
             channel.send({ embed: received });
         }
     }
 }
+exports.default = MyntClient;
 //# sourceMappingURL=MyntClient.js.map

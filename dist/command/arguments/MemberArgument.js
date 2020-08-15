@@ -1,5 +1,7 @@
-import { nameCheck, splitMessage, tagCheck } from "../../utils/Utils";
-export default class MemberArgument {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const Utils_1 = require("../../utils/Utils");
+class MemberArgument {
     static handleId(event, message) {
         return this.findMemberByString(event, message, (member, id) => id === member.id);
     }
@@ -7,18 +9,18 @@ export default class MemberArgument {
         return this.findMemberByString(event, message, (member, mention) => mention === `<@${member.id}>` || mention === `<@!${member.id}>`);
     }
     static findMemberByString(event, message, check) {
-        return splitMessage(message, (part) => {
+        return Utils_1.splitMessage(message, (part) => {
             return event.guild.members.cache.find((member) => check(member, part));
         });
     }
     static handleTag(event, message) {
-        return tagCheck(message, event.guild.members.cache, (member, tag) => member.user.tag === tag);
+        return Utils_1.tagCheck(message, event.guild.members.cache, (member, tag) => member.user.tag === tag);
     }
     static handleNickname(event, message) {
-        return nameCheck(message, event.guild.members.cache, (member, nickname) => member.nickname === nickname);
+        return Utils_1.nameCheck(message, event.guild.members.cache, (member, nickname) => member.nickname === nickname);
     }
     static handleUsername(event, message) {
-        return nameCheck(message, event.guild.members.cache, (member, username) => member.user.username === username);
+        return Utils_1.nameCheck(message, event.guild.members.cache, (member, username) => member.user.username === username);
     }
     async toType(event, message) {
         if (!event.isFromGuild) {
@@ -43,4 +45,5 @@ export default class MemberArgument {
         return MemberArgument.handleUsername(event, message);
     }
 }
+exports.default = MemberArgument;
 //# sourceMappingURL=MemberArgument.js.map

@@ -13,7 +13,6 @@ export default class Help extends Command {
         const client = event.client;
         const author = event.author;
         const member = event.member;
-        const guild = event.guild;
 
         const help = new MessageEmbed()
             .setTitle("Here's the list of all my commands")
@@ -24,13 +23,14 @@ export default class Help extends Command {
                 return;
             }
 
-            else if (group.adminOnly && !client.isAdmin(member, guild)) {
+            else if (group.adminOnly && !client.isAdmin(member)) {
                 return;
             }
 
-            else if (group.modOnly && !client.isMod(member, guild)) {
+            else if (group.modOnly && !client.isMod(member)) {
                 return;
             }
+            
             const commands = group.commands.map((command) => `${command.name} (\`${command.triggers.join('`,`')}\`) -> ${command.description}`);
 
             if (commands.length === 0) {

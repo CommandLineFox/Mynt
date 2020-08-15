@@ -1,6 +1,12 @@
-import deepEqual from "deep-equal";
-import { DuplicationError } from "./Errors";
-export function checkForDuplicates(values, value, properties) {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.merge = exports.tagCheck = exports.nameCheck = exports.getArgument = exports.splitMessage = exports.checkForDuplicates = void 0;
+const deep_equal_1 = __importDefault(require("deep-equal"));
+const Errors_1 = require("./Errors");
+function checkForDuplicates(values, value, properties) {
     values.forEach((element) => {
         const duplicates = new Map();
         properties.forEach((property) => {
@@ -10,7 +16,7 @@ export function checkForDuplicates(values, value, properties) {
             for (const branch of branches) {
                 if (elementTree instanceof Array && valueTree instanceof Array) {
                     if (branch === "deep") {
-                        if (deepEqual(valueTree, elementTree)) {
+                        if (deep_equal_1.default(valueTree, elementTree)) {
                             duplicates.set(property, valueTree);
                         }
                         return;
@@ -28,25 +34,26 @@ export function checkForDuplicates(values, value, properties) {
                     duplicates.set(property, arrayDuplicates);
                 }
             }
-            else if (deepEqual(valueTree, elementTree)) {
+            else if (deep_equal_1.default(valueTree, elementTree)) {
                 duplicates.set(property, valueTree);
             }
         });
         if (duplicates.size > 0) {
-            throw new DuplicationError(duplicates);
+            throw new Errors_1.DuplicationError(duplicates);
         }
     });
 }
+exports.checkForDuplicates = checkForDuplicates;
 function returnDuplicatedArray(array1, array2) {
     const arrayDuplicates = [];
     for (const elementTreeElement of array1) {
-        if (array2.some((valueTreeElement) => deepEqual(elementTreeElement, valueTreeElement))) {
+        if (array2.some((valueTreeElement) => deep_equal_1.default(elementTreeElement, valueTreeElement))) {
             arrayDuplicates.push(elementTreeElement);
         }
     }
     return arrayDuplicates;
 }
-export async function splitMessage(message, converter) {
+async function splitMessage(message, converter) {
     let valueString = "";
     for (const char of message) {
         if (char.trim() === "") {
@@ -60,14 +67,16 @@ export async function splitMessage(message, converter) {
     }
     return [value, getArgument(message, valueString.length)];
 }
-export function getArgument(message, length) {
+exports.splitMessage = splitMessage;
+function getArgument(message, length) {
     const argument = message.substring(length).trim();
     if (argument === "") {
         return undefined;
     }
     return argument;
 }
-export function nameCheck(message, list, checker) {
+exports.getArgument = getArgument;
+function nameCheck(message, list, checker) {
     const iterator = message[Symbol.iterator]();
     let currentIteration = iterator.next();
     let name = "";
@@ -87,7 +96,8 @@ export function nameCheck(message, list, checker) {
     }
     return [undefined, message];
 }
-export function tagCheck(message, list, checker) {
+exports.nameCheck = nameCheck;
+function tagCheck(message, list, checker) {
     const iterator = message[Symbol.iterator]();
     let currentIteration = iterator.next();
     let tag = "";
@@ -115,7 +125,9 @@ export function tagCheck(message, list, checker) {
     }
     return [undefined, message];
 }
-export function merge(defaultValue, value) {
+exports.tagCheck = tagCheck;
+function merge(defaultValue, value) {
     return { ...defaultValue, ...value };
 }
+exports.merge = merge;
 //# sourceMappingURL=Utils.js.map

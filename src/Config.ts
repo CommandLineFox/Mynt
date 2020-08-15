@@ -1,4 +1,4 @@
-import { string, base, array, object } from "~/ConfigHandler";
+import { string, base, array, object, boolean } from "~/ConfigHandler";
 
 export default {
     token: string(""),
@@ -8,6 +8,9 @@ export default {
     modlog: string(""),
     db: object({
         name: string(""),
-        url: string("")
+        url: string(""),
+        mongoOptions: object({
+            useUnifiedTopology: boolean(true)
+        })
     })
 }

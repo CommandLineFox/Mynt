@@ -1,4 +1,6 @@
-export default class Command {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class Command {
     constructor(options) {
         var _a, _b, _c, _d, _e, _f, _g, _h;
         this.name = options.name;
@@ -17,7 +19,7 @@ export default class Command {
             event.reply('you do not own me!');
             return;
         }
-        if ((this.modOnly && !event.client.isMod(event.member, event.guild)) || (this.adminOnly && !event.client.isAdmin(event.member, event.guild))) {
+        if ((this.modOnly && !event.client.isMod(event.member)) || (this.adminOnly && !event.client.isAdmin(event.member))) {
             event.reply('you do not have permission to run this command.');
             return;
         }
@@ -40,4 +42,5 @@ export default class Command {
         this.run(event);
     }
 }
+exports.default = Command;
 //# sourceMappingURL=Command.js.map

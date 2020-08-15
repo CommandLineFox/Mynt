@@ -1,7 +1,9 @@
-import { splitMessage } from "../../utils/Utils";
-export default class NumberArgument {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const Utils_1 = require("../../utils/Utils");
+class NumberArgument {
     toType(_event, message) {
-        return splitMessage(message, (part) => {
+        return Utils_1.splitMessage(message, (part) => {
             const value = Number(part);
             if (isNaN(value)) {
                 return undefined;
@@ -10,4 +12,5 @@ export default class NumberArgument {
         });
     }
 }
+exports.default = NumberArgument;
 //# sourceMappingURL=NumberArgument.js.map

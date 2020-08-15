@@ -1,5 +1,7 @@
-import { getArgument, splitMessage } from "../../utils/Utils";
-export default class StringArgument {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const Utils_1 = require("../../utils/Utils");
+class StringArgument {
     async toType(_event, message, isLast) {
         if (isLast) {
             return [message, undefined];
@@ -28,10 +30,11 @@ export default class StringArgument {
                 value += char;
             }
             if (finished) {
-                return [value, getArgument(message, value.length + 2)];
+                return [value, Utils_1.getArgument(message, value.length + 2)];
             }
         }
-        return splitMessage(message, (part) => part);
+        return Utils_1.splitMessage(message, (part) => part);
     }
 }
+exports.default = StringArgument;
 //# sourceMappingURL=StringArgument.js.map
