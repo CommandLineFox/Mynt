@@ -19,7 +19,7 @@ export default class Avatar extends Command {
         const [member] = args;
         const avatar = new MessageEmbed()
             .setTitle(`${member.user.tag}'s avatar:`)
-            .setImage(member.user.displayAvatarURL)
+            .setImage(member.user.displayAvatarURL())
             .setFooter(`Requested by ${event.author.username}`, event.author.displayAvatarURL());
         event.channel.send({ embed: avatar });
     }

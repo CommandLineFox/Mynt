@@ -9,7 +9,7 @@ export interface Channels {
 
 export interface Roles {
     muted?: string;
-    moderator?: string;
+    moderator?: string[];
 }
 
 export interface GuildConfig {

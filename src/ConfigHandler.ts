@@ -151,7 +151,7 @@ export function getConfig<T extends IFunctionTemplate>(file: string, template: T
     const errors = checkObject(config, template);
 
     if (errors.length === 0) {
-        return config as IFunctionResult<T>
+        return config as IFunctionResult<T>;
     }
     else {
         errors.forEach((error) => console.error(error));

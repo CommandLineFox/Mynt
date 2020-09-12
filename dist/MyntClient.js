@@ -22,9 +22,21 @@ class MyntClient extends discord_js_1.Client {
             }
         });
     }
-    isMod(member) {
+    async isMod(member, guild) {
+        var _a, _b;
+        const guildmodel = await ((_a = this.database) === null || _a === void 0 ? void 0 : _a.guilds.findOne({ id: guild.id }));
+        if (!guildmodel) {
+            return false || this.isAdmin(member);
+        }
+        const moderators = (_b = guildmodel.config.roles) === null || _b === void 0 ? void 0 : _b.moderator;
+        if (!moderators) {
+            return false || this.isAdmin(member);
+        }
+        if (moderators.length === 0) {
+            return false || this.isAdmin(member);
+        }
         let mod = false;
-        this.config.staff.forEach(id => {
+        moderators.forEach(id => {
             if (member.roles.cache.some(role => role.id === id)) {
                 mod = true;
             }

@@ -40,13 +40,13 @@ export default abstract class Command implements CommandOptions {
         this.ownerOnly = this.group.ownerOnly ?? options.ownerOnly ?? false;
     }
 
-    execute(event: CommandEvent): void {
+    async execute(event: CommandEvent): Promise<void> {
         if (this.ownerOnly && !event.client.isOwner(event.author)) {
             event.reply('you do not own me!');
             return;
         }
 
-        if ((this.modOnly && !event.client.isMod(event.member)) || (this.adminOnly && !event.client.isAdmin(event.member))) {
+        if ((this.modOnly && !(await event.client.isMod(event.member, event.guild))) || (this.adminOnly && !event.client.isAdmin(event.member))) {
             event.reply('you do not have permission to run this command.');
             return;
         }

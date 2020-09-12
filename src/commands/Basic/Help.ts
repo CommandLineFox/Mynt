@@ -9,10 +9,12 @@ export default class Help extends Command {
         super({ name: "Help", triggers: ["help", "commands", "cmds"], description: "Displays all my commands", group: Basic });
     }
 
-    run(event: CommandEvent) {
+    async run(event: CommandEvent) {
         const client = event.client;
         const author = event.author;
         const member = event.member;
+        const guild = event.guild;
+        const mod = await client.isMod(member, guild);
 
         const help = new MessageEmbed()
             .setTitle("Here's the list of all my commands")
@@ -27,7 +29,7 @@ export default class Help extends Command {
                 return;
             }
 
-            else if (group.modOnly && !client.isMod(member)) {
+            else if (group.modOnly && !mod) {
                 return;
             }
             

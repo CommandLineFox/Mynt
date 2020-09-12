@@ -28,13 +28,28 @@ export default class MyntClient extends Client {
         });
     }
 
-    isMod(member: GuildMember): boolean {
+    async isMod(member: GuildMember, guild: Guild): Promise<Boolean> {
+        const guildmodel = await this.database?.guilds.findOne({id: guild.id});
+        if (!guildmodel) {
+            return false || this.isAdmin(member);
+        }
+        
+        const moderators = guildmodel.config.roles?.moderator;
+        if (!moderators) {
+            return false || this.isAdmin(member);
+        }
+        
+        if (moderators.length === 0) {
+            return false || this.isAdmin(member);
+        }
+        
         let mod = false;
-        this.config.staff.forEach(id => {
+        moderators.forEach(id => {
             if (member.roles.cache.some(role => role.id === id)) {
                 mod = true;
             }
         })
+
         return mod || this.isAdmin(member);
     }
 

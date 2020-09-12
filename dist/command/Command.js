@@ -14,12 +14,12 @@ class Command {
         this.guildOnly = (_f = (_e = this.group.guildOnly) !== null && _e !== void 0 ? _e : options.guildOnly) !== null && _f !== void 0 ? _f : false;
         this.ownerOnly = (_h = (_g = this.group.ownerOnly) !== null && _g !== void 0 ? _g : options.ownerOnly) !== null && _h !== void 0 ? _h : false;
     }
-    execute(event) {
+    async execute(event) {
         if (this.ownerOnly && !event.client.isOwner(event.author)) {
             event.reply('you do not own me!');
             return;
         }
-        if ((this.modOnly && !event.client.isMod(event.member)) || (this.adminOnly && !event.client.isAdmin(event.member))) {
+        if ((this.modOnly && !(await event.client.isMod(event.member, event.guild))) || (this.adminOnly && !event.client.isAdmin(event.member))) {
             event.reply('you do not have permission to run this command.');
             return;
         }
