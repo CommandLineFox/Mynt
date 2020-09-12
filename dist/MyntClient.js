@@ -75,7 +75,7 @@ class MyntClient extends discord_js_1.Client {
         if (message.attachments && message.attachments.first()) {
             received.setImage(message.attachments.first().url);
         }
-        const channel = client.channels.cache.find(channel => channel.id == this.config.modlog);
+        const channel = client.channels.cache.find(channel => channel.id == this.config.mail);
         if (channel) {
             channel.send({ embed: received });
         }

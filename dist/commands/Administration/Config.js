@@ -38,7 +38,7 @@ class Config extends Command_1.default {
     }
 }
 exports.default = Config;
-function prefixsettings(event, args, guild) {
+async function prefixsettings(event, args, guild) {
     var _a;
     const client = event.client;
     const database = client.database;
@@ -52,20 +52,20 @@ function prefixsettings(event, args, guild) {
         return;
     }
     if (prefix.toLowerCase() === "reset") {
-        database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild === null || guild === void 0 ? void 0 : guild.id }, { "$set": { "config.prefix": client.config.prefix } });
+        await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild === null || guild === void 0 ? void 0 : guild.id }, { "$set": { "config.prefix": client.config.prefix } }));
         event.send(`The prefix has been set to \`${client.config.prefix}\``);
         return;
     }
-    database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild === null || guild === void 0 ? void 0 : guild.id }, { "$set": { "config.prefix": prefix } });
+    await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild === null || guild === void 0 ? void 0 : guild.id }, { "$set": { "config.prefix": prefix } }));
     event.send(`The prefix has been set to \`${prefix}\``);
 }
-function moderatorsettings(event, args, guild) {
-    var _a, _b, _c;
+async function moderatorsettings(event, args, guild) {
+    var _a, _b, _c, _d, _e, _f, _g;
     const database = event.client.database;
     const option = (_a = args.shift()) === null || _a === void 0 ? void 0 : _a.trim();
     if (!option) {
         const mods = (_b = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _b === void 0 ? void 0 : _b.moderator;
-        if (!mods) {
+        if (!mods || mods.length === 0) {
             event.send("There is no moderator roles.");
             return;
         }
@@ -95,37 +95,45 @@ function moderatorsettings(event, args, guild) {
     }
     switch (option) {
         case "add": {
-            database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$push": { "config.roles.moderator": role.id } });
+            if ((_e = (_d = guild.config.roles) === null || _d === void 0 ? void 0 : _d.moderator) === null || _e === void 0 ? void 0 : _e.includes(role.id)) {
+                event.send('The specified role is already a moderator role.');
+                break;
+            }
+            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$push": { "config.roles.moderator": role.id } }));
             event.send(`Added \`${role.name}\` as a moderator role.`);
             break;
         }
         case "remove": {
-            database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$pull": { "config.roles.moderator": role.id } });
+            if (!((_g = (_f = guild.config.roles) === null || _f === void 0 ? void 0 : _f.moderator) === null || _g === void 0 ? void 0 : _g.includes(role.id))) {
+                event.send('The specified role is not a moderator role.');
+                break;
+            }
+            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$pull": { "config.roles.moderator": role.id } }));
             event.send(`\`${role.name}\` is no longer a moderator role.`);
             break;
         }
     }
 }
-function databaseCheck(database, guild, option) {
+async function databaseCheck(database, guild, option) {
     switch (option) {
         case "roles": {
             if (!guild.config.roles) {
-                database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": {} } });
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": {} } });
             }
             break;
         }
         case "channels": {
             if (!guild.config.channels) {
-                database.guilds.updateOne({ id: guild.id }, { "$set": { "config.channels": {} } });
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.channels": {} } });
             }
             break;
         }
         case "moderator": {
             if (!guild.config.roles) {
-                database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": {} } });
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": { "moderator": [] } } });
             }
-            if (!guild.config.roles.moderator) {
-                database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles.moderator": [] } });
+            else if (!guild.config.roles.moderator) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles.moderator": [] } });
             }
             break;
         }

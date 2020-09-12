@@ -89,7 +89,7 @@ export default class MyntClient extends Client {
             received.setImage(message.attachments.first()!.url);
         }
 
-        const channel = client.channels.cache.find(channel => channel.id == this.config.modlog);
+        const channel = client.channels.cache.find(channel => channel.id == this.config.mail);
 
         if (channel) {
             (channel as TextChannel).send({ embed: received });
