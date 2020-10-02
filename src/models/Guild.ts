@@ -1,21 +1,27 @@
 import { ObjectId } from "bson";
 
-export interface Channels {
+export interface GuildFilter {
+    enabled?: boolean;
+    list?: string[];
+}
+
+export interface GuildChannels {
     logging?: string;
     messagelog?: string;
     updatelog?: string;
     modlog?: string;
 }
 
-export interface Roles {
+export interface GuildRoles {
     muted?: string;
     moderator?: string[];
 }
 
 export interface GuildConfig {
     prefix?: string;
-    channels?: Channels;
-    roles?: Roles;
+    channels?: GuildChannels;
+    roles?: GuildRoles;
+    filter?: GuildFilter;
 }
 
 export interface GuildDoc {

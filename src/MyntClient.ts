@@ -23,7 +23,7 @@ export default class MyntClient extends Client {
         this.on("message", (message) => {
             if (!message.guild && !message.author.bot) {
                 this.lastDmAuthor = message.author;
-                this.generateReceivedMessage(message);
+                this.generateMail(message);
             }
         });
     }
@@ -77,7 +77,8 @@ export default class MyntClient extends Client {
         }
         return this.config.prefix;
     }
-    private generateReceivedMessage(message: Message) {
+
+    private generateMail(message: Message) {
         const client = message.client;
         const author = message.author;
         const received = new MessageEmbed()

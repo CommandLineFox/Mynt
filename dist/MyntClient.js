@@ -18,7 +18,7 @@ class MyntClient extends discord_js_1.Client {
         this.on("message", (message) => {
             if (!message.guild && !message.author.bot) {
                 this.lastDmAuthor = message.author;
-                this.generateReceivedMessage(message);
+                this.generateMail(message);
             }
         });
     }
@@ -64,7 +64,7 @@ class MyntClient extends discord_js_1.Client {
         }
         return this.config.prefix;
     }
-    generateReceivedMessage(message) {
+    generateMail(message) {
         const client = message.client;
         const author = message.author;
         const received = new discord_js_1.MessageEmbed()

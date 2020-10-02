@@ -49,9 +49,9 @@ export default class CommandHandler {
         command.execute(new CommandEvent(message, this.client, args));
     }
 
-    private handleMention(message: Message, content: string) {
+    private async handleMention(message: Message, content: string) {
         if (content.length === 0) {
-            message.reply(`My prefix here is \`${this.client.getPrefix(message.guild!)}\``);
+            message.reply(`My prefix here is \`${await this.client.getPrefix(message.guild!)}\``);
             return;
         }
         this.handlePrefix(message, content);

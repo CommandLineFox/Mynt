@@ -9,8 +9,8 @@ export interface UserInfraction {
     reason: string;
     time: Date;
 }
+
 export interface UserDoc {
-    blacklisted?: boolean;
     id: string;
     infractions?: UserInfraction[];
 }
