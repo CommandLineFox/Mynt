@@ -1,27 +1,37 @@
 import { ObjectId } from "bson";
 
-export interface GuildFilter {
-    enabled?: boolean;
+export interface Overwrites {
+    staffbypass: boolean;
+}
+
+export interface Filter {
+    enabled: boolean;
     list?: string[];
 }
 
-export interface GuildChannels {
+export interface AutoMod {
+    enabled: boolean;
+    filter?: Filter;
+}
+
+export interface Channels {
     logging?: string;
     messagelog?: string;
     updatelog?: string;
     modlog?: string;
 }
 
-export interface GuildRoles {
+export interface Roles {
     muted?: string;
     moderator?: string[];
 }
 
 export interface GuildConfig {
     prefix?: string;
-    channels?: GuildChannels;
-    roles?: GuildRoles;
-    filter?: GuildFilter;
+    channels?: Channels;
+    roles?: Roles;
+    automod?: AutoMod;
+    overwrites?: Overwrites;
 }
 
 export interface GuildDoc {

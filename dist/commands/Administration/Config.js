@@ -20,7 +20,7 @@ class Config extends Command_1.default {
             guild = await database.guilds.findOne({ id: event.guild.id });
         }
         const [subcommand, option, args] = event.argument.split(/\s+/, 3);
-        switch (subcommand) {
+        switch (subcommand.toLowerCase()) {
             case "prefix": {
                 prefixSettings(event, args, guild);
                 break;
@@ -37,10 +37,19 @@ class Config extends Command_1.default {
                 muteSettings(event, option, args, guild);
                 break;
             }
-            case "holyshitwhatthefuckdidyoujustsaytome":
+            case "automod": {
+                automodSettings(event, option, args, guild);
+                break;
+            }
             case "badwords":
             case "filter": {
                 filterSettings(event, option, args, guild);
+                break;
+            }
+            case "overwrites":
+            case "overwrite":
+            case "special": {
+                overwriteSettings(event, option, args, guild);
                 break;
             }
         }
@@ -70,6 +79,7 @@ async function prefixSettings(event, args, guild) {
 async function moderatorSettings(event, option, args, guild) {
     var _a, _b, _c, _d, _e;
     const database = event.client.database;
+    databaseCheck(database, guild, "moderator");
     if (!option) {
         const mods = (_a = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _a === void 0 ? void 0 : _a.moderator;
         if (!mods || mods.length === 0) {
@@ -89,7 +99,6 @@ async function moderatorSettings(event, option, args, guild) {
         event.send(list);
         return;
     }
-    databaseCheck(database, guild, "moderator");
     const staff = args;
     if (!staff) {
         event.send("You need to specify a role.");
@@ -100,7 +109,7 @@ async function moderatorSettings(event, option, args, guild) {
         event.send("Couldn't find the role you're looking for.");
         return;
     }
-    switch (option) {
+    switch (option.toLowerCase()) {
         case "add": {
             if ((_c = (_b = guild.config.roles) === null || _b === void 0 ? void 0 : _b.moderator) === null || _c === void 0 ? void 0 : _c.includes(role.id)) {
                 event.send('The specified role is already a moderator role.');
@@ -124,6 +133,7 @@ async function moderatorSettings(event, option, args, guild) {
 async function muteSettings(event, option, args, guild) {
     var _a, _b, _c, _d, _e;
     const database = event.client.database;
+    databaseCheck(database, guild, "roles");
     if (!option) {
         const id = (_a = guild === null || guild === void 0 ? void 0 : guild.config.roles) === null || _a === void 0 ? void 0 : _a.muted;
         if (!id) {
@@ -137,8 +147,7 @@ async function muteSettings(event, option, args, guild) {
         }
         event.send(`\`${role.name}\` is set as the mute role.`);
     }
-    databaseCheck(database, guild, "moderator");
-    switch (option) {
+    switch (option.toLowerCase()) {
         case "setauto":
         case "set": {
             const muted = args;
@@ -216,11 +225,48 @@ async function muteSettings(event, option, args, guild) {
         }
     }
 }
-async function filterSettings(event, option, args, guild) {
-    var _a, _b, _c, _d, _e, _f, _g;
+async function automodSettings(event, option, _args, guild) {
+    var _a, _b, _c;
     const database = event.client.database;
+    databaseCheck(database, guild, "automod");
     if (!option) {
-        const filter = (_a = guild === null || guild === void 0 ? void 0 : guild.config.filter) === null || _a === void 0 ? void 0 : _a.list;
+        const automod = guild === null || guild === void 0 ? void 0 : guild.config.automod;
+        if (!automod.enabled) {
+            event.send("Automod is disabled.");
+            return;
+        }
+        let content = `**Here's a list of automod features:**\n`;
+        content += `Word filter: \`${((_a = automod === null || automod === void 0 ? void 0 : automod.filter) === null || _a === void 0 ? void 0 : _a.enabled) ? "Enabled" : "Disabled"}\``;
+        event.send(content);
+        return;
+    }
+    switch (option.toLowerCase()) {
+        case "enable": {
+            if ((_b = guild.config.automod) === null || _b === void 0 ? void 0 : _b.enabled) {
+                event.send("Automod is already enabled.");
+                return;
+            }
+            database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod.enabled": true } });
+            event.send("Succefully enabled automod features.");
+            break;
+        }
+        case "disable": {
+            if (!((_c = guild.config.automod) === null || _c === void 0 ? void 0 : _c.enabled)) {
+                event.send("Automod is already disabled.");
+                return;
+            }
+            database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod.enabled": false } });
+            event.send("Succefully disabled automod features.");
+            break;
+        }
+    }
+}
+async function filterSettings(event, option, args, guild) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+    const database = event.client.database;
+    databaseCheck(database, guild, "automod");
+    if (!option) {
+        const filter = (_b = (_a = guild === null || guild === void 0 ? void 0 : guild.config.automod) === null || _a === void 0 ? void 0 : _a.filter) === null || _b === void 0 ? void 0 : _b.list;
         if (!filter || filter.length === 0) {
             event.send("There is no filtered words.");
             return;
@@ -232,19 +278,18 @@ async function filterSettings(event, option, args, guild) {
         event.send(list);
         return;
     }
-    databaseCheck(database, guild, "filter");
-    switch (option) {
+    switch (option.toLowerCase()) {
         case "add": {
             const word = args;
             if (!word) {
                 event.send("You need to specify a word.");
                 return;
             }
-            if ((_c = (_b = guild.config.filter) === null || _b === void 0 ? void 0 : _b.list) === null || _c === void 0 ? void 0 : _c.includes(word)) {
+            if ((_e = (_d = (_c = guild.config.automod) === null || _c === void 0 ? void 0 : _c.filter) === null || _d === void 0 ? void 0 : _d.list) === null || _e === void 0 ? void 0 : _e.includes(word)) {
                 event.send("'The specified word is already filtered.");
                 break;
             }
-            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$push": { "config.filter.list": word } }));
+            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$push": { "config.automod.filter.list": word } }));
             event.send(`Added \`${word}\` to the filter.`);
             break;
         }
@@ -254,34 +299,71 @@ async function filterSettings(event, option, args, guild) {
                 event.send("You need to specify a word.");
                 return;
             }
-            if (!((_e = (_d = guild.config.filter) === null || _d === void 0 ? void 0 : _d.list) === null || _e === void 0 ? void 0 : _e.includes(word))) {
+            if (!((_h = (_g = (_f = guild.config.automod) === null || _f === void 0 ? void 0 : _f.filter) === null || _g === void 0 ? void 0 : _g.list) === null || _h === void 0 ? void 0 : _h.includes(word))) {
                 event.send("The specified word isn't filtered.");
                 break;
             }
-            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$pull": { "config.filter.list": word } }));
+            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$pull": { "config.automod.filter.list": word } }));
             event.send(`Removed \`${word}\` from the filter.`);
             break;
         }
         case "enable": {
-            if ((_f = guild.config.filter) === null || _f === void 0 ? void 0 : _f.enabled) {
+            if ((_k = (_j = guild.config.automod) === null || _j === void 0 ? void 0 : _j.filter) === null || _k === void 0 ? void 0 : _k.enabled) {
                 event.send("The word filter is already enabled.");
                 return;
             }
-            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$set": { "config.filter.enabled": true } }));
+            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$set": { "config.automod.filter.enabled": true } }));
             event.send("Enabled the word filter.");
         }
         case "disable": {
-            if (!((_g = guild.config.filter) === null || _g === void 0 ? void 0 : _g.enabled)) {
+            if (!((_m = (_l = guild.config.automod) === null || _l === void 0 ? void 0 : _l.filter) === null || _m === void 0 ? void 0 : _m.enabled)) {
                 event.send("The word filter is already disabled.");
                 return;
             }
-            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$set": { "config.filter.enabled": false } }));
+            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$set": { "config.automod.filter.enabled": false } }));
             event.send("Disabled the word filter.");
         }
     }
 }
+async function overwriteSettings(event, option, args, guild) {
+    var _a, _b;
+    const database = event.client.database;
+    databaseCheck(database, guild, "overwrite");
+    if (!option) {
+        const overwrites = guild === null || guild === void 0 ? void 0 : guild.config.overwrites;
+        let content = `**These are the overwrites for this server:**\n`;
+        content += `Staff bypass: \`${overwrites.staffbypass ? "Enabled" : "Disabled"}\``;
+        event.send(content);
+        return;
+    }
+    switch (option.toLowerCase()) {
+        case "staffbypass": {
+            const value = args;
+            switch (value) {
+                case "enable": {
+                    if ((_a = guild.config.overwrites) === null || _a === void 0 ? void 0 : _a.staffbypass) {
+                        event.send("Staff's ability to bypass automod is already enabled.");
+                        return;
+                    }
+                    database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.overwrites.staffbypass": true } });
+                    event.send("Enabled staff's ability to bypass automod.");
+                    break;
+                }
+                case "disable": {
+                    if (!((_b = guild.config.overwrites) === null || _b === void 0 ? void 0 : _b.staffbypass)) {
+                        event.send("Staff's ability to bypass automod is already disabled.");
+                        return;
+                    }
+                    database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.overwrites.staffbypass": false } });
+                    event.send("Disabled staff's ability to bypass automod.");
+                    break;
+                }
+            }
+        }
+    }
+}
 async function databaseCheck(database, guild, option) {
-    switch (option) {
+    switch (option.toLowerCase()) {
         case "roles": {
             if (!guild.config.roles) {
                 await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": {} } });
@@ -303,11 +385,16 @@ async function databaseCheck(database, guild, option) {
             }
             break;
         }
-        case "filter": {
-            if (!guild.config.filter) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.filter": { "enabled": false, "list": [] } } });
+        case "automod": {
+            if (!guild.config.automod) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod": { "filter": { "enabled": false, "list": [] } } } });
             }
             break;
+        }
+        case "overwrite": {
+            if (!guild.config.overwrites) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.overwrites": { "staffBypass": true } } });
+            }
         }
     }
 }
