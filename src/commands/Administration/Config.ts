@@ -371,6 +371,7 @@ async function filterSettings(event: CommandEvent, option: string, args: string,
 
             await database?.guilds.updateOne({ id: event.guild.id }, { "$set": { "config.automod.filter.enabled": true } });
             event.send("Enabled the word filter.");
+            break;
         }
         case "disable": {
             if (!guild.config.automod?.filter?.enabled) {
@@ -380,6 +381,7 @@ async function filterSettings(event: CommandEvent, option: string, args: string,
 
             await database?.guilds.updateOne({ id: event.guild.id }, { "$set": { "config.automod.filter.enabled": false } });
             event.send("Disabled the word filter.");
+            break;
         }
     }
 }

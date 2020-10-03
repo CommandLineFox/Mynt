@@ -314,6 +314,7 @@ async function filterSettings(event, option, args, guild) {
             }
             await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$set": { "config.automod.filter.enabled": true } }));
             event.send("Enabled the word filter.");
+            break;
         }
         case "disable": {
             if (!((_m = (_l = guild.config.automod) === null || _l === void 0 ? void 0 : _l.filter) === null || _m === void 0 ? void 0 : _m.enabled)) {
@@ -322,6 +323,7 @@ async function filterSettings(event, option, args, guild) {
             }
             await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$set": { "config.automod.filter.enabled": false } }));
             event.send("Disabled the word filter.");
+            break;
         }
     }
 }

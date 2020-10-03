@@ -9,33 +9,39 @@ exports.event = new Event_1.default("message", async (client, message) => {
     if (message.author.bot) {
         return;
     }
+    if (!message.guild) {
+        return;
+    }
     let guild = await client.database.guilds.findOne({ id: message.guild.id });
     if (!guild) {
         return;
     }
     if (guild.config.automod && guild.config.automod.enabled) {
-        autoMod(client, message);
+        autoMod(client, message, guild);
     }
 });
-async function autoMod(client, message) {
-    if (!message.guild) {
+async function autoMod(client, message, guild) {
+    var _a;
+    if (!((_a = guild.config.automod) === null || _a === void 0 ? void 0 : _a.filter) || !guild.config.overwrites) {
         return;
     }
-    const database = client.database;
-    let guild = await database.guilds.findOne({ id: message.guild.id });
-    if (!guild || !guild.config || !guild.config.automod || !guild.config.automod.filter || !guild.config.overwrites) {
+    if (!guild.config.automod.filter.enabled || !guild.config.automod.filter.list || guild.config.automod.filter.list.length === 0) {
         return;
     }
     if (guild.config.overwrites.staffbypass && client.isMod(message.member, message.guild)) {
         return;
     }
-    const content = message.content.normalize();
+    const content = message.content.normalize().toLowerCase();
     let text = "";
     for (let i = 0; i < message.content.length; i++) {
-        if (content[i]) {
+        if (content[i] >= 'a' && content[i] <= 'z') {
             text += content[i];
         }
     }
-    console.log(text);
+    for (const word of guild.config.automod.filter.list) {
+        if (text.includes(word)) {
+            message.delete({ timeout: 100, reason: "Automod - Word filter" });
+        }
+    }
 }
 //# sourceMappingURL=Message.js.map
