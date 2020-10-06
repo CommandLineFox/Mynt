@@ -2,7 +2,6 @@ import Command from "@command/Command";
 import { Moderation } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import { MessageEmbed } from "discord.js";
-import ArgumentHandler from "@command/ArgumentHandler";
 
 export default class Avatar extends Command {
     constructor() {
@@ -10,13 +9,15 @@ export default class Avatar extends Command {
     }
 
     async run(event: CommandEvent) {
-        const args = await ArgumentHandler.getArguments(event, event.argument, "member");
-        if (!args) {
-            event.reply("invalid arguments.");
-            return;
+        const guild = event.guild;
+        const argument = event.argument;
+
+        let member = guild.members.cache.find(member => argument === member.id || argument === `<@${member.id}` || argument === `<@!${member.id}` || argument === member.user.username || argument === member.user.tag);
+
+        if (!member) {
+            member = event.member;
         }
 
-        const [member] = args;
         const avatar = new MessageEmbed()
             .setTitle(`${member.user.tag}'s avatar:`)
             .setImage(member.user.displayAvatarURL())

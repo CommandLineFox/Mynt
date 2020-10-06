@@ -11,13 +11,16 @@ export default class ReplyLast extends Command {
     run(event: CommandEvent) {
         const argument = event.argument;
         const lastDm = event.client.lastDmAuthor;
+
         if (!lastDm) {
             event.send("Unable to find the last DM.");
             return
         }
+
         if (!argument) {
             event.reply("you can't send an empty message to users.")
         }
+        
         lastDm!.send(argument)
             .catch(() => {
                 event.reply("the specified user has their DMs disabled or has me blocked.");

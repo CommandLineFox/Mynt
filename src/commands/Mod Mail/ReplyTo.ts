@@ -1,7 +1,6 @@
 import Command from "@command/Command";
 import { ModMail } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import ArgumentHandler from "@command/ArgumentHandler";
 
 export default class ReplyTo extends Command {
     constructor() {
@@ -9,13 +8,17 @@ export default class ReplyTo extends Command {
     }
 
     async run(event: CommandEvent) {
-        const args = await ArgumentHandler.getArguments(event, event.argument, "member", "string");
-        if (!args) {
-            event.reply("invalid arguments.");
+        const guild = event.guild;
+
+        const [user, text] = event.argument.split(/\s+/, 3)
+
+        const member = guild.members.cache.find(member => user === member.id || user === `<@${member.id}` || user === `<@!${member.id}` || user === member.user.username || user === member.user.tag);
+
+        if (!member) {
+            event.send(`Couldn't find the user you're looking for`);
             return;
         }
 
-        const [member, text] = args;
         member.user.send(text)
             .catch(() => {
                 event.reply("the specified user has their DMs disabled or has me blocked.");

@@ -25,7 +25,7 @@ export default class Config extends Command {
 
         switch (subcommand.toLowerCase()) {
             case "prefix": {
-                prefixSettings(event, args, guild!);
+                prefixSettings(event, option, args, guild!);
                 break;
             }
 
@@ -64,21 +64,21 @@ export default class Config extends Command {
     }
 }
 
-async function prefixSettings(event: CommandEvent, args: string, guild: Guild) {
+async function prefixSettings(event: CommandEvent, option: string, _args: string, guild: Guild) {
     const client = event.client;
     const database = client.database;
-    const prefix = args;
 
-    if (!prefix) {
+    if (!option) {
         event.send(`The prefix is currently set to \`${guild?.config.prefix || client.config.prefix}\``);
         return;
     }
 
-    if (prefix.length > 5) {
+    if (option.length > 5) {
         event.send("The prefix can be up to 5 characters.");
         return;
     }
 
+    const prefix = option;
     if (prefix.toLowerCase() === "reset") {
         await database?.guilds.updateOne({ id: guild?.id }, { "$set": { "config.prefix": client.config.prefix } });
         event.send(`The prefix has been set to \`${client.config.prefix}\``);
