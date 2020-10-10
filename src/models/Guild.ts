@@ -1,4 +1,5 @@
 import { ObjectId } from "bson";
+import { EventName } from "@utils/Types";
 
 export interface Overwrites {
     staffbypass: boolean;
@@ -14,11 +15,15 @@ export interface AutoMod {
     filter?: Filter;
 }
 
-export interface Channels {
-    logging?: string;
-    messagelog?: string;
-    updatelog?: string;
-    modlog?: string;
+export interface LoggingEvent {
+    enabled: boolean;
+    name: EventName;
+    channel: string;
+}
+
+export interface Logging {
+    enabled: boolean;
+    events?: LoggingEvent[];
 }
 
 export interface Roles {
@@ -28,9 +33,9 @@ export interface Roles {
 
 export interface GuildConfig {
     prefix?: string;
-    channels?: Channels;
     roles?: Roles;
     automod?: AutoMod;
+    logging?: Logging;
     overwrites?: Overwrites;
 }
 

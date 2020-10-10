@@ -436,12 +436,6 @@ async function databaseCheck(database: Database, guild: Guild, option: string) {
             }
             break;
         }
-        case "channels": {
-            if (!guild.config.channels) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.channels": {} } });
-            }
-            break;
-        }
         case "moderator": {
             if (!guild.config.roles) {
                 await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": { "moderator": [] } } });

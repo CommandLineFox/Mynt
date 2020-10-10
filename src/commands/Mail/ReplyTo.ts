@@ -1,10 +1,10 @@
 import Command from "@command/Command";
-import { ModMail } from "~/Groups";
+import { Mail } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 
 export default class ReplyTo extends Command {
     constructor() {
-        super({ name: "ReplyTo", triggers: ["replyto"], description: "Sends a message to a specified user", group: ModMail });
+        super({ name: "ReplyTo", triggers: ["replyto"], description: "Sends a message to a specified user", group: Mail });
     }
 
     async run(event: CommandEvent) {
@@ -12,7 +12,7 @@ export default class ReplyTo extends Command {
 
         const [user, text] = event.argument.split(/\s+/, 3)
 
-        const member = guild.members.cache.find(member => user === member.id || user === `<@${member.id}` || user === `<@!${member.id}` || user === member.user.username || user === member.user.tag);
+        const member = guild.members.cache.find(member => user === member.id || user === `<@${member.id}>` || user === `<@!${member.id}>` || user === member.user.username || user === member.user.tag);
 
         if (!member) {
             event.send(`Couldn't find the user you're looking for`);
