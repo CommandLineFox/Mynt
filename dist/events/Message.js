@@ -28,7 +28,7 @@ async function autoMod(client, message, guild) {
     const content = message.content.normalize().toLowerCase();
     let text = "";
     for (let i = 0; i < message.content.length; i++) {
-        if (content[i] >= 'a' && content[i] <= 'z') {
+        if (content[i] >= "a" && content[i] <= "z") {
             text += content[i];
         }
     }

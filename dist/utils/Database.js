@@ -1,4 +1,4 @@
-import { connect } from 'mongodb';
+import { connect } from "mongodb";
 export class Database {
     constructor(config) {
         this.config = config;
@@ -12,10 +12,10 @@ export class Database {
         console.log("Connected to database");
     }
     get guilds() {
-        return this.db.collection('guilds');
+        return this.db.collection("guilds");
     }
     get users() {
-        return this.db.collection('users');
+        return this.db.collection("users");
     }
 }
 //# sourceMappingURL=Database.js.map

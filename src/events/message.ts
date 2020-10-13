@@ -40,7 +40,7 @@ async function autoMod(client: MyntClient, message: Message, guild: Guild) {
     let text = "";
 
     for (let i = 0; i < message.content.length; i++) {
-        if (content[i] >= 'a' && content[i] <= 'z') {
+        if (content[i] >= "a" && content[i] <= "z") {
             text += content[i];
         }
     }

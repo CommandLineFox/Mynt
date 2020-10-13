@@ -1,11 +1,8 @@
 import Command from "../../command/Command";
 import { OwnerOnly } from "../../Groups";
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed } from "discord.js";
 import { inspect } from "util";
-import { runInNewContext } from 'vm';
-function makeCodeBlock(data, lang) {
-    return `\`\`\`${lang}\n${data}\n\`\`\``;
-}
+import { runInNewContext } from "vm";
 export default class Eval extends Command {
     constructor() {
         super({ name: "Eval", triggers: ["eval", "evaluate"], description: "Runs given code", group: OwnerOnly });
@@ -23,17 +20,17 @@ export default class Eval extends Command {
         const script = parseBlock(argument);
         const exec = await run(script, { client, message, MessageEmbed, author, }, { filename: (_a = message.guild) === null || _a === void 0 ? void 0 : _a.id.toString() });
         const end = Date.now();
-        if (typeof exec === 'string') {
+        if (typeof exec === "string") {
             const embed = new MessageEmbed()
-                .addField('Input', makeCodeBlock(script, 'js'))
-                .addField('Output', makeCodeBlock(exec, 'js'))
+                .addField("Input", makeCodeBlock(script, "js"))
+                .addField("Output", makeCodeBlock(exec, "js"))
                 .setFooter(`Script Executed in ${end - start}ms`);
-            event.send(embed);
+            event.send({ embed: embed });
         }
         else {
             const embed = new MessageEmbed()
-                .addField('Input', makeCodeBlock(script, 'js'))
-                .addField('Output', makeCodeBlock(`${exec.name}: ${exec.message}`))
+                .addField("Input", makeCodeBlock(script, "js"))
+                .addField("Output", makeCodeBlock(`${exec.name}: ${exec.message}`))
                 .setFooter(`Script Executed in ${end - start}ms`);
             event.send(embed);
         }
@@ -42,7 +39,7 @@ export default class Eval extends Command {
 async function run(script, ctx, opts) {
     try {
         const result = await runInNewContext(`(async () => { ${script} })()`, ctx, opts);
-        if (typeof result !== 'string') {
+        if (typeof result !== "string") {
             return inspect(result);
         }
         return result;
@@ -56,5 +53,8 @@ function parseBlock(script) {
     const cbr = /^(([ \t]*`{3,4})([^\n]*)([\s\S]+?)(^[ \t]*\2))/gm;
     const result = cbr.exec(script);
     return (_a = result === null || result === void 0 ? void 0 : result[4]) !== null && _a !== void 0 ? _a : script;
+}
+function makeCodeBlock(data, lang) {
+    return `\`\`\`${lang}\n${data}\n\`\`\``;
 }
 //# sourceMappingURL=Eval.js.map

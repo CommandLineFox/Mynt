@@ -1,4 +1,4 @@
-import { ObjectId } from 'bson';
+import { ObjectId } from "bson";
 export class User {
     constructor(data) {
         var _a;

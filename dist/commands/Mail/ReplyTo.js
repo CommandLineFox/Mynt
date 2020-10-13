@@ -9,7 +9,7 @@ export default class ReplyTo extends Command {
         const [user, text] = event.argument.split(/\s+/, 3);
         const member = guild.members.cache.find(member => user === member.id || user === `<@${member.id}>` || user === `<@!${member.id}>` || user === member.user.username || user === member.user.tag);
         if (!member) {
-            event.send(`Couldn't find the user you're looking for`);
+            event.send("Couldn't find the user you're looking for");
             return;
         }
         member.user.send(text)

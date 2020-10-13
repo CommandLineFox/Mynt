@@ -6,7 +6,7 @@ export default class Ping extends Command {
         super({ name: "Ping", triggers: ["ping"], description: "Shows the bot's response time", group: Basic });
     }
     run(event) {
-        event.send(`Pinging...`)
+        event.send("Pinging...")
             .then((msg) => {
             msg = msg;
             const ping = new MessageEmbed()

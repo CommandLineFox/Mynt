@@ -14,26 +14,26 @@ export default class Command {
     }
     async execute(event) {
         if (this.ownerOnly && !event.client.isOwner(event.author)) {
-            event.reply('you do not own me!');
+            event.reply("you do not own me!");
             return;
         }
         if ((this.modOnly && !(await event.client.isMod(event.member, event.guild))) || (this.adminOnly && !event.client.isAdmin(event.member))) {
-            event.reply('you do not have permission to run this command.');
+            event.reply("you do not have permission to run this command.");
             return;
         }
         if (this.guildOnly && !event.isFromGuild) {
-            event.reply('this command can only be used in servers.');
+            event.reply("this command can only be used in servers.");
             return;
         }
         if (event.isFromGuild) {
             const missingBotPermission = event.textChannel.permissionsFor(event.guild.me).missing(this.botPermissions);
             if (!missingBotPermission) {
-                event.reply('I am not allowed to run this command.');
+                event.reply("I am not allowed to run this command.");
                 return;
             }
             const missingUserPermission = event.textChannel.permissionsFor(event.member).missing(this.userPermissions);
             if (!missingUserPermission) {
-                event.reply('you are not allowed to run this command.');
+                event.reply("you are not allowed to run this command.");
                 return;
             }
         }

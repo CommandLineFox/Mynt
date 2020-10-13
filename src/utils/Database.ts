@@ -1,6 +1,6 @@
-import { connect, Db, MongoClientOptions, Collection } from 'mongodb';
-import { Guild } from '@models/Guild';
-import { User } from '@models/User';
+import { connect, Db, MongoClientOptions, Collection } from "mongodb";
+import { Guild } from "@models/Guild";
+import { User } from "@models/User";
 
 interface DatabaseConfig {
     url: string;
@@ -22,10 +22,10 @@ export class Database {
     }
 
     get guilds(): Collection<Guild> {
-        return this.db.collection('guilds');
+        return this.db.collection("guilds");
     }
     
     get users(): Collection<User> {
-        return this.db.collection('users');
+        return this.db.collection("users");
     }
 }

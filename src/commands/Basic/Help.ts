@@ -33,13 +33,12 @@ export default class Help extends Command {
                 return;
             }
             
-            const commands = group.commands.map((command) => `${command.name} (\`${command.triggers.join('`,`')}\`) -> ${command.description}`);
-
+            const commands = group.commands.map((command) => `${command.name} (\`${command.triggers.join("`,`")}\`) -> ${command.description}`);
             if (commands.length === 0) {
                 return;
             }
 
-            help.addField(group.name, commands.join('\n'));
+            help.addField(group.name, commands.join("\n"));
         })
 
         event.send({ embed: help });

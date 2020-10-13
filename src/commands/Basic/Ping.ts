@@ -9,7 +9,7 @@ export default class Ping extends Command {
     }
 
     run(event: CommandEvent) {
-        event.send(`Pinging...`)
+        event.send("Pinging...")
             .then((msg) => {
                 msg = msg as Message;
                 const ping = new MessageEmbed()

@@ -11,7 +11,6 @@ export default class Avatar extends Command {
     async run(event: CommandEvent) {
         const guild = event.guild;
         const argument = event.argument;
-
         let member = guild.members.cache.find(member => argument === member.id || argument === `<@${member.id}>` || argument === `<@!${member.id}>` || argument === member.user.username || argument === member.user.tag);
 
         if (!member) {
