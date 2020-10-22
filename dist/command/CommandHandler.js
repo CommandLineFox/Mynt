@@ -1,6 +1,11 @@
-import CommandRegistry from "./CommandRegistry";
-import CommandEvent from "./CommandEvent";
-export default class CommandHandler {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const CommandRegistry_1 = __importDefault(require("./CommandRegistry"));
+const CommandEvent_1 = __importDefault(require("./CommandEvent"));
+class CommandHandler {
     constructor(client) {
         this.client = client;
         this.mentions = [`<@${this.client.user.id}>`, `<@!${this.client.user.id}>`];
@@ -28,11 +33,11 @@ export default class CommandHandler {
             return;
         }
         const [trigger, args = ""] = content.split(/\s+([\s\S]+)/);
-        const command = CommandRegistry.getCommand(trigger);
+        const command = CommandRegistry_1.default.getCommand(trigger);
         if (command === undefined) {
             return;
         }
-        command.execute(new CommandEvent(message, this.client, args));
+        command.execute(new CommandEvent_1.default(message, this.client, args));
     }
     async handleMention(message, content) {
         if (content.length === 0) {
@@ -42,4 +47,5 @@ export default class CommandHandler {
         this.handlePrefix(message, content);
     }
 }
+exports.default = CommandHandler;
 //# sourceMappingURL=CommandHandler.js.map

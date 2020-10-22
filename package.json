@@ -19,17 +19,17 @@
   },
   "homepage": "https://github.com/AlexArcticFox/Mynt#readme",
   "devDependencies": {
-    "@types/node": "^12.12.67",
+    "@types/node": "^12.19.1",
     "tscpaths": "0.0.9",
     "tslint-eslint-rules": "^5.4.0",
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@types/mongodb": "^3.5.27",
+    "@types/mongodb": "^3.5.31",
     "@types/ws": "^7.2.7",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
-    "bson": "^4.1.0",
+    "bson": "^4.2.0",
     "discord.js": "12.2.0",
     "eslint": "^6.8.0",
     "mongodb": "^3.6.2"

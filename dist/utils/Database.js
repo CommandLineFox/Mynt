@@ -1,10 +1,13 @@
-import { connect } from "mongodb";
-export class Database {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Database = void 0;
+const mongodb_1 = require("mongodb");
+class Database {
     constructor(config) {
         this.config = config;
     }
     async connect() {
-        const client = await connect(this.config.url, this.config.mongoOptions)
+        const client = await mongodb_1.connect(this.config.url, this.config.mongoOptions)
             .catch(err => {
             throw err;
         });
@@ -18,4 +21,5 @@ export class Database {
         return this.db.collection("users");
     }
 }
+exports.Database = Database;
 //# sourceMappingURL=Database.js.map

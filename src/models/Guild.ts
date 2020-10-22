@@ -1,8 +1,22 @@
 import { ObjectId } from "bson";
-import { EventName } from "@utils/Types";
 
-export interface Overwrites {
-    staffbypass: boolean;
+export interface Roles {
+    muted?: string;
+    moderator?: string[];
+}
+
+export interface Channels {
+    editLogs?: string;
+    bulkDelete?: string;
+    modActions?: string;
+    commandUsed?: string;
+    nameChanges?: string;
+    roleUpdates?: string;
+    guildChanges?: string;
+    roleChanges?: string;
+    channelChanges?: string;
+    voiceChanges?: string;
+    joinLogs?: string;
 }
 
 export interface Filter {
@@ -10,33 +24,15 @@ export interface Filter {
     list?: string[];
 }
 
-export interface AutoMod {
-    enabled: boolean;
-    filter?: Filter;
-}
-
-export interface LoggingEvent {
-    enabled: boolean;
-    name: EventName;
-    channel: string;
-}
-
-export interface Logging {
-    enabled: boolean;
-    events?: LoggingEvent[];
-}
-
-export interface Roles {
-    muted?: string;
-    moderator?: string[];
-}
-
 export interface GuildConfig {
     prefix?: string;
+    logging?: boolean;
+    automod?: boolean;
     roles?: Roles;
-    automod?: AutoMod;
-    logging?: Logging;
-    overwrites?: Overwrites;
+    channels?: Channels;
+    filter?: Filter;
+    adblocker?: boolean;
+    staffbypass?: boolean;
 }
 
 export interface GuildDoc {

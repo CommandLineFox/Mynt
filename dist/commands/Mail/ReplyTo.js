@@ -1,8 +1,13 @@
-import Command from "../../command/Command";
-import { Mail } from "../../Groups";
-export default class ReplyTo extends Command {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const Command_1 = __importDefault(require("../../command/Command"));
+const Groups_1 = require("../../Groups");
+class ReplyTo extends Command_1.default {
     constructor() {
-        super({ name: "ReplyTo", triggers: ["replyto"], description: "Sends a message to a specified user", group: Mail });
+        super({ name: "ReplyTo", triggers: ["replyto"], description: "Sends a message to a specified user", group: Groups_1.Mail });
     }
     async run(event) {
         const guild = event.guild;
@@ -22,4 +27,5 @@ export default class ReplyTo extends Command {
         });
     }
 }
+exports.default = ReplyTo;
 //# sourceMappingURL=ReplyTo.js.map

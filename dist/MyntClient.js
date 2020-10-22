@@ -1,14 +1,19 @@
-import { Client, MessageEmbed } from "discord.js";
-import CommandHandler from "./command/CommandHandler";
-import { EventHandler } from "./event/EventHandler";
-export default class MyntClient extends Client {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const discord_js_1 = require("discord.js");
+const CommandHandler_1 = __importDefault(require("./command/CommandHandler"));
+const EventHandler_1 = require("./event/EventHandler");
+class MyntClient extends discord_js_1.Client {
     constructor(config, database, options) {
         super(options);
         this.config = config;
         this.database = database;
         this.once("ready", () => {
-            EventHandler(this);
-            new CommandHandler(this);
+            EventHandler_1.EventHandler(this);
+            new CommandHandler_1.default(this);
         });
         this.on("message", (message) => {
             if (!message.guild && !message.author.bot) {
@@ -62,7 +67,7 @@ export default class MyntClient extends Client {
     generateMail(message) {
         const client = message.client;
         const author = message.author;
-        const received = new MessageEmbed()
+        const received = new discord_js_1.MessageEmbed()
             .setTitle(author.username)
             .setDescription(message)
             .setColor("#61e096")
@@ -76,4 +81,5 @@ export default class MyntClient extends Client {
         }
     }
 }
+exports.default = MyntClient;
 //# sourceMappingURL=MyntClient.js.map

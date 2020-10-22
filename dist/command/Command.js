@@ -1,4 +1,6 @@
-export default class Command {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class Command {
     constructor(options) {
         var _a, _b, _c, _d, _e, _f, _g, _h;
         this.name = options.name;
@@ -40,4 +42,5 @@ export default class Command {
         this.run(event);
     }
 }
+exports.default = Command;
 //# sourceMappingURL=Command.js.map

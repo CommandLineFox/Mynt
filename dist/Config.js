@@ -1,14 +1,16 @@
-import { string, base, array, object, boolean } from "./ConfigHandler";
-export default {
-    token: string(""),
-    prefix: string("!"),
-    owners: array(base.string),
-    mail: string(""),
-    db: object({
-        name: string(""),
-        url: string(""),
-        mongoOptions: object({
-            useUnifiedTopology: boolean(true)
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const ConfigHandler_1 = require("./ConfigHandler");
+exports.default = {
+    token: ConfigHandler_1.string(""),
+    prefix: ConfigHandler_1.string("!"),
+    owners: ConfigHandler_1.array(ConfigHandler_1.base.string),
+    mail: ConfigHandler_1.string(""),
+    db: ConfigHandler_1.object({
+        name: ConfigHandler_1.string(""),
+        url: ConfigHandler_1.string(""),
+        mongoOptions: ConfigHandler_1.object({
+            useUnifiedTopology: ConfigHandler_1.boolean(true)
         })
     })
 };

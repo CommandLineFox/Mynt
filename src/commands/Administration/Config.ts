@@ -25,12 +25,13 @@ export default class Config extends Command {
 
         switch (subcommand.toLowerCase()) {
             case "prefix": {
-                prefixSettings(event, option, args, guild!);
+                prefixSettings(event, option, guild!);
                 break;
             }
 
-            case "moderator":
+            case "mod":
             case "mods":
+            case "moderator":
             case "moderators":
             case "staff": {
                 moderatorSettings(event, option, args, guild!);
@@ -38,13 +39,14 @@ export default class Config extends Command {
             }
 
             case "mute":
-            case "muted": {
+            case "muted":
+            case "muterole": {
                 muteSettings(event, option, args, guild!);
                 break;
             }
 
             case "automod": {
-                automodSettings(event, option, args, guild!);
+                automodSettings(event, option, guild!);
                 break;
             }
 
@@ -67,11 +69,19 @@ export default class Config extends Command {
                 loggingSettings(event, option, args, guild!);
                 break;
             }
+
+            case "invite":
+            case "inviteblock":
+            case "adblock":
+            case "adblocker":
+            case "adsblocker": {
+                inviteBlockerSettings(event, option, guild!);
+            }
         }
     }
 }
 
-async function prefixSettings(event: CommandEvent, option: string, _args: string, guild: Guild) {
+async function prefixSettings(event: CommandEvent, option: string, guild: Guild) {
     const client = event.client;
     const database = client.database;
 
@@ -118,7 +128,7 @@ async function moderatorSettings(event: CommandEvent, option: string, args: stri
         mods.forEach((mod) => {
             const role = event.guild.roles.cache.get(mod);
             if (!role) {
-                database?.guilds.updateOne({ id: event.guild.id }, { "$pull": { "config.roles.moderator": mod } });
+                database?.guilds.updateOne({ id: guild.id }, { "$pull": { "config.roles.moderator": mod } });
             }
             else {
                 list += `${role.name}\n`;
@@ -149,7 +159,7 @@ async function moderatorSettings(event: CommandEvent, option: string, args: stri
                 break;
             }
 
-            await database?.guilds.updateOne({ id: event.guild.id }, { "$push": { "config.roles.moderator": role.id } });
+            await database?.guilds.updateOne({ id: guild.id }, { "$push": { "config.roles.moderator": role.id } });
             event.send(`Added \`${role.name}\` as a moderator role.`);
             break;
         }
@@ -159,7 +169,7 @@ async function moderatorSettings(event: CommandEvent, option: string, args: stri
                 break;
             }
 
-            await database?.guilds.updateOne({ id: event.guild.id }, { "$pull": { "config.roles.moderator": role.id } });
+            await database?.guilds.updateOne({ id: guild.id }, { "$pull": { "config.roles.moderator": role.id } });
             event.send(`\`${role.name}\` is no longer a moderator role.`);
             break;
         }
@@ -184,6 +194,7 @@ async function muteSettings(event: CommandEvent, option: string, args: string, g
         }
 
         event.send(`\`${role.name}\` is set as the mute role.`);
+        return;
     }
 
     switch (option.toLowerCase()) {
@@ -208,7 +219,7 @@ async function muteSettings(event: CommandEvent, option: string, args: string, g
                 return;
             }
 
-            await database?.guilds.updateOne({ id: event.guild.id }, { "$set": { "config.roles.muted": role.id } });
+            await database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles.muted": role.id } });
             event.send(`Set \`${role.name}\` as the mute role.`);
 
             if (option === "setauto") {
@@ -231,7 +242,7 @@ async function muteSettings(event: CommandEvent, option: string, args: string, g
                 return;
             }
 
-            await database?.guilds.updateOne({ id: event.guild.id }, { "$set": { "config.roles.muted": null } });
+            await database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles.muted": null } });
             event.send(`\`${role.name}\` is no longer the mute role.`);
 
             if (option === "autoremove") {
@@ -281,20 +292,23 @@ async function muteSettings(event: CommandEvent, option: string, args: string, g
     }
 }
 
-async function automodSettings(event: CommandEvent, option: string, _args: string, guild: Guild) {
+async function automodSettings(event: CommandEvent, option: string, guild: Guild) {
     const database = event.client.database;
     databaseCheck(database!, guild, "automod");
 
     if (!option) {
         const automod = guild?.config.automod;
-        if (!automod!.enabled) {
+        if (automod === false) {
             event.send("Automod is disabled.");
             return;
         }
 
+        const filter = guild.config.filter;
+        const adblocker = guild.config.adblocker;
         const embed = new MessageEmbed()
             .setTitle("Here's a list of automod features:")
-            .addField("Word filter", `\`${automod?.filter?.enabled ? "Enabled" : "Disabled"}\``, true);
+            .addField("Word filter", `\`${(filter && filter.enabled) ? "Enabled" : "Disabled"}\``, true)
+            .addField("Ad blocker", `\`${(adblocker === true) ? "Enabled" : "Disabled"}\``, true);
 
         event.send({ embed: embed });
         return;
@@ -302,7 +316,7 @@ async function automodSettings(event: CommandEvent, option: string, _args: strin
 
     switch (option.toLowerCase()) {
         case "enable": {
-            if (guild.config.automod?.enabled) {
+            if (guild.config.automod === true) {
                 event.send("Automod is already enabled.");
                 return;
             }
@@ -313,7 +327,7 @@ async function automodSettings(event: CommandEvent, option: string, _args: strin
         }
 
         case "disable": {
-            if (!guild.config.automod?.enabled) {
+            if (!guild.config.automod === false) {
                 event.send("Automod is already disabled.");
                 return;
             }
@@ -324,12 +338,13 @@ async function automodSettings(event: CommandEvent, option: string, _args: strin
         }
     }
 }
+
 async function filterSettings(event: CommandEvent, option: string, args: string, guild: Guild) {
     const database = event.client.database;
-    databaseCheck(database!, guild, "automod");
+    databaseCheck(database!, guild, "filter");
 
     if (!option) {
-        const filter = guild?.config.automod?.filter?.list;
+        const filter = guild?.config.filter?.list;
         if (!filter || filter.length === 0) {
             event.send("There is no filtered words.");
             return;
@@ -357,12 +372,12 @@ async function filterSettings(event: CommandEvent, option: string, args: string,
                 return;
             }
 
-            if (guild.config.automod?.filter?.list?.includes(word)) {
+            if (guild.config.filter?.list?.includes(word)) {
                 event.send("The specified word is already filtered.");
-                break;
+                return;
             }
 
-            await database?.guilds.updateOne({ id: event.guild.id }, { "$push": { "config.automod.filter.list": word } });
+            await database?.guilds.updateOne({ id: guild.id }, { "$push": { "config.automod.filter.list": word } });
             event.send(`Added \`${word}\` to the filter.`);
             break;
         }
@@ -374,35 +389,77 @@ async function filterSettings(event: CommandEvent, option: string, args: string,
                 return;
             }
 
-            if (!guild.config.automod?.filter?.list?.includes(word)) {
+            if (!guild.config.filter?.list?.includes(word)) {
                 event.send("The specified word isn't filtered.");
-                break;
+                return;
             }
 
-            await database?.guilds.updateOne({ id: event.guild.id }, { "$pull": { "config.automod.filter.list": word } });
+            await database?.guilds.updateOne({ id: guild.id }, { "$pull": { "config.automod.filter.list": word } });
             event.send(`Removed \`${word}\` from the filter.`);
             break;
         }
 
         case "enable": {
-            if (guild.config.automod?.filter?.enabled) {
+            if (guild.config.filter?.enabled) {
                 event.send("The word filter is already enabled.");
                 return;
             }
 
-            await database?.guilds.updateOne({ id: event.guild.id }, { "$set": { "config.automod.filter.enabled": true } });
+            await database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod.filter.enabled": true } });
             event.send("Enabled the word filter.");
             break;
         }
 
         case "disable": {
-            if (!guild.config.automod?.filter?.enabled) {
+            if (!guild.config.filter?.enabled) {
                 event.send("The word filter is already disabled.");
                 return;
             }
 
-            await database?.guilds.updateOne({ id: event.guild.id }, { "$set": { "config.automod.filter.enabled": false } });
+            await database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod.filter.enabled": false } });
             event.send("Disabled the word filter.");
+            break;
+        }
+    }
+}
+
+async function inviteBlockerSettings(event: CommandEvent, option: string, guild: Guild) {
+    const database = event.client.database;
+    databaseCheck(database!, guild, "inviteblocker");
+
+    if (!option) {
+        const adblocker = guild.config.adblocker;
+
+        if (adblocker === false) {
+            event.send("The invite blocker is disabled.");
+            return;
+        }
+        else if (adblocker === true) {
+            event.send("The invite blocker is enabled");
+            return;
+        }
+    }
+
+    switch (option) {
+        case "enable": {
+            if (guild.config.adblocker === true) {
+                event.send("The invite blocker is already enabled");
+                return;
+            }
+
+            database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.adblocker": true } });
+            event.send("The invite blocker has been enabled.");
+            break;
+        }
+
+        case "disable": {
+            if (guild.config.adblocker === false) {
+                event.send("The invite blocker is already disabled");
+                return;
+            }
+
+            database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.adblocker": false } });
+            event.send("The invite blocker has been disabled.");
             break;
         }
     }
@@ -413,11 +470,11 @@ async function overwriteSettings(event: CommandEvent, option: string, args: stri
     databaseCheck(database!, guild, "overwrite");
 
     if (!option) {
-        const overwrites = guild?.config.overwrites;
+        let staffbypass = guild.config.staffbypass === true ? "Enabled" : "Disabled";
 
         const embed = new MessageEmbed()
             .setTitle("These are the overwrites for this server:")
-            .addField("Staff bypass", ` \`${overwrites!.staffbypass ? "Enabled" : "Disabled"}\``, true);
+            .addField("Staff bypass", `${staffbypass}`, true);
 
         event.send({ embed: embed });
         return;
@@ -428,23 +485,23 @@ async function overwriteSettings(event: CommandEvent, option: string, args: stri
             const value = args;
             switch (value) {
                 case "enable": {
-                    if (guild.config.overwrites?.staffbypass) {
+                    if (guild.config.staffbypass === true) {
                         event.send("Staff's ability to bypass automod is already enabled.");
                         return;
                     }
 
-                    database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.overwrites.staffbypass": true } });
+                    database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.staffbypass": true } });
                     event.send("Enabled staff's ability to bypass automod.");
                     break
                 }
 
                 case "disable": {
-                    if (!guild.config.overwrites?.staffbypass) {
+                    if (!guild.config.staffbypass) {
                         event.send("Staff's ability to bypass automod is already disabled.");
                         return;
                     }
 
-                    database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.overwrites.staffbypass": false } });
+                    database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.staffbypass": false } });
                     event.send("Disabled staff's ability to bypass automod.");
                     break;
                 }
@@ -455,19 +512,14 @@ async function overwriteSettings(event: CommandEvent, option: string, args: stri
 
 async function loggingSettings(event: CommandEvent, option: string, _args: string, guild: Guild) {
     const database = event.client.database;
-    databaseCheck(database!, guild, "overwrite");
+    databaseCheck(database!, guild, "channels");
 
     if (!option) {
-        const logging = guild?.config.logging!;
 
-        if (!logging.enabled) {
-            event.send("Logging is disabled.");
-        }
+        const embed = new MessageEmbed()
+            .setTitle("These are the logging shit for this server:")
 
-        if (logging.events?.length === 0) {
-            event.send("Logging is enabled, but no events are set up.");
-        }
-
+        event.send({ embed: embed });
         return;
     }
 }
@@ -492,23 +544,30 @@ async function databaseCheck(database: Database, guild: Guild, option: string) {
             break;
         }
 
-        case "logging": {
-            if (!guild.config.logging) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.logging": { "enabled": false, "events": [] } } });
+        case "channels": {
+            if (!guild.config.channels) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.channels": {} } });
             }
             break;
         }
 
         case "automod": {
             if (!guild.config.automod) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod": { "enabled": false } } });
+            }
+            break;
+        }
+
+        case "filter": {
+            if (!guild.config.filter) {
                 await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod": { "filter": { "enabled": false, "list": [] } } } });
             }
             break;
         }
 
-        case "overwrite": {
-            if (!guild.config.overwrites) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.overwrites": { "staffBypass": true } } });
+        case "inviteblocker": {
+            if (!guild.config.adblocker) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.inviteblocker": false } });
             }
             break;
         }

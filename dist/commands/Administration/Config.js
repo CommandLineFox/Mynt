@@ -1,40 +1,47 @@
-import Command from "../../command/Command";
-import { Administration } from "../../Groups";
-import { Guild } from "../../models/Guild";
-import { MessageEmbed } from "discord.js";
-export default class Config extends Command {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const Command_1 = __importDefault(require("../../command/Command"));
+const Groups_1 = require("../../Groups");
+const Guild_1 = require("../../models/Guild");
+const discord_js_1 = require("discord.js");
+class Config extends Command_1.default {
     constructor() {
-        super({ name: "Config", triggers: ["config", "cfg", "setup"], description: "Configures various settings for the guild", group: Administration });
+        super({ name: "Config", triggers: ["config", "cfg", "setup"], description: "Configures various settings for the guild", group: Groups_1.Administration });
     }
     async run(event) {
         const client = event.client;
         const database = client.database;
         let guild = await database.guilds.findOne({ id: event.guild.id });
         if (!guild) {
-            const newguild = new Guild({ id: event.guild.id });
+            const newguild = new Guild_1.Guild({ id: event.guild.id });
             await database.guilds.insertOne(newguild);
             guild = await database.guilds.findOne({ id: event.guild.id });
         }
         const [subcommand, option, args] = event.argument.split(/\s+/, 3);
         switch (subcommand.toLowerCase()) {
             case "prefix": {
-                prefixSettings(event, option, args, guild);
+                prefixSettings(event, option, guild);
                 break;
             }
-            case "moderator":
+            case "mod":
             case "mods":
+            case "moderator":
             case "moderators":
             case "staff": {
                 moderatorSettings(event, option, args, guild);
                 break;
             }
             case "mute":
-            case "muted": {
+            case "muted":
+            case "muterole": {
                 muteSettings(event, option, args, guild);
                 break;
             }
             case "automod": {
-                automodSettings(event, option, args, guild);
+                automodSettings(event, option, guild);
                 break;
             }
             case "badwords":
@@ -54,10 +61,18 @@ export default class Config extends Command {
                 loggingSettings(event, option, args, guild);
                 break;
             }
+            case "invite":
+            case "inviteblock":
+            case "adblock":
+            case "adblocker":
+            case "adsblocker": {
+                inviteBlockerSettings(event, option, guild);
+            }
         }
     }
 }
-async function prefixSettings(event, option, _args, guild) {
+exports.default = Config;
+async function prefixSettings(event, option, guild) {
     const client = event.client;
     const database = client.database;
     if (!option) {
@@ -91,13 +106,13 @@ async function moderatorSettings(event, option, args, guild) {
             event.send("There is no moderator roles.");
             return;
         }
-        const embed = new MessageEmbed()
+        const embed = new discord_js_1.MessageEmbed()
             .setTitle("The following roles are moderator roles:");
         let list = "";
         mods.forEach((mod) => {
             const role = event.guild.roles.cache.get(mod);
             if (!role) {
-                database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$pull": { "config.roles.moderator": mod } });
+                database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$pull": { "config.roles.moderator": mod } });
             }
             else {
                 list += `${role.name}\n`;
@@ -123,7 +138,7 @@ async function moderatorSettings(event, option, args, guild) {
                 event.send("The specified role is already a moderator role.");
                 break;
             }
-            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$push": { "config.roles.moderator": role.id } }));
+            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$push": { "config.roles.moderator": role.id } }));
             event.send(`Added \`${role.name}\` as a moderator role.`);
             break;
         }
@@ -132,7 +147,7 @@ async function moderatorSettings(event, option, args, guild) {
                 event.send("The specified role isn't a moderator role.");
                 break;
             }
-            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$pull": { "config.roles.moderator": role.id } }));
+            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$pull": { "config.roles.moderator": role.id } }));
             event.send(`\`${role.name}\` is no longer a moderator role.`);
             break;
         }
@@ -154,6 +169,7 @@ async function muteSettings(event, option, args, guild) {
             return;
         }
         event.send(`\`${role.name}\` is set as the mute role.`);
+        return;
     }
     switch (option.toLowerCase()) {
         case "setauto":
@@ -172,7 +188,7 @@ async function muteSettings(event, option, args, guild) {
                 event.send("The specified role is already set as the mute role.");
                 return;
             }
-            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$set": { "config.roles.muted": role.id } }));
+            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles.muted": role.id } }));
             event.send(`Set \`${role.name}\` as the mute role.`);
             if (option === "setauto") {
                 setMutePermissions(event, role);
@@ -191,7 +207,7 @@ async function muteSettings(event, option, args, guild) {
                 event.send("The role that used to be the mute role was deleted or can't be found.");
                 return;
             }
-            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$set": { "config.roles.muted": null } }));
+            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles.muted": null } }));
             event.send(`\`${role.name}\` is no longer the mute role.`);
             if (option === "autoremove") {
                 removeMutePermissions(event, role);
@@ -233,25 +249,27 @@ async function muteSettings(event, option, args, guild) {
         }
     }
 }
-async function automodSettings(event, option, _args, guild) {
-    var _a, _b, _c;
+async function automodSettings(event, option, guild) {
     const database = event.client.database;
     databaseCheck(database, guild, "automod");
     if (!option) {
         const automod = guild === null || guild === void 0 ? void 0 : guild.config.automod;
-        if (!automod.enabled) {
+        if (automod === false) {
             event.send("Automod is disabled.");
             return;
         }
-        const embed = new MessageEmbed()
+        const filter = guild.config.filter;
+        const adblocker = guild.config.adblocker;
+        const embed = new discord_js_1.MessageEmbed()
             .setTitle("Here's a list of automod features:")
-            .addField("Word filter", `\`${((_a = automod === null || automod === void 0 ? void 0 : automod.filter) === null || _a === void 0 ? void 0 : _a.enabled) ? "Enabled" : "Disabled"}\``);
+            .addField("Word filter", `\`${(filter && filter.enabled) ? "Enabled" : "Disabled"}\``, true)
+            .addField("Ad blocker", `\`${(adblocker === true) ? "Enabled" : "Disabled"}\``, true);
         event.send({ embed: embed });
         return;
     }
     switch (option.toLowerCase()) {
         case "enable": {
-            if ((_b = guild.config.automod) === null || _b === void 0 ? void 0 : _b.enabled) {
+            if (guild.config.automod === true) {
                 event.send("Automod is already enabled.");
                 return;
             }
@@ -260,7 +278,7 @@ async function automodSettings(event, option, _args, guild) {
             break;
         }
         case "disable": {
-            if (!((_c = guild.config.automod) === null || _c === void 0 ? void 0 : _c.enabled)) {
+            if (!guild.config.automod === false) {
                 event.send("Automod is already disabled.");
                 return;
             }
@@ -271,16 +289,16 @@ async function automodSettings(event, option, _args, guild) {
     }
 }
 async function filterSettings(event, option, args, guild) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+    var _a, _b, _c, _d, _e, _f, _g;
     const database = event.client.database;
-    databaseCheck(database, guild, "automod");
+    databaseCheck(database, guild, "filter");
     if (!option) {
-        const filter = (_b = (_a = guild === null || guild === void 0 ? void 0 : guild.config.automod) === null || _a === void 0 ? void 0 : _a.filter) === null || _b === void 0 ? void 0 : _b.list;
+        const filter = (_a = guild === null || guild === void 0 ? void 0 : guild.config.filter) === null || _a === void 0 ? void 0 : _a.list;
         if (!filter || filter.length === 0) {
             event.send("There is no filtered words.");
             return;
         }
-        const embed = new MessageEmbed()
+        const embed = new discord_js_1.MessageEmbed()
             .setTitle("The following words are filtered:");
         let list = "";
         filter.forEach((word) => {
@@ -297,11 +315,11 @@ async function filterSettings(event, option, args, guild) {
                 event.send("You need to specify a word.");
                 return;
             }
-            if ((_e = (_d = (_c = guild.config.automod) === null || _c === void 0 ? void 0 : _c.filter) === null || _d === void 0 ? void 0 : _d.list) === null || _e === void 0 ? void 0 : _e.includes(word)) {
+            if ((_c = (_b = guild.config.filter) === null || _b === void 0 ? void 0 : _b.list) === null || _c === void 0 ? void 0 : _c.includes(word)) {
                 event.send("The specified word is already filtered.");
-                break;
+                return;
             }
-            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$push": { "config.automod.filter.list": word } }));
+            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$push": { "config.automod.filter.list": word } }));
             event.send(`Added \`${word}\` to the filter.`);
             break;
         }
@@ -311,43 +329,77 @@ async function filterSettings(event, option, args, guild) {
                 event.send("You need to specify a word.");
                 return;
             }
-            if (!((_h = (_g = (_f = guild.config.automod) === null || _f === void 0 ? void 0 : _f.filter) === null || _g === void 0 ? void 0 : _g.list) === null || _h === void 0 ? void 0 : _h.includes(word))) {
+            if (!((_e = (_d = guild.config.filter) === null || _d === void 0 ? void 0 : _d.list) === null || _e === void 0 ? void 0 : _e.includes(word))) {
                 event.send("The specified word isn't filtered.");
-                break;
+                return;
             }
-            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$pull": { "config.automod.filter.list": word } }));
+            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$pull": { "config.automod.filter.list": word } }));
             event.send(`Removed \`${word}\` from the filter.`);
             break;
         }
         case "enable": {
-            if ((_k = (_j = guild.config.automod) === null || _j === void 0 ? void 0 : _j.filter) === null || _k === void 0 ? void 0 : _k.enabled) {
+            if ((_f = guild.config.filter) === null || _f === void 0 ? void 0 : _f.enabled) {
                 event.send("The word filter is already enabled.");
                 return;
             }
-            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$set": { "config.automod.filter.enabled": true } }));
+            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod.filter.enabled": true } }));
             event.send("Enabled the word filter.");
             break;
         }
         case "disable": {
-            if (!((_m = (_l = guild.config.automod) === null || _l === void 0 ? void 0 : _l.filter) === null || _m === void 0 ? void 0 : _m.enabled)) {
+            if (!((_g = guild.config.filter) === null || _g === void 0 ? void 0 : _g.enabled)) {
                 event.send("The word filter is already disabled.");
                 return;
             }
-            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: event.guild.id }, { "$set": { "config.automod.filter.enabled": false } }));
+            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod.filter.enabled": false } }));
             event.send("Disabled the word filter.");
             break;
         }
     }
 }
+async function inviteBlockerSettings(event, option, guild) {
+    const database = event.client.database;
+    databaseCheck(database, guild, "inviteblocker");
+    if (!option) {
+        const adblocker = guild.config.adblocker;
+        if (adblocker === false) {
+            event.send("The invite blocker is disabled.");
+            return;
+        }
+        else if (adblocker === true) {
+            event.send("The invite blocker is enabled");
+            return;
+        }
+    }
+    switch (option) {
+        case "enable": {
+            if (guild.config.adblocker === true) {
+                event.send("The invite blocker is already enabled");
+                return;
+            }
+            database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.adblocker": true } });
+            event.send("The invite blocker has been enabled.");
+            break;
+        }
+        case "disable": {
+            if (guild.config.adblocker === false) {
+                event.send("The invite blocker is already disabled");
+                return;
+            }
+            database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.adblocker": false } });
+            event.send("The invite blocker has been disabled.");
+            break;
+        }
+    }
+}
 async function overwriteSettings(event, option, args, guild) {
-    var _a, _b;
     const database = event.client.database;
     databaseCheck(database, guild, "overwrite");
     if (!option) {
-        const overwrites = guild === null || guild === void 0 ? void 0 : guild.config.overwrites;
-        const embed = new MessageEmbed()
+        let staffbypass = guild.config.staffbypass === true ? "Enabled" : "Disabled";
+        const embed = new discord_js_1.MessageEmbed()
             .setTitle("These are the overwrites for this server:")
-            .addField("Staff bypass", ` \`${overwrites.staffbypass ? "Enabled" : "Disabled"}\``);
+            .addField("Staff bypass", `${staffbypass}`, true);
         event.send({ embed: embed });
         return;
     }
@@ -356,20 +408,20 @@ async function overwriteSettings(event, option, args, guild) {
             const value = args;
             switch (value) {
                 case "enable": {
-                    if ((_a = guild.config.overwrites) === null || _a === void 0 ? void 0 : _a.staffbypass) {
+                    if (guild.config.staffbypass === true) {
                         event.send("Staff's ability to bypass automod is already enabled.");
                         return;
                     }
-                    database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.overwrites.staffbypass": true } });
+                    database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.staffbypass": true } });
                     event.send("Enabled staff's ability to bypass automod.");
                     break;
                 }
                 case "disable": {
-                    if (!((_b = guild.config.overwrites) === null || _b === void 0 ? void 0 : _b.staffbypass)) {
+                    if (!guild.config.staffbypass) {
                         event.send("Staff's ability to bypass automod is already disabled.");
                         return;
                     }
-                    database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.overwrites.staffbypass": false } });
+                    database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.staffbypass": false } });
                     event.send("Disabled staff's ability to bypass automod.");
                     break;
                 }
@@ -378,17 +430,12 @@ async function overwriteSettings(event, option, args, guild) {
     }
 }
 async function loggingSettings(event, option, _args, guild) {
-    var _a;
     const database = event.client.database;
-    databaseCheck(database, guild, "overwrite");
+    databaseCheck(database, guild, "channels");
     if (!option) {
-        const logging = guild === null || guild === void 0 ? void 0 : guild.config.logging;
-        if (!logging.enabled) {
-            event.send("Logging is disabled.");
-        }
-        if (((_a = logging.events) === null || _a === void 0 ? void 0 : _a.length) === 0) {
-            event.send("Logging is enabled, but no events are set up.");
-        }
+        const embed = new discord_js_1.MessageEmbed()
+            .setTitle("These are the logging shit for this server:");
+        event.send({ embed: embed });
         return;
     }
 }
@@ -409,21 +456,27 @@ async function databaseCheck(database, guild, option) {
             }
             break;
         }
-        case "logging": {
-            if (!guild.config.logging) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.logging": { "enabled": false, "events": [] } } });
+        case "channels": {
+            if (!guild.config.channels) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.channels": {} } });
             }
             break;
         }
         case "automod": {
             if (!guild.config.automod) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod": { "enabled": false } } });
+            }
+            break;
+        }
+        case "filter": {
+            if (!guild.config.filter) {
                 await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod": { "filter": { "enabled": false, "list": [] } } } });
             }
             break;
         }
-        case "overwrite": {
-            if (!guild.config.overwrites) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.overwrites": { "staffBypass": true } } });
+        case "inviteblocker": {
+            if (!guild.config.adblocker) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.inviteblocker": false } });
             }
             break;
         }
