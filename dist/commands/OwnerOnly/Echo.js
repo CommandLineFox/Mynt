@@ -9,7 +9,7 @@ class Echo extends Command_1.default {
     constructor() {
         super({ name: "Echo", triggers: ["echo", "say"], description: "Repeats the message", group: Groups_1.OwnerOnly });
     }
-    run(event) {
+    async run(event) {
         event.message.delete({ timeout: 100 });
         event.send(event.argument);
     }

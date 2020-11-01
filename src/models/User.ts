@@ -1,7 +1,8 @@
 import { ObjectId } from "bson";
+import { InfractionAction } from "@utils/Types";
 
 export interface UserInfraction {
-    action: "Warn" | "Kick" | "Mute" | "Unmute" | "Ban" | "Unban";
+    action: InfractionAction;
     active: boolean;
     guild: string;
     id: number;

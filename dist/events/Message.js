@@ -21,13 +21,13 @@ exports.event = new Event_1.default("message", async (client, message) => {
     }
 });
 function autoMod(client, message, guild) {
-    if (guild.config.staffbypass === true && client.isMod(message.member, message.guild)) {
+    if (guild.config.staffBypass === true && client.isMod(message.member, message.guild)) {
         return;
     }
     if (guild.config.filter && guild.config.filter.enabled && filter(message, guild)) {
         return;
     }
-    if (guild.config.adblocker === true && adblock(message)) {
+    if (guild.config.adBlocker === true && adblock(message)) {
         console.log("Ad blocker go brrrr");
         return;
     }

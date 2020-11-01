@@ -23,7 +23,7 @@ export const event = new Event("message", async (client: MyntClient, message: Me
 })
 
 function autoMod(client: MyntClient, message: Message, guild: Guild) {
-    if (guild.config.staffbypass === true && client.isMod(message.member!, message.guild!)) {
+    if (guild.config.staffBypass === true && client.isMod(message.member!, message.guild!)) {
         return;
     }
 
@@ -31,7 +31,7 @@ function autoMod(client: MyntClient, message: Message, guild: Guild) {
         return;
     }
 
-    if (guild.config.adblocker === true && adblock(message)) {
+    if (guild.config.adBlocker === true && adblock(message)) {
         console.log("Ad blocker go brrrr");
         return;
     }

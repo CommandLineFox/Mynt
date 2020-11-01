@@ -62,6 +62,7 @@ export default abstract class Command implements CommandOptions {
                 event.reply("I am not allowed to run this command.");
                 return;
             }
+            
             const missingUserPermission = event.textChannel!.permissionsFor(event.member)!.missing(this.userPermissions);
             if (!missingUserPermission) {
                 event.reply("you are not allowed to run this command.");

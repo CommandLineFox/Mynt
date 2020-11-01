@@ -13,7 +13,6 @@ export interface Channels {
     nameChanges?: string;
     roleUpdates?: string;
     guildChanges?: string;
-    roleChanges?: string;
     channelChanges?: string;
     voiceChanges?: string;
     joinLogs?: string;
@@ -31,8 +30,8 @@ export interface GuildConfig {
     roles?: Roles;
     channels?: Channels;
     filter?: Filter;
-    adblocker?: boolean;
-    staffbypass?: boolean;
+    adBlocker?: boolean;
+    staffBypass?: boolean;
 }
 
 export interface GuildDoc {

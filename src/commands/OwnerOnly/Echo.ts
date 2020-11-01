@@ -7,7 +7,7 @@ export default class Echo extends Command {
         super({ name: "Echo", triggers: ["echo", "say"], description: "Repeats the message", group: OwnerOnly });
     }
 
-    run(event: CommandEvent) {
+    async run(event: CommandEvent) {
         event.message.delete({ timeout: 100 });
         event.send(event.argument);
     }

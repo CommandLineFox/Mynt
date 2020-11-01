@@ -2,8 +2,8 @@ import Command from "@command/Command";
 import { Administration } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import { Guild } from "@models/Guild";
-import { Database } from "@utils/Database";
-import { MessageEmbed, Role } from "discord.js";
+import { MessageEmbed } from "discord.js";
+import { convertLogging, databaseCheck, displayData, mutePermissions } from "@utils/Utils";
 
 export default class Config extends Command {
     constructor() {
@@ -23,9 +23,13 @@ export default class Config extends Command {
 
         const [subcommand, option, args] = event.argument.split(/\s+/, 3);
 
+        if (!subcommand) {
+            displayAllSettings(event, guild!)
+        }
+
         switch (subcommand.toLowerCase()) {
             case "prefix": {
-                prefixSettings(event, option, guild!);
+                prefixSettings(event, option, args, guild!);
                 break;
             }
 
@@ -72,39 +76,39 @@ export default class Config extends Command {
 
             case "invite":
             case "inviteblock":
+            case "ads":
             case "adblock":
-            case "adblocker":
-            case "adsblocker": {
+            case "adblocker": {
                 inviteBlockerSettings(event, option, guild!);
             }
         }
     }
 }
 
-async function prefixSettings(event: CommandEvent, option: string, guild: Guild) {
+async function prefixSettings(event: CommandEvent, option: string, args: string, guild: Guild) {
     const client = event.client;
     const database = client.database;
 
     if (!option) {
-        event.send(`The prefix is currently set to \`${guild?.config.prefix || client.config.prefix}\``);
+        displayData(event, guild, "prefix", true);
         return;
     }
 
     switch (option.toLowerCase()) {
-        case "reset": {
-            await database?.guilds.updateOne({ id: guild?.id }, { "$set": { "config.prefix": client.config.prefix } });
-            event.send(`The prefix has been set to \`${client.config.prefix}\``);
-            break;
-        }
-
-        default: {
-            if (option.length > 5) {
+        case "set": {
+            if (args.length > 5) {
                 event.send("The prefix can be up to 5 characters.");
                 break;
             }
 
-            await database?.guilds.updateOne({ id: guild?.id }, { "$set": { "config.prefix": option } });
-            event.send(`The prefix has been set to \`${option}\``);
+            await database?.guilds.updateOne({ id: guild?.id }, { "$set": { "config.prefix": args } });
+            event.send(`The prefix has been set to \`${args}\``);
+            break;
+        }
+
+        case "reset": {
+            await database?.guilds.updateOne({ id: guild?.id }, { "$unset": { "config.prefix": "" } });
+            event.send(`The prefix has been set to \`${client.config.prefix}\``);
             break;
         }
     }
@@ -115,28 +119,7 @@ async function moderatorSettings(event: CommandEvent, option: string, args: stri
     databaseCheck(database!, guild, "moderator");
 
     if (!option) {
-        const mods = guild?.config.roles?.moderator;
-        if (!mods || mods.length === 0) {
-            event.send("There is no moderator roles.");
-            return;
-        }
-
-        const embed = new MessageEmbed()
-            .setTitle("The following roles are moderator roles:");
-
-        let list = "";
-        mods.forEach((mod) => {
-            const role = event.guild.roles.cache.get(mod);
-            if (!role) {
-                database?.guilds.updateOne({ id: guild.id }, { "$pull": { "config.roles.moderator": mod } });
-            }
-            else {
-                list += `${role.name}\n`;
-            }
-        })
-
-        embed.setDescription(list);
-        event.send({ embed: embed });
+        displayData(event, guild, "moderators", true);
         return;
     }
 
@@ -181,19 +164,7 @@ async function muteSettings(event: CommandEvent, option: string, args: string, g
     databaseCheck(database!, guild, "roles");
 
     if (!option) {
-        const id = guild?.config.roles?.muted;
-        if (!id) {
-            event.send("There is no role set as the mute role.");
-            return;
-        }
-
-        const role = event.guild.roles.cache.get(id);
-        if (!role) {
-            event.send("The role that used to be the mute role was deleted or can't be found.");
-            return;
-        }
-
-        event.send(`\`${role.name}\` is set as the mute role.`);
+        displayData(event, guild, "muterole", true);
         return;
     }
 
@@ -223,7 +194,7 @@ async function muteSettings(event: CommandEvent, option: string, args: string, g
             event.send(`Set \`${role.name}\` as the mute role.`);
 
             if (option === "setauto") {
-                setMutePermissions(event, role);
+                mutePermissions(event, role, "set");
                 event.send(`Automatically set permission overwrites for \`${role.name}\`.`);
             }
             break;
@@ -238,15 +209,16 @@ async function muteSettings(event: CommandEvent, option: string, args: string, g
 
             const role = event.guild.roles.cache.get(guild.config.roles.muted);
             if (!role) {
+                await database?.guilds.updateOne({ id: guild.id }, { "$unset": { "config.roles.muted": "" } });
                 event.send("The role that used to be the mute role was deleted or can't be found.");
                 return;
             }
 
-            await database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles.muted": null } });
+            await database?.guilds.updateOne({ id: guild.id }, { "$unset": { "config.roles.muted": "" } });
             event.send(`\`${role.name}\` is no longer the mute role.`);
 
             if (option === "autoremove") {
-                removeMutePermissions(event, role);
+                mutePermissions(event, role, "remove");
                 event.send(`Automatically removed permission overwrites for \`${role.name}\`.`);
             }
             break;
@@ -263,11 +235,12 @@ async function muteSettings(event: CommandEvent, option: string, args: string, g
 
             const role = event.guild.roles.cache.get(guild.config.roles.muted);
             if (!role) {
+                await database?.guilds.updateOne({ id: guild.id }, { "$unset": { "config.roles.muted": "" } });
                 event.send("The role that used to be the mute role was deleted or can't be found.");
                 return;
             }
 
-            setMutePermissions(event, role);
+            mutePermissions(event, role, "set");
             event.send(`Set permission overwrites for \`${role.name}\`.`);
             break;
         }
@@ -281,11 +254,12 @@ async function muteSettings(event: CommandEvent, option: string, args: string, g
 
             const role = event.guild.roles.cache.get(guild.config.roles.muted);
             if (!role) {
+                await database?.guilds.updateOne({ id: guild.id }, { "$unset": { "config.roles.muted": "" } });
                 event.send("The role that used to be the mute role was deleted or can't be found.");
                 return;
             }
 
-            removeMutePermissions(event, role);
+            mutePermissions(event, role, "remove");
             event.send(`Removed permission overwrites for \`${role.name}\`.`);
             break;
         }
@@ -297,20 +271,7 @@ async function automodSettings(event: CommandEvent, option: string, guild: Guild
     databaseCheck(database!, guild, "automod");
 
     if (!option) {
-        const automod = guild?.config.automod;
-        if (automod === false) {
-            event.send("Automod is disabled.");
-            return;
-        }
-
-        const filter = guild.config.filter;
-        const adblocker = guild.config.adblocker;
-        const embed = new MessageEmbed()
-            .setTitle("Here's a list of automod features:")
-            .addField("Word filter", `\`${(filter && filter.enabled) ? "Enabled" : "Disabled"}\``, true)
-            .addField("Ad blocker", `\`${(adblocker === true) ? "Enabled" : "Disabled"}\``, true);
-
-        event.send({ embed: embed });
+        displayData(event, guild, "automod", true);
         return;
     }
 
@@ -321,7 +282,7 @@ async function automodSettings(event: CommandEvent, option: string, guild: Guild
                 return;
             }
 
-            database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod.enabled": true } });
+            database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod": true } });
             event.send("Succefully enabled automod features.");
             break;
         }
@@ -332,7 +293,7 @@ async function automodSettings(event: CommandEvent, option: string, guild: Guild
                 return;
             }
 
-            database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod.enabled": false } });
+            database?.guilds.updateOne({ id: guild.id }, { "$unset": { "config.automod": "" } });
             event.send("Succefully disabled automod features.");
             break;
         }
@@ -344,22 +305,7 @@ async function filterSettings(event: CommandEvent, option: string, args: string,
     databaseCheck(database!, guild, "filter");
 
     if (!option) {
-        const filter = guild?.config.filter?.list;
-        if (!filter || filter.length === 0) {
-            event.send("There is no filtered words.");
-            return;
-        }
-
-        const embed = new MessageEmbed()
-            .setTitle("The following words are filtered:")
-
-        let list = "";
-        filter.forEach((word) => {
-            list += `\`${word}\` `;
-        })
-
-        embed.setDescription(list);
-        event.send({ embed: embed });
+        displayData(event, guild, "filter", true);
         return;
     }
 
@@ -428,37 +374,28 @@ async function inviteBlockerSettings(event: CommandEvent, option: string, guild:
     databaseCheck(database!, guild, "inviteblocker");
 
     if (!option) {
-        const adblocker = guild.config.adblocker;
-
-        if (adblocker === false) {
-            event.send("The invite blocker is disabled.");
-            return;
-        }
-        else if (adblocker === true) {
-            event.send("The invite blocker is enabled");
-            return;
-        }
+        displayData(event, guild, "inviteblocker", true);
     }
 
     switch (option) {
         case "enable": {
-            if (guild.config.adblocker === true) {
+            if (guild.config.adBlocker === true) {
                 event.send("The invite blocker is already enabled");
                 return;
             }
 
-            database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.adblocker": true } });
+            database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.adBlocker": true } });
             event.send("The invite blocker has been enabled.");
             break;
         }
 
         case "disable": {
-            if (guild.config.adblocker === false) {
+            if (guild.config.adBlocker === false) {
                 event.send("The invite blocker is already disabled");
                 return;
             }
 
-            database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.adblocker": false } });
+            database?.guilds.updateOne({ id: guild.id }, { "$unset": { "config.adBlocker": "" } });
             event.send("The invite blocker has been disabled.");
             break;
         }
@@ -467,41 +404,35 @@ async function inviteBlockerSettings(event: CommandEvent, option: string, guild:
 
 async function overwriteSettings(event: CommandEvent, option: string, args: string, guild: Guild) {
     const database = event.client.database;
-    databaseCheck(database!, guild, "overwrite");
 
     if (!option) {
-        let staffbypass = guild.config.staffbypass === true ? "Enabled" : "Disabled";
-
-        const embed = new MessageEmbed()
-            .setTitle("These are the overwrites for this server:")
-            .addField("Staff bypass", `${staffbypass}`, true);
-
-        event.send({ embed: embed });
+        displayData(event, guild, "overwrites", true);
         return;
     }
 
     switch (option.toLowerCase()) {
-        case "staffbypass": {
+        case "staffBypass": {
             const value = args;
+
             switch (value) {
                 case "enable": {
-                    if (guild.config.staffbypass === true) {
+                    if (guild.config.staffBypass === true) {
                         event.send("Staff's ability to bypass automod is already enabled.");
                         return;
                     }
 
-                    database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.staffbypass": true } });
+                    database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.staffBypass": true } });
                     event.send("Enabled staff's ability to bypass automod.");
                     break
                 }
 
                 case "disable": {
-                    if (!guild.config.staffbypass) {
+                    if (!guild.config.staffBypass) {
                         event.send("Staff's ability to bypass automod is already disabled.");
                         return;
                     }
 
-                    database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.staffbypass": false } });
+                    database?.guilds.updateOne({ id: guild.id }, { "$unset": { "config.staffBypass": "" } });
                     event.send("Disabled staff's ability to bypass automod.");
                     break;
                 }
@@ -510,103 +441,75 @@ async function overwriteSettings(event: CommandEvent, option: string, args: stri
     }
 }
 
-async function loggingSettings(event: CommandEvent, option: string, _args: string, guild: Guild) {
+async function loggingSettings(event: CommandEvent, option: string, args: string, guild: Guild) {
     const database = event.client.database;
     databaseCheck(database!, guild, "channels");
 
     if (!option) {
-
-        const embed = new MessageEmbed()
-            .setTitle("These are the logging shit for this server:")
-
-        event.send({ embed: embed });
+        displayData(event, guild, "logging", true);
         return;
     }
-}
 
-async function databaseCheck(database: Database, guild: Guild, option: string) {
+    if (!args) {
+        event.send("You need to specify a type and the channel it will be logged in.");
+        return;
+    }
+
+    const [type, id] = args.split(/\s+/, 2);
+    const log = convertLogging(type);
+
+    if (log === "None") {
+        event.send("You need to specify a valid logging type.");
+        return;
+    }
+
     switch (option.toLowerCase()) {
-        case "roles": {
-            if (!guild.config.roles) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": {} } });
+        case "set": {
+            if (!id) {
+                event.send("You need to specify the channel that this type will be logged in.");
+                return;
             }
-            break;
+
+            const channel = event.guild.channels.cache.find(channel => channel.name === id || `<#${channel.id}>` === id);
+            if (!channel) {
+                event.send("Couldn't find the channel you're looking for.");
+                return;
+            }
+
+            if (guild.config.channels![log] === channel.id) {
+                event.send("This channel is already set for this logging type");
+                return;
+            }
+
+            await database?.guilds.updateOne({ id: guild.id }, { "$set": { [`config.channels.${log}`]: channel.id } });
+            event.send(`"Successfully added \`${log}\` to <#${channel.id}>.`);
         }
 
-        case "moderator": {
-            if (!guild.config.roles) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": { "moderator": [] } } });
+        case "remove": {
+            if (guild.config.channels![log] === undefined) {
+                event.send("This logging type has no specified channel already.");
+                return;
             }
 
-            else if (!guild.config.roles!.moderator) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles.moderator": [] } });
-            }
-            break;
-        }
-
-        case "channels": {
-            if (!guild.config.channels) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.channels": {} } });
-            }
-            break;
-        }
-
-        case "automod": {
-            if (!guild.config.automod) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod": { "enabled": false } } });
-            }
-            break;
-        }
-
-        case "filter": {
-            if (!guild.config.filter) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod": { "filter": { "enabled": false, "list": [] } } } });
-            }
-            break;
-        }
-
-        case "inviteblocker": {
-            if (!guild.config.adblocker) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.inviteblocker": false } });
-            }
-            break;
+            await database?.guilds.updateOne({ id: guild.id }, { "$unset": { [`config.channels.${log}`]: "" } });
+            event.send(`"Successfully removed \`${log}\` from the channel.`);
         }
     }
 }
 
-function setMutePermissions(event: CommandEvent, role: Role) {
-    const guild = event.guild;
-    guild.roles.cache.get(role.id)?.setPermissions(0);
+async function displayAllSettings(event: CommandEvent, guild: Guild) {
+    const embed = new MessageEmbed()
+        .setTitle("The current settings for this server:")
+        .addField("Prefix", await displayData(event, guild, "prefix"), true)
+        .addField("Moderators", await displayData(event, guild, "moderators"), true)
+        .addField("Mute role", await displayData(event, guild, "muterole"), true)
+        .addField("Automod", await displayData(event, guild, "automod"), true)
+        .addField("Overwrites", await displayData(event, guild, "overwrites"), true)
+        .addField("Logging", await displayData(event, guild, "logging"), true)
+        .addField("Filter", await displayData(event, guild, "filter"), true)
+        .addField("Ad blocker", await displayData(event, guild, "inviteblocker"), true)
+        .setColor("#61e096")
+        .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
-    guild.channels.cache.forEach((channel) => {
-        if (channel.type === "category") {
-            channel.updateOverwrite(role, { "SEND_MESSAGES": false, "ADD_REACTIONS": false, "SPEAK": false }, "Mute role setup");
-        }
-
-        if (channel.type === "text" && !channel.permissionsLocked) {
-            channel.updateOverwrite(role, { "SEND_MESSAGES": false, "ADD_REACTIONS": false }, "Mute role setup");
-        }
-
-        if (channel.type === "voice" && !channel.permissionsLocked) {
-            channel.updateOverwrite(role, { "SPEAK": false }, "Mute role setup");
-        }
-    })
-}
-
-function removeMutePermissions(event: CommandEvent, role: Role) {
-    const guild = event.guild;
-
-    guild.channels.cache.forEach((channel) => {
-        if (channel.type === "category") {
-            channel.permissionOverwrites.delete(role.id);
-        }
-
-        if (channel.type === "text" && !channel.permissionsLocked) {
-            channel.permissionOverwrites.delete(role.id);
-        }
-
-        if (channel.type === "voice" && !channel.permissionsLocked) {
-            channel.permissionOverwrites.delete(role.id);
-        }
-    })
+    event.send({ embed: embed });
 }
