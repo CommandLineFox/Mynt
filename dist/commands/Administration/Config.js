@@ -69,7 +69,7 @@ class Config extends Command_1.default {
             case "inviteblock":
             case "ads":
             case "adblock":
-            case "adblocker": {
+            case "inviteBlocker": {
                 inviteBlockerSettings(event, option, guild);
             }
         }
@@ -246,7 +246,7 @@ async function automodSettings(event, option, guild) {
             break;
         }
         case "disable": {
-            if (!guild.config.automod === false) {
+            if (guild.config.automod !== true) {
                 event.send("Automod is already disabled.");
                 return;
             }
@@ -321,20 +321,20 @@ async function inviteBlockerSettings(event, option, guild) {
     }
     switch (option) {
         case "enable": {
-            if (guild.config.adBlocker === true) {
+            if (guild.config.inviteBlocker === true) {
                 event.send("The invite blocker is already enabled");
                 return;
             }
-            database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.adBlocker": true } });
+            database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.inviteBlocker": true } });
             event.send("The invite blocker has been enabled.");
             break;
         }
         case "disable": {
-            if (guild.config.adBlocker === false) {
+            if (guild.config.inviteBlocker !== true) {
                 event.send("The invite blocker is already disabled");
                 return;
             }
-            database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$unset": { "config.adBlocker": "" } });
+            database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$unset": { "config.inviteBlocker": "" } });
             event.send("The invite blocker has been disabled.");
             break;
         }
@@ -347,7 +347,7 @@ async function overwriteSettings(event, option, args, guild) {
         return;
     }
     switch (option.toLowerCase()) {
-        case "staffBypass": {
+        case "staffbypass": {
             const value = args;
             switch (value) {
                 case "enable": {
@@ -400,20 +400,28 @@ async function loggingSettings(event, option, args, guild) {
                 event.send("Couldn't find the channel you're looking for.");
                 return;
             }
-            if (guild.config.channels[log] === channel.id) {
+            if (log.length === 1 && guild.config.channels[log[0]] === channel.id) {
                 event.send("This channel is already set for this logging type");
                 return;
             }
-            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { [`config.channels.${log}`]: channel.id } }));
-            event.send(`"Successfully added \`${log}\` to <#${channel.id}>.`);
+            log.forEach(async (logtype) => {
+                if (guild.config.channels[logtype] === channel.id) {
+                    event.send("This channel is already set for this logging type");
+                    return;
+                }
+                await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { [`config.channels.${logtype}`]: channel.id } }));
+                event.send(`"Successfully added \`${logtype}\` to <#${channel.id}>.`);
+            });
         }
         case "remove": {
-            if (guild.config.channels[log] === undefined) {
+            if (log.length === 1 && guild.config.channels[log[0]] === undefined) {
                 event.send("This logging type has no specified channel already.");
                 return;
             }
-            await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$unset": { [`config.channels.${log}`]: "" } }));
-            event.send(`"Successfully removed \`${log}\` from the channel.`);
+            log.forEach(async (logtype) => {
+                await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$unset": { [`config.channels.${log}`]: "" } }));
+                event.send(`"Successfully removed \`${logtype}\` from the channel it was bound to.`);
+            });
         }
     }
 }
@@ -427,7 +435,7 @@ async function displayAllSettings(event, guild) {
         .addField("Overwrites", await Utils_1.displayData(event, guild, "overwrites"), true)
         .addField("Logging", await Utils_1.displayData(event, guild, "logging"), true)
         .addField("Filter", await Utils_1.displayData(event, guild, "filter"), true)
-        .addField("Ad blocker", await Utils_1.displayData(event, guild, "inviteblocker"), true)
+        .addField("Invite blocker", await Utils_1.displayData(event, guild, "inviteblocker"), true)
         .setColor("#61e096")
         .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
     event.send({ embed: embed });

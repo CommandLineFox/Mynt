@@ -31,7 +31,7 @@ function autoMod(client: MyntClient, message: Message, guild: Guild) {
         return;
     }
 
-    if (guild.config.adBlocker === true && adblock(message)) {
+    if (guild.config.inviteBlocker === true && adblock(message)) {
         console.log("Ad blocker go brrrr");
         return;
     }

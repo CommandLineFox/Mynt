@@ -7,7 +7,7 @@ export interface Roles {
 
 export interface Channels {
     editLogs?: string;
-    bulkDelete?: string;
+    bulkDeletes?: string;
     modActions?: string;
     commandUsed?: string;
     nameChanges?: string;
@@ -30,7 +30,7 @@ export interface GuildConfig {
     roles?: Roles;
     channels?: Channels;
     filter?: Filter;
-    adBlocker?: boolean;
+    inviteBlocker?: boolean;
     staffBypass?: boolean;
 }
 

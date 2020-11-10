@@ -27,7 +27,7 @@ function autoMod(client, message, guild) {
     if (guild.config.filter && guild.config.filter.enabled && filter(message, guild)) {
         return;
     }
-    if (guild.config.adBlocker === true && adblock(message)) {
+    if (guild.config.inviteBlocker === true && adblock(message)) {
         console.log("Ad blocker go brrrr");
         return;
     }

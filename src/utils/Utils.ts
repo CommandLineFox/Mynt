@@ -46,7 +46,7 @@ export async function databaseCheck(database: Database, guild: Guild, option: Da
         }
 
         case "inviteblocker": {
-            if (!guild.config.adBlocker) {
+            if (!guild.config.inviteBlocker) {
                 await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.inviteblocker": false } });
             }
             break;
@@ -167,8 +167,8 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
                 return guild.config.logging === true ? "Enabled" : "Disabled";
             }
 
-            case "adBlocker": {
-                return guild.config.adBlocker === true ? "Enabled" : "Disabled";
+            case "inviteBlocker": {
+                return guild.config.inviteBlocker === true ? "Enabled" : "Disabled";
             }
         }
     }
@@ -187,7 +187,9 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
                 }
 
                 const embed = new MessageEmbed()
-                    .setTitle("The following roles are moderator roles:");
+                    .setTitle("The following roles are moderator roles:")
+                    .setColor("#61e096")
+                    .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
                 let list = "";
                 mods.forEach(async (mod) => {
@@ -225,17 +227,19 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
 
             case "automod": {
                 const automod = guild?.config.automod;
-                if (automod === false) {
+                if (automod !== true) {
                     event.send("Automod is disabled.");
                     return;
                 }
 
                 const filter = guild.config.filter;
-                const adBlocker = guild.config.adBlocker;
+                const inviteBlocker = guild.config.inviteBlocker;
                 const embed = new MessageEmbed()
                     .setTitle("Here's a list of automod features:")
                     .addField("Word filter", `\`${(filter && filter.enabled) ? "Enabled" : "Disabled"}\``, true)
-                    .addField("Ad blocker", `\`${(adBlocker === true) ? "Enabled" : "Disabled"}\``, true);
+                    .addField("Ad blocker", `\`${(inviteBlocker === true) ? "Enabled" : "Disabled"}\``, true)
+                    .setColor("#61e096")
+                    .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
                 event.send({ embed: embed });
                 break;
@@ -255,6 +259,8 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
 
                 const embed = new MessageEmbed()
                     .setTitle("The following words are filtered:")
+                    .setColor("#61e096")
+                    .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
                 let list = "";
                 filter.forEach((word) => {
@@ -269,7 +275,9 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
             case "overwrites": {
                 const embed = new MessageEmbed()
                     .setTitle("These are the overwrites for this server:")
-                    .addField("Staff bypass", `${guild.config.staffBypass === true ? "Enabled" : "Disabled"}`, true);
+                    .addField("Staff bypass", `${guild.config.staffBypass === true ? "Enabled" : "Disabled"}`, true)
+                    .setColor("#61e096")
+                    .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
                 event.send({ embed: embed });
                 break;
@@ -293,13 +301,15 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
                     .addField("Channel changes", await checkLoggingChannels(event, database!, guild, "editLogs"))
                     .addField("Voice changes", await checkLoggingChannels(event, database!, guild, "editLogs"))
                     .addField("Joins", await checkLoggingChannels(event, database!, guild, "editLogs"))
+                    .setColor("#61e096")
+                    .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
                 event.send({ embed: embed });
                 break;
             }
 
-            case "adBlocker": {
-                event.send(`${guild.config.adBlocker === true ? "The invite blocker is enabled." : "The invite blocker is disabled."}`);
+            case "inviteBlocker": {
+                event.send(`${guild.config.inviteBlocker === true ? "The invite blocker is enabled." : "The invite blocker is disabled."}`);
                 break;
             }
         }
@@ -307,65 +317,78 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
     return;
 }
 
-export function convertLogging(type: string) {
+export function convertLogging(type: string): LoggingType[] | "None" {
     switch (type) {
         case "edits":
         case "deletes":
         case "edit_logs": {
-            return "editLogs";
+            return ["editLogs"];
         }
 
         case "bulks":
-        case "bulkdeletes":
+        case "bulkDeletess":
         case "bulk_delete_logs": {
-            return "bulkDelete";
+            return ["bulkDeletes"];
         }
 
         case "modactions":
         case "mod_actions": {
-            return "modActions";
+            return ["modActions"];
         }
 
         case "usage":
         case "commands":
         case "command_used": {
-            return "commandUsed";
+            return ["commandUsed"];
         }
 
         case "names":
         case "nicknames":
         case "namechanges":
         case "name_changes": {
-            return "nameChanges";
+            return ["nameChanges"];
         }
 
         case "roles":
         case "roleupdates":
         case "role_updates": {
-            return "roleUpdates";
+            return ["roleUpdates"];
         }
 
         case "guild":
         case "guildchanges":
         case "guild_changes": {
-            return "guildChanges";
+            return ["guildChanges"];
         }
 
         case "channels":
         case "channelchanges":
         case "channel_changes": {
-            return "channelChanges";
+            return ["channelChanges"];
         }
 
         case "voice":
         case "voice_changes": {
-            return "voiceChanges";
+            return ["voiceChanges"];
         }
 
         case "joins":
         case "join_logs": {
-            return "joinLogs";
+            return ["joinLogs"];
         }
+
+        case "messages": {
+            return ["editLogs", "bulkDeletes"];
+        }
+
+        case "moderation": {
+            return ["modActions", "commandUsed"];
+        }
+
+        case "updates": {
+            return ["guildChanges", "roleUpdates", "nameChanges"];
+        }
+
         default: {
             return "None";
         }
@@ -382,6 +405,6 @@ async function checkLoggingChannels(event: CommandEvent, database: Database, gui
         await database.guilds.updateOne({ id: guild.id }, { "$unset": { [`config.channels.${type}`]: "" } });
         return "Not set";
     }
-    
+
     return `<#${channel.id}`;
 }

@@ -1,4 +1,4 @@
-import { Message, StringResolvable, MessageOptions, TextChannel, DMChannel, User, Guild, GuildMember, NewsChannel, MessageAttachment, MessageEmbed } from "discord.js";
+import { Message, StringResolvable, MessageOptions, TextChannel, DMChannel, User, Guild, GuildMember, NewsChannel, MessageEmbed } from "discord.js";
 import MyntClient from "~/MyntClient";
 
 export default class CommandEvent {
@@ -24,11 +24,11 @@ export default class CommandEvent {
         this.member = message.member!;
     }
 
-    send(content?: StringResolvable, options?: MessageOptions | MessageAttachment | MessageEmbed): Promise<Message | Message[]> {
-        return this.channel.send(content, options);
+    send(content: StringResolvable, options?: MessageOptions | MessageEmbed): Promise<Message | Message[]> {
+        return options ? this.channel.send(content, options) : this.channel.send(content);
     }
 
-    reply(content?: StringResolvable, options?: MessageOptions) {
-        return this.message.reply(content, options);
+    reply(content: StringResolvable, options?: MessageOptions) {
+        return options ? this.message.reply(content, options) : this.message.reply(content);
     }
 }

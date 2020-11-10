@@ -14,10 +14,10 @@ class CommandEvent {
         this.member = message.member;
     }
     send(content, options) {
-        return this.channel.send(content, options);
+        return options ? this.channel.send(content, options) : this.channel.send(content);
     }
     reply(content, options) {
-        return this.message.reply(content, options);
+        return options ? this.message.reply(content, options) : this.message.reply(content);
     }
 }
 exports.default = CommandEvent;
