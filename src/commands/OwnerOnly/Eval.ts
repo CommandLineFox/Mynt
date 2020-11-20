@@ -1,16 +1,16 @@
 import Command from "@command/Command";
-import { OwnerOnly } from "~/Groups";
+import {OwnerOnly} from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import { MessageEmbed } from "discord.js";
-import { inspect } from "util";
-import { runInNewContext } from "vm";
+import {MessageEmbed} from "discord.js";
+import {inspect} from "util";
+import {runInNewContext} from "vm";
 
 export default class Eval extends Command {
-    constructor() {
-        super({ name: "Eval", triggers: ["eval", "evaluate"], description: "Runs given code", group: OwnerOnly });
+    public constructor() {
+        super({name: "Eval", triggers: ["eval", "evaluate"], description: "Runs given code", group: OwnerOnly});
     }
 
-    async run(event: CommandEvent) {
+    public async run(event: CommandEvent): Promise<void> {
         const client = event.client;
         const message = event.message;
         let argument = event.argument;
@@ -22,7 +22,12 @@ export default class Eval extends Command {
         }
 
         const script = parseBlock(argument);
-        const exec = await run(script, { client, message, MessageEmbed, author, }, { filename: message.guild?.id.toString() });
+        const exec = await run(script, {
+            client,
+            message,
+            MessageEmbed,
+            author,
+        }, {filename: message.guild?.id.toString()});
         const end = Date.now();
 
         if (typeof exec === "string") {
@@ -31,9 +36,8 @@ export default class Eval extends Command {
                 .addField("Output", makeCodeBlock(exec, "js"))
                 .setFooter(`Script Executed in ${end - start}ms`);
 
-            event.send({ embed: embed });
-        }
-        else {
+            event.send({embed: embed});
+        } else {
             const embed = new MessageEmbed()
                 .addField("Input", makeCodeBlock(script, "js"))
                 .addField("Output", makeCodeBlock(`${exec.name}: ${exec.message}`))
@@ -43,6 +47,7 @@ export default class Eval extends Command {
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 async function run(script: string, ctx: object, opts: object): Promise<string | Error> {
     try {
         const result = await runInNewContext(`(async () => { ${script} })()`, ctx, opts);
@@ -51,8 +56,7 @@ async function run(script: string, ctx: object, opts: object): Promise<string | 
         }
 
         return result;
-    }
-    catch (err) {
+    } catch (err) {
         return err;
     }
 }

@@ -1,26 +1,30 @@
 import Command from "@command/Command";
-import { Mail } from "~/Groups";
+import {Mail} from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 
 export default class ReplyLast extends Command {
-
-    constructor() {
-        super({ name: "ReplyLast", triggers: ["replylast"], description: "Replies to the last received DM", group: Mail });
+    public constructor() {
+        super({
+            name: "ReplyLast",
+            triggers: ["replylast"],
+            description: "Replies to the last received DM",
+            group: Mail
+        });
     }
 
-    run(event: CommandEvent) {
+    public async run(event: CommandEvent): Promise<void> {
         const argument = event.argument;
         const lastDm = event.client.lastDmAuthor;
 
         if (!lastDm) {
-            event.send("Unable to find the last DM.");
+            await event.send("Unable to find the last DM.");
             return
         }
 
         if (!argument) {
-            event.reply("you can't send an empty message to users.")
+            await event.reply("you can't send an empty message to users.")
         }
-        
+
         lastDm!.send(argument)
             .catch(() => {
                 event.reply("the specified user has their DMs disabled or has me blocked.");
@@ -28,6 +32,6 @@ export default class ReplyLast extends Command {
             })
             .then(() => {
                 event.send(`Successfully sent the message to ${lastDm!.tag}.`);
-            })
+            });
     }
 }

@@ -12,7 +12,9 @@ class MyntClient extends discord_js_1.Client {
         this.config = config;
         this.database = database;
         this.once("ready", () => {
-            EventHandler_1.EventHandler(this);
+            EventHandler_1.EventHandler(this).catch((err) => {
+                console.log(err);
+            });
             new CommandHandler_1.default(this);
         });
         this.on("message", (message) => {
@@ -24,16 +26,19 @@ class MyntClient extends discord_js_1.Client {
     }
     async isMod(member, guild) {
         var _a, _b;
-        const guildmodel = await ((_a = this.database) === null || _a === void 0 ? void 0 : _a.guilds.findOne({ id: guild.id }));
-        if (!guildmodel) {
-            return false || this.isAdmin(member);
+        if (this.isAdmin(member)) {
+            return true;
         }
-        const moderators = (_b = guildmodel.config.roles) === null || _b === void 0 ? void 0 : _b.moderator;
+        const guildModel = await ((_a = this.database) === null || _a === void 0 ? void 0 : _a.guilds.findOne({ id: guild.id }));
+        if (!guildModel) {
+            return false;
+        }
+        const moderators = (_b = guildModel.config.roles) === null || _b === void 0 ? void 0 : _b.moderator;
         if (!moderators) {
-            return false || this.isAdmin(member);
+            return false;
         }
         if (moderators.length === 0) {
-            return false || this.isAdmin(member);
+            return false;
         }
         let mod = false;
         moderators.forEach(id => {
@@ -41,30 +46,29 @@ class MyntClient extends discord_js_1.Client {
                 mod = true;
             }
         });
-        return mod || this.isAdmin(member);
+        return mod;
     }
     isAdmin(member) {
-        if (member.permissions.has("ADMINISTRATOR")) {
-            return true;
-        }
-        return false;
+        return member.permissions.has("ADMINISTRATOR");
     }
     isOwner(user) {
         return this.config.owners.includes(user.id);
     }
     async getPrefix(guild) {
+        var _a;
         if (guild) {
-            let guilddb = await this.database.guilds.findOne({ id: guild.id });
-            if (!guilddb) {
+            const guildDb = await ((_a = this.database) === null || _a === void 0 ? void 0 : _a.guilds.findOne({ id: guild.id }));
+            if (!guildDb) {
                 return this.config.prefix;
             }
-            if (guilddb.config.prefix) {
-                return guilddb.config.prefix;
+            if (guildDb.config.prefix) {
+                return guildDb.config.prefix;
             }
         }
         return this.config.prefix;
     }
-    generateMail(message) {
+    async generateMail(message) {
+        var _a;
         const client = message.client;
         const author = message.author;
         const received = new discord_js_1.MessageEmbed()
@@ -73,11 +77,11 @@ class MyntClient extends discord_js_1.Client {
             .setColor("#61e096")
             .setFooter("ID: " + author.id, author.displayAvatarURL());
         if (message.attachments && message.attachments.first()) {
-            received.setImage(message.attachments.first().url);
+            received.setImage((_a = message.attachments.first()) === null || _a === void 0 ? void 0 : _a.url);
         }
         const channel = client.channels.cache.find(channel => channel.id == this.config.mail);
         if (channel) {
-            channel.send({ embed: received });
+            await channel.send({ embed: received });
         }
     }
 }

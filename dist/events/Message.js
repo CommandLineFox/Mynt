@@ -6,13 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.event = void 0;
 const Event_1 = __importDefault(require("../event/Event"));
 exports.event = new Event_1.default("message", async (client, message) => {
+    var _a;
     if (message.author.bot) {
         return;
     }
     if (!message.guild) {
         return;
     }
-    let guild = await client.database.guilds.findOne({ id: message.guild.id });
+    const guild = await ((_a = client.database) === null || _a === void 0 ? void 0 : _a.guilds.findOne({ id: message.guild.id }));
     if (!guild) {
         return;
     }
@@ -27,8 +28,7 @@ function autoMod(client, message, guild) {
     if (guild.config.filter && guild.config.filter.enabled && filter(message, guild)) {
         return;
     }
-    if (guild.config.inviteBlocker === true && adblock(message)) {
-        console.log("Ad blocker go brrrr");
+    if (guild.config.inviteBlocker === true && inviteBlock(message)) {
         return;
     }
 }
@@ -46,17 +46,23 @@ function filter(message, guild) {
     }
     for (const word of guild.config.filter.list) {
         if (text.includes(word)) {
-            message.delete({ timeout: 100, reason: "Automod - Word filter" });
+            message.delete({ timeout: 100, reason: "AutoMod - Word filter" })
+                .catch((err) => {
+                console.log(err);
+            });
             return true;
         }
     }
     return false;
 }
-function adblock(message) {
+function inviteBlock(message) {
     const content = message.content;
-    const regex = new RegExp("(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li)|discord(app)?\.com\/invite)\/.+[a-z]");
+    const regex = new RegExp("(https?://)?(www.)?(discord.(gg|io|me|li)|discord(app)?.com/invite)/.+[a-z]");
     if (content.match(regex)) {
-        message.delete({ timeout: 100, reason: "Automod - Ad blocker" });
+        message.delete({ timeout: 100, reason: "AutoMod - Invite blocker" })
+            .catch((err) => {
+            console.log(err);
+        });
         return true;
     }
     return false;

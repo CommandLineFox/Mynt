@@ -79,7 +79,7 @@ function object(template) {
     }
     return createType("Object", defaultValue, (value, key) => {
         if (typeof value === "object") {
-            const errors = checkObject(value, template, key + ".");
+            const errors = checkObject(value, template, key ? key + "." : ".");
             if (errors.length === 0) {
                 return true;
             }

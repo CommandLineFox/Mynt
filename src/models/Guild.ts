@@ -1,4 +1,4 @@
-import { ObjectId } from "bson";
+import {ObjectId} from "bson";
 
 export interface Roles {
     muted?: string;
@@ -40,11 +40,11 @@ export interface GuildDoc {
 }
 
 export class Guild implements GuildDoc {
-    _id: ObjectId;
-    id: string;
-    config: GuildConfig;
+    public _id: ObjectId;
+    public id: string;
+    public config: GuildConfig;
 
-    constructor(data: GuildDoc) {
+    public constructor(data: GuildDoc) {
         this._id = new ObjectId();
         this.id = data.id;
         this.config = data.config ?? {};

@@ -1,10 +1,10 @@
 import * as fs from "fs";
 import configTemplate from "~/Config";
-import { generateConfig, getConfig } from "~/ConfigHandler";
+import {generateConfig, getConfig} from "~/ConfigHandler";
 import MyntClient from "~/MyntClient";
-import { Database } from "@utils/Database";
+import {Database} from "@utils/Database";
 
-function main() {
+async function main() {
     const configFile = "config.json";
 
     if (!fs.existsSync(configFile)) {
@@ -23,14 +23,16 @@ function main() {
     }
 
     const database = new Database(config.db);
-    database.connect();
+    await database.connect();
     const client = new MyntClient(config, database);
-    client.login(config.token);
+    await client.login(config.token);
 
-    client.on("ready", () => {
-        console.log(`Logged in as ${client.user!.tag}`);
-        client.user!.setActivity("with Alex", { type: "PLAYING" });
-    })
+    client.on("ready", async () => {
+        console.log(`Logged in as ${client.user?.tag}`);
+        await client.user?.setActivity("with Alex", {type: "PLAYING"});
+    });
 }
 
-main();
+main().catch((err) => {
+    console.log(err);
+});

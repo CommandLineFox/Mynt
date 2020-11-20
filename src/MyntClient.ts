@@ -1,24 +1,26 @@
-import { Client, ClientOptions, User, Guild, GuildMember, MessageEmbed, Message, TextChannel } from "discord.js";
+import {Client, ClientOptions, User, Guild, GuildMember, MessageEmbed, Message, TextChannel} from "discord.js";
 import configTemplate from "~/Config";
-import { IFunctionType } from "~/ConfigHandler";
+import {IFunctionType} from "~/ConfigHandler";
 import CommandHandler from "@command/CommandHandler";
-import { EventHandler } from "@event/EventHandler";
-import { Database } from "@utils/Database";
+import {EventHandler} from "@event/EventHandler";
+import {Database} from "@utils/Database";
 
 type configTemplate = typeof configTemplate;
 
 export default class MyntClient extends Client {
-    readonly config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> };
-    readonly database?: Database;
-    lastDmAuthor?: User;
+    public readonly config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> };
+    public readonly database?: Database;
+    public lastDmAuthor?: User;
 
-    constructor(config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> }, database?: Database, options?: ClientOptions) {
+    public constructor(config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> }, database?: Database, options?: ClientOptions) {
         super(options);
         this.config = config;
         this.database = database;
         this.once("ready", () => {
-            EventHandler(this)
-            new CommandHandler(this)
+            EventHandler(this).catch((err) => {
+                console.log(err);
+            });
+            new CommandHandler(this);
         });
         this.on("message", (message) => {
             if (!message.guild && !message.author.bot) {
@@ -27,58 +29,60 @@ export default class MyntClient extends Client {
             }
         });
     }
+    
+    public async isMod(member: GuildMember, guild: Guild): Promise<boolean> {
+        if (this.isAdmin(member)) {
+            return true;
+        }
 
-    async isMod(member: GuildMember, guild: Guild): Promise<Boolean> {
-        const guildmodel = await this.database?.guilds.findOne({id: guild.id});
-        if (!guildmodel) {
-            return false || this.isAdmin(member);
+        const guildModel = await this.database?.guilds.findOne({id: guild.id});
+        if (!guildModel) {
+            return false;
         }
-        
-        const moderators = guildmodel.config.roles?.moderator;
+
+        const moderators = guildModel.config.roles?.moderator;
         if (!moderators) {
-            return false || this.isAdmin(member);
+            return false;
         }
-        
+
         if (moderators.length === 0) {
-            return false || this.isAdmin(member);
+            return false;
         }
-        
+
         let mod = false;
         moderators.forEach(id => {
             if (member.roles.cache.some(role => role.id === id)) {
                 mod = true;
             }
-        })
+        });
 
-        return mod || this.isAdmin(member);
+        return mod;
     }
 
-    isAdmin(member: GuildMember): boolean {
-        if (member.permissions.has("ADMINISTRATOR")) {
-            return true;
-        }
-        return false;
+    public isAdmin(member: GuildMember): boolean {
+        return member.permissions.has("ADMINISTRATOR");
+
     }
 
-    isOwner(user: User): boolean {
+    public isOwner(user: User): boolean {
         return this.config.owners.includes(user.id);
     }
 
-    async getPrefix(guild?: Guild): Promise<string> {
+    public async getPrefix(guild?: Guild): Promise<string> {
         if (guild) {
-            let guilddb = await this.database!.guilds.findOne({ id: guild.id });
-            if (!guilddb) {
+            const guildDb = await this.database?.guilds.findOne({id: guild.id});
+            if (!guildDb) {
                 return this.config.prefix;
             }
 
-            if (guilddb.config.prefix) {
-                return guilddb.config.prefix;
+            if (guildDb.config.prefix) {
+                return guildDb.config.prefix;
             }
         }
         return this.config.prefix;
     }
 
-    private generateMail(message: Message) {
+    private async generateMail(message: Message) {
         const client = message.client;
         const author = message.author;
         const received = new MessageEmbed()
@@ -87,13 +91,13 @@ export default class MyntClient extends Client {
             .setColor("#61e096")
             .setFooter("ID: " + author.id, author.displayAvatarURL());
         if (message.attachments && message.attachments.first()) {
-            received.setImage(message.attachments.first()!.url);
+            received.setImage(message.attachments.first()?.url as string);
         }
 
         const channel = client.channels.cache.find(channel => channel.id == this.config.mail);
 
         if (channel) {
-            (channel as TextChannel).send({ embed: received });
+            await (channel as TextChannel).send({embed: received});
         }
     }
 }

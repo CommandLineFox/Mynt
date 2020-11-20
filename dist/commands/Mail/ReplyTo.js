@@ -7,14 +7,19 @@ const Command_1 = __importDefault(require("../../command/Command"));
 const Groups_1 = require("../../Groups");
 class ReplyTo extends Command_1.default {
     constructor() {
-        super({ name: "ReplyTo", triggers: ["replyto"], description: "Sends a message to a specified user", group: Groups_1.Mail });
+        super({
+            name: "ReplyTo",
+            triggers: ["replyto"],
+            description: "Sends a message to a specified user",
+            group: Groups_1.Mail
+        });
     }
     async run(event) {
         const guild = event.guild;
         const [user, text] = event.argument.split(/\s+/, 3);
         const member = guild.members.cache.find(member => user === member.id || user === `<@${member.id}>` || user === `<@!${member.id}>` || user === member.user.username || user === member.user.tag);
         if (!member) {
-            event.send("Couldn't find the user you're looking for");
+            await event.send("Couldn't find the user you're looking for");
             return;
         }
         member.user.send(text)

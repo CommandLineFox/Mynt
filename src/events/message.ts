@@ -1,7 +1,7 @@
 import Event from "@event/Event";
 import MyntClient from "~/MyntClient";
-import { Message } from "discord.js";
-import { Guild } from "@models/Guild";
+import {Message} from "discord.js";
+import {Guild} from "@models/Guild";
 
 export const event = new Event("message", async (client: MyntClient, message: Message) => {
     if (message.author.bot) {
@@ -12,7 +12,7 @@ export const event = new Event("message", async (client: MyntClient, message: Me
         return;
     }
 
-    let guild = await client.database!.guilds.findOne({ id: message.guild!.id });
+    const guild = await client.database?.guilds.findOne({id: message.guild.id});
     if (!guild) {
         return;
     }
@@ -20,7 +20,7 @@ export const event = new Event("message", async (client: MyntClient, message: Me
     if (guild.config.automod) {
         autoMod(client, message, guild);
     }
-})
+});
 
 function autoMod(client: MyntClient, message: Message, guild: Guild) {
     if (guild.config.staffBypass === true && client.isMod(message.member!, message.guild!)) {
@@ -31,8 +31,7 @@ function autoMod(client: MyntClient, message: Message, guild: Guild) {
         return;
     }
 
-    if (guild.config.inviteBlocker === true && adblock(message)) {
-        console.log("Ad blocker go brrrr");
+    if (guild.config.inviteBlocker === true && inviteBlock(message)) {
         return;
     }
 }
@@ -53,7 +52,10 @@ function filter(message: Message, guild: Guild): boolean {
 
     for (const word of guild.config.filter.list) {
         if (text.includes(word)) {
-            message.delete({ timeout: 100, reason: "Automod - Word filter" });
+            message.delete({timeout: 100, reason: "AutoMod - Word filter"})
+                .catch((err) => {
+                    console.log(err);
+                });
             return true;
         }
     }
@@ -61,12 +63,15 @@ function filter(message: Message, guild: Guild): boolean {
     return false;
 }
 
-function adblock(message: Message): boolean {
+function inviteBlock(message: Message): boolean {
     const content = message.content;
-    const regex = new RegExp("(https?:\/\/)?(www\.)?(discord\.(gg|io|me|li)|discord(app)?\.com\/invite)\/.+[a-z]");
+    const regex = new RegExp("(https?://)?(www.)?(discord.(gg|io|me|li)|discord(app)?.com/invite)/.+[a-z]");
 
     if (content.match(regex)) {
-        message.delete({ timeout: 100, reason: "Automod - Ad blocker" });
+        message.delete({timeout: 100, reason: "AutoMod - Invite blocker"})
+            .catch((err) => {
+                console.log(err);
+            });
         return true;
     }
 

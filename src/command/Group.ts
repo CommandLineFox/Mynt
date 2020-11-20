@@ -11,25 +11,25 @@ interface GroupOptions {
 }
 
 export default class Group implements GroupOptions {
-    readonly name: string;
-    readonly description: string;
-    readonly guildOnly: boolean;
-    readonly modOnly: boolean;
-    readonly adminOnly: boolean;
-    readonly ownerOnly: boolean;
+    public readonly name: string;
+    public readonly description: string;
+    public readonly guildOnly: boolean;
+    public readonly modOnly: boolean;
+    public readonly adminOnly: boolean;
+    public readonly ownerOnly: boolean;
 
-    constructor(options: GroupOptions) {
+    public constructor(options: GroupOptions) {
         this.name = options.name;
         this.description = options.description;
-        this.guildOnly = options.guildOnly || false;
-        this.modOnly = options.modOnly || false;
-        this.adminOnly = options.adminOnly || false;
-        this.ownerOnly = options.ownerOnly || false;
+        this.guildOnly = options.guildOnly ?? false;
+        this.modOnly = options.modOnly ?? false;
+        this.adminOnly = options.adminOnly ?? false;
+        this.ownerOnly = options.ownerOnly ?? false;
     }
 
-    private _commands: ReadonlyArray<Command> | undefined;
+    private _commands: readonly Command[] | undefined;
 
-    get commands(): ReadonlyArray<Command> {
-        return this._commands || (this._commands = CommandRegistry.getCommands(this));
+    public get commands(): readonly Command[] {
+        return this._commands ?? (this._commands = CommandRegistry.getCommands(this));
     }
 }

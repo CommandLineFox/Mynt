@@ -9,9 +9,9 @@ class CommandHandler {
     constructor(client) {
         this.client = client;
         this.mentions = [`<@${this.client.user.id}>`, `<@!${this.client.user.id}>`];
-        client.on("message", (message) => {
+        client.on("message", async (message) => {
             if (!message.author.bot) {
-                this.handleMessage(message);
+                await this.handleMessage(message);
             }
         });
     }
@@ -19,16 +19,16 @@ class CommandHandler {
         const content = message.content;
         const prefix = await this.client.getPrefix(message.guild);
         if (content.startsWith(prefix)) {
-            this.handlePrefix(message, content.slice(prefix.length).trim());
+            await this.handlePrefix(message, content.slice(prefix.length).trim());
         }
         else if (content.startsWith(this.mentions[0])) {
-            this.handleMention(message, content.slice(this.mentions[0].length).trim());
+            await this.handleMention(message, content.slice(this.mentions[0].length).trim());
         }
         else if (content.startsWith(this.mentions[1])) {
-            this.handleMention(message, content.slice(this.mentions[1].length).trim());
+            await this.handleMention(message, content.slice(this.mentions[1].length).trim());
         }
     }
-    handlePrefix(message, content) {
+    async handlePrefix(message, content) {
         if (content.length === 0) {
             return;
         }
@@ -37,14 +37,14 @@ class CommandHandler {
         if (command === undefined) {
             return;
         }
-        command.execute(new CommandEvent_1.default(message, this.client, args));
+        await command.execute(new CommandEvent_1.default(message, this.client, args));
     }
     async handleMention(message, content) {
         if (content.length === 0) {
-            message.reply(`My prefix here is \`${await this.client.getPrefix(message.guild)}\``);
+            await message.reply(`My prefix here is \`${await this.client.getPrefix(message.guild)}\``);
             return;
         }
-        this.handlePrefix(message, content);
+        await this.handlePrefix(message, content);
     }
 }
 exports.default = CommandHandler;

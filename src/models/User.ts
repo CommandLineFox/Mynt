@@ -1,5 +1,5 @@
-import { ObjectId } from "bson";
-import { InfractionAction } from "@utils/Types";
+import {ObjectId} from "bson";
+import {InfractionAction} from "@utils/Types";
 
 export interface UserInfraction {
     action: InfractionAction;
@@ -17,10 +17,11 @@ export interface UserDoc {
 }
 
 export class User implements UserDoc {
-    _id: ObjectId;
-    id: string;
-    infractions: UserInfraction[];
-    constructor(data: UserDoc) {
+    public _id: ObjectId;
+    public id: string;
+    public infractions: UserInfraction[];
+
+    public constructor(data: UserDoc) {
         this._id = new ObjectId();
         this.id = data.id;
         this.infractions = data.infractions ?? [];

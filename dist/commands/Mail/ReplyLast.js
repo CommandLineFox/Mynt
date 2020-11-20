@@ -7,17 +7,22 @@ const Command_1 = __importDefault(require("../../command/Command"));
 const Groups_1 = require("../../Groups");
 class ReplyLast extends Command_1.default {
     constructor() {
-        super({ name: "ReplyLast", triggers: ["replylast"], description: "Replies to the last received DM", group: Groups_1.Mail });
+        super({
+            name: "ReplyLast",
+            triggers: ["replylast"],
+            description: "Replies to the last received DM",
+            group: Groups_1.Mail
+        });
     }
-    run(event) {
+    async run(event) {
         const argument = event.argument;
         const lastDm = event.client.lastDmAuthor;
         if (!lastDm) {
-            event.send("Unable to find the last DM.");
+            await event.send("Unable to find the last DM.");
             return;
         }
         if (!argument) {
-            event.reply("you can't send an empty message to users.");
+            await event.reply("you can't send an empty message to users.");
         }
         lastDm.send(argument)
             .catch(() => {

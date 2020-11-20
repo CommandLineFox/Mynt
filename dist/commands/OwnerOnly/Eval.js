@@ -23,7 +23,12 @@ class Eval extends Command_1.default {
             argument = argument.slice(5, argument.length - 3);
         }
         const script = parseBlock(argument);
-        const exec = await run(script, { client, message, MessageEmbed: discord_js_1.MessageEmbed, author, }, { filename: (_a = message.guild) === null || _a === void 0 ? void 0 : _a.id.toString() });
+        const exec = await run(script, {
+            client,
+            message,
+            MessageEmbed: discord_js_1.MessageEmbed,
+            author,
+        }, { filename: (_a = message.guild) === null || _a === void 0 ? void 0 : _a.id.toString() });
         const end = Date.now();
         if (typeof exec === "string") {
             const embed = new discord_js_1.MessageEmbed()

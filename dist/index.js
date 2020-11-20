@@ -27,7 +27,7 @@ const Config_1 = __importDefault(require("./Config"));
 const ConfigHandler_1 = require("./ConfigHandler");
 const MyntClient_1 = __importDefault(require("./MyntClient"));
 const Database_1 = require("./utils/Database");
-function main() {
+async function main() {
     const configFile = "config.json";
     if (!fs.existsSync(configFile)) {
         ConfigHandler_1.generateConfig(configFile, Config_1.default);
@@ -42,13 +42,16 @@ function main() {
         return;
     }
     const database = new Database_1.Database(config.db);
-    database.connect();
+    await database.connect();
     const client = new MyntClient_1.default(config, database);
-    client.login(config.token);
-    client.on("ready", () => {
-        console.log(`Logged in as ${client.user.tag}`);
-        client.user.setActivity("with Alex", { type: "PLAYING" });
+    await client.login(config.token);
+    client.on("ready", async () => {
+        var _a, _b;
+        console.log(`Logged in as ${(_a = client.user) === null || _a === void 0 ? void 0 : _a.tag}`);
+        await ((_b = client.user) === null || _b === void 0 ? void 0 : _b.setActivity("with Alex", { type: "PLAYING" }));
     });
 }
-main();
+main().catch((err) => {
+    console.log(err);
+});
 //# sourceMappingURL=index.js.map

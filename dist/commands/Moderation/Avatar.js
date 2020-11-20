@@ -8,11 +8,16 @@ const Groups_1 = require("../../Groups");
 const discord_js_1 = require("discord.js");
 class Avatar extends Command_1.default {
     constructor() {
-        super({ name: "Avatar", triggers: ["avatar", "av", "pfp"], description: "Displays the specified user's avatar", group: Groups_1.Moderation });
+        super({
+            name: "Avatar",
+            triggers: ["avatar", "av", "pfp"],
+            description: "Displays the specified user's avatar",
+            group: Groups_1.Moderation
+        });
     }
     async run(event) {
         const guild = event.guild;
-        const argument = event.argument;
+        const [argument] = event.argument.split(/\s/, 1);
         let member = guild.members.cache.find(member => argument === member.id || argument === `<@${member.id}>` || argument === `<@!${member.id}>` || argument === member.user.username || argument === member.user.tag);
         if (!member) {
             member = event.member;

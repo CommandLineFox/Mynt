@@ -9,10 +9,10 @@ interface DatabaseConfig {
 }
 
 export class Database {
-    db!: Db;
-    constructor(protected config: DatabaseConfig) { }
+    public db!: Db;
+    public constructor(protected config: DatabaseConfig) { }
 
-    async connect() {
+    public async connect(): Promise<void> {
         const client = await connect(this.config.url, this.config.mongoOptions)
             .catch(err => {
                 throw err;
@@ -21,11 +21,11 @@ export class Database {
         console.log("Connected to database");
     }
 
-    get guilds(): Collection<Guild> {
+    public get guilds(): Collection<Guild> {
         return this.db.collection("guilds");
     }
     
-    get users(): Collection<User> {
+    public get users(): Collection<User> {
         return this.db.collection("users");
     }
 }

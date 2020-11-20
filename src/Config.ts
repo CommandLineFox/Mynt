@@ -1,4 +1,4 @@
-import { string, base, array, object, boolean } from "~/ConfigHandler";
+import {string, base, array, object, boolean} from "~/ConfigHandler";
 
 export default {
     token: string(""),
@@ -12,4 +12,4 @@ export default {
             useUnifiedTopology: boolean(true)
         })
     })
-}
+};

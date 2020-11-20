@@ -6,15 +6,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const CommandRegistry_1 = __importDefault(require("./CommandRegistry"));
 class Group {
     constructor(options) {
+        var _a, _b, _c, _d;
         this.name = options.name;
         this.description = options.description;
-        this.guildOnly = options.guildOnly || false;
-        this.modOnly = options.modOnly || false;
-        this.adminOnly = options.adminOnly || false;
-        this.ownerOnly = options.ownerOnly || false;
+        this.guildOnly = (_a = options.guildOnly) !== null && _a !== void 0 ? _a : false;
+        this.modOnly = (_b = options.modOnly) !== null && _b !== void 0 ? _b : false;
+        this.adminOnly = (_c = options.adminOnly) !== null && _c !== void 0 ? _c : false;
+        this.ownerOnly = (_d = options.ownerOnly) !== null && _d !== void 0 ? _d : false;
     }
     get commands() {
-        return this._commands || (this._commands = CommandRegistry_1.default.getCommands(this));
+        var _a;
+        return (_a = this._commands) !== null && _a !== void 0 ? _a : (this._commands = CommandRegistry_1.default.getCommands(this));
     }
 }
 exports.default = Group;

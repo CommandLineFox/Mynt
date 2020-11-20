@@ -1,19 +1,24 @@
 import Command from "@command/Command";
-import { Mail } from "~/Groups";
+import {Mail} from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 
 export default class ReplyTo extends Command {
-    constructor() {
-        super({ name: "ReplyTo", triggers: ["replyto"], description: "Sends a message to a specified user", group: Mail });
+    public constructor() {
+        super({
+            name: "ReplyTo",
+            triggers: ["replyto"],
+            description: "Sends a message to a specified user",
+            group: Mail
+        });
     }
 
-    async run(event: CommandEvent) {
+    public async run(event: CommandEvent): Promise<void> {
         const guild = event.guild;
         const [user, text] = event.argument.split(/\s+/, 3)
         const member = guild.members.cache.find(member => user === member.id || user === `<@${member.id}>` || user === `<@!${member.id}>` || user === member.user.username || user === member.user.tag);
 
         if (!member) {
-            event.send("Couldn't find the user you're looking for");
+            await event.send("Couldn't find the user you're looking for");
             return;
         }
 
@@ -24,6 +29,6 @@ export default class ReplyTo extends Command {
             })
             .then(() => {
                 event.send(`Successfully sent the message to ${member.user.tag}.`);
-            })
+            });
     }
 }

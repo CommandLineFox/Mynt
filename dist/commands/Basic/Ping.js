@@ -12,12 +12,12 @@ class Ping extends Command_1.default {
     }
     run(event) {
         event.send("Pinging...")
-            .then((msg) => {
+            .then(async (msg) => {
             msg = msg;
             const ping = new discord_js_1.MessageEmbed()
-                .addField(`:hourglass: Response time: `, `${msg.createdTimestamp - event.message.createdTimestamp}ms`, false)
-                .addField(`:heartbeat: Bot ping: `, `${Math.round(event.client.ws.ping)}ms`, true);
-            msg.edit({ content: "", embed: ping });
+                .addField(":hourglass: Response time: ", `${msg.createdTimestamp - event.message.createdTimestamp}ms`, false)
+                .addField(":heartbeat: Bot ping: ", `${Math.round(event.client.ws.ping)}ms`, true);
+            await msg.edit({ content: "", embed: ping });
         });
     }
 }
