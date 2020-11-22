@@ -19,21 +19,15 @@ export default class Config extends Command {
         const client = event.client;
         const database = client.database;
 
-        let guild = await database!.guilds.findOne({id: event.guild.id});
-        if (!guild) {
-            const newGuild = new Guild({id: event.guild.id});
-            await database!.guilds.insertOne(newGuild);
-            guild = await database!.guilds.findOne({id: event.guild.id});
-        }
-
+        const guild = await client.getGuildFromDatabase(database!, event.guild.id);
         if (!guild) {
             return;
         }
 
-        const [subcommand, option, args] = event.argument.split(/\s+/, 3);
-
+        const [subcommand, option, args] = event.argument.split(" ").reduce((r, s) => r.length > 2 ? [...r.slice(0, 2), r[2] + " " + s] : [...r, s], [] as string[]);
         if (!subcommand) {
             await displayAllSettings(event, guild);
+            return;
         }
 
         switch (subcommand.toLowerCase()) {
@@ -461,8 +455,7 @@ async function loggingSettings(event: CommandEvent, option: string, args: string
         await event.send("You need to specify a type and the channel it will be logged in.");
         return;
     }
-
-    console.log(args);
+    
     const [type, id] = args.split(/\s+/, 2);
     const log = convertLogging(type);
 
@@ -486,37 +479,62 @@ async function loggingSettings(event: CommandEvent, option: string, args: string
 
 
             if (log.length === 1 && guild.config.channels![log[0]] === channel.id) {
-                await event.send("This channel is already set for this logging type");
+                await event.send("This logging type is already enabled in this channel.");
                 return;
             }
 
+            const successful = [], failed = [];
             for (const logType of log) {
 
                 if (guild.config.channels![logType] === channel.id) {
-                    await event.send("This channel is already set for this logging type");
+                    failed.push(logType);
                     continue;
                 }
 
                 await database?.guilds.updateOne({id: guild.id}, {"$set": {[`config.channels.${logType}`]: channel.id}});
-                await event.send(`"Successfully added \`${logType}\` to <#${channel.id}>.`);
+                successful.push(logType);
             }
 
+            let message = "";
+            if (successful.length > 0) {
+                message += `Successfully enabled \`${successful.join("`, `")}\` in <#${channel.id}>. `;
+            }
+
+            if (failed.length > 0) {
+                message += ` \`${failed.join("`, `")}\` ${failed.length === 1 ? "was" : "were"} already enabled in <#${channel.id}>.`;
+            }
+
+            await event.send(message);
             break;
         }
 
         case "remove": {
+            const successful = [], failed = [];
             if (log.length === 1 && guild.config.channels![log[0]] === undefined) {
-                await event.send("This logging type has no specified channel already.");
+                await event.send("This logging type is already disabled.");
                 return;
             }
 
             for (const logType of log) {
+                if (guild.config.channels![logType] === undefined) {
+                    failed.push(logType);
+                    continue;
+                }
 
-
-                await database?.guilds.updateOne({id: guild.id}, {"$unset": {[`config.channels.${log}`]: ""}});
-                await event.send(`"Successfully removed \`${logType}\` from the channel it was bound to.`);
+                await database?.guilds.updateOne({id: guild.id}, {"$unset": {[`config.channels.${logType}`]: ""}});
+                successful.push(logType);
             }
 
+            let message = "";
+            if (successful.length > 0) {
+                message += `Successfully disabled \`${successful.join("`, `")}\`. `;
+            }
+
+            if (failed.length > 0) {
+                message += `\`${failed.join("`, `")}\` ${failed.length === 1 ? "was" : "were"} already disabled.`;
+            }
+
+            await event.send(message);
             break;
         }
     }

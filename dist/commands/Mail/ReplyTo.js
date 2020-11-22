@@ -15,9 +15,10 @@ class ReplyTo extends Command_1.default {
         });
     }
     async run(event) {
+        const client = event.client;
         const guild = event.guild;
         const [user, text] = event.argument.split(/\s+/, 3);
-        const member = guild.members.cache.find(member => user === member.id || user === `<@${member.id}>` || user === `<@!${member.id}>` || user === member.user.username || user === member.user.tag);
+        const member = await client.getMember(user, guild);
         if (!member) {
             await event.send("Couldn't find the user you're looking for");
             return;

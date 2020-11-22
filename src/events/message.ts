@@ -12,11 +12,11 @@ export const event = new Event("message", async (client: MyntClient, message: Me
         return;
     }
 
-    const guild = await client.database?.guilds.findOne({id: message.guild.id});
+    const guild = await client.getGuildFromDatabase(client.database!, message.guild.id);
     if (!guild) {
         return;
     }
-
+    
     if (guild.config.automod) {
         autoMod(client, message, guild);
     }

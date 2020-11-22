@@ -14,10 +14,11 @@ export default class Avatar extends Command {
     }
 
     public async run(event: CommandEvent): Promise<void> {
+        const client = event.client;
         const guild = event.guild;
-        const [argument] = event.argument.split(/\s/, 1);
-        let member = guild.members.cache.find(member => argument === member.id || argument === `<@${member.id}>` || argument === `<@!${member.id}>` || argument === member.user.username || argument === member.user.tag);
-
+        const argument = event.argument;
+        
+        let member = await client.getMember(argument, guild);
         if (!member) {
             member = event.member;
         }

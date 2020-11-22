@@ -13,9 +13,10 @@ export default class ReplyTo extends Command {
     }
 
     public async run(event: CommandEvent): Promise<void> {
+        const client = event.client;
         const guild = event.guild;
-        const [user, text] = event.argument.split(/\s+/, 3)
-        const member = guild.members.cache.find(member => user === member.id || user === `<@${member.id}>` || user === `<@!${member.id}>` || user === member.user.username || user === member.user.tag);
+        const [user, text] = event.argument.split(/\s+/, 3);
+        const member = await client.getMember(user, guild);
 
         if (!member) {
             await event.send("Couldn't find the user you're looking for");

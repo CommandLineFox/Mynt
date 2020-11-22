@@ -262,16 +262,16 @@ async function displayData(event, guild, type, specific) {
                 }
                 const embed = new discord_js_1.MessageEmbed()
                     .setTitle("This is the list of logging modules for this server:")
-                    .addField("Edits / Deletions", await checkLoggingChannels(event, database, guild, "editLogs"))
-                    .addField("Bulk deletes", await checkLoggingChannels(event, database, guild, "editLogs"))
-                    .addField("Mod actions", await checkLoggingChannels(event, database, guild, "editLogs"))
-                    .addField("Command used", await checkLoggingChannels(event, database, guild, "editLogs"))
-                    .addField("Name changes", await checkLoggingChannels(event, database, guild, "editLogs"))
-                    .addField("Role updates", await checkLoggingChannels(event, database, guild, "editLogs"))
-                    .addField("Guild changes", await checkLoggingChannels(event, database, guild, "editLogs"))
-                    .addField("Channel changes", await checkLoggingChannels(event, database, guild, "editLogs"))
-                    .addField("Voice changes", await checkLoggingChannels(event, database, guild, "editLogs"))
-                    .addField("Joins", await checkLoggingChannels(event, database, guild, "editLogs"))
+                    .addField("Edits / Deletions", await checkLoggingChannels(event, database, guild, "editLogs"), true)
+                    .addField("Bulk deletes", await checkLoggingChannels(event, database, guild, "bulkDeletes"), true)
+                    .addField("Mod actions", await checkLoggingChannels(event, database, guild, "modActions"), true)
+                    .addField("Command used", await checkLoggingChannels(event, database, guild, "commandUsed"), true)
+                    .addField("Name changes", await checkLoggingChannels(event, database, guild, "nameChanges"), true)
+                    .addField("Role updates", await checkLoggingChannels(event, database, guild, "roleUpdates"), true)
+                    .addField("Guild changes", await checkLoggingChannels(event, database, guild, "guildChanges"), true)
+                    .addField("Channel changes", await checkLoggingChannels(event, database, guild, "channelChanges"), true)
+                    .addField("Voice changes", await checkLoggingChannels(event, database, guild, "voiceChanges"), true)
+                    .addField("Joins", await checkLoggingChannels(event, database, guild, "joinLogs"), true)
                     .setColor("#61e096")
                     .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
                 await event.send({ embed: embed });
@@ -345,6 +345,10 @@ function convertLogging(type) {
         case "updates": {
             return ["guildChanges", "roleUpdates", "nameChanges"];
         }
+        case "everything":
+        case "all": {
+            return ["editLogs", "bulkDeletes", "modActions", "commandUsed", "nameChanges", "roleUpdates", "guildChanges", "channelChanges", "voiceChanges", "joinLogs"];
+        }
         default: {
             return "None";
         }
@@ -360,6 +364,6 @@ async function checkLoggingChannels(event, database, guild, type) {
         await database.guilds.updateOne({ id: guild.id }, { "$unset": { [`config.channels.${type}`]: "" } });
         return "Not set";
     }
-    return `<#${channel.id}`;
+    return `<#${channel.id}>`;
 }
 //# sourceMappingURL=Utils.js.map

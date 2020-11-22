@@ -18,11 +18,11 @@ export default class ReplyLast extends Command {
 
         if (!lastDm) {
             await event.send("Unable to find the last DM.");
-            return
+            return;
         }
 
         if (!argument) {
-            await event.reply("you can't send an empty message to users.")
+            await event.reply("you can't send an empty message to users.");
         }
 
         lastDm!.send(argument)

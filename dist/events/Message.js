@@ -6,14 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.event = void 0;
 const Event_1 = __importDefault(require("../event/Event"));
 exports.event = new Event_1.default("message", async (client, message) => {
-    var _a;
     if (message.author.bot) {
         return;
     }
     if (!message.guild) {
         return;
     }
-    const guild = await ((_a = client.database) === null || _a === void 0 ? void 0 : _a.guilds.findOne({ id: message.guild.id }));
+    const guild = await client.getGuildFromDatabase(client.database, message.guild.id);
     if (!guild) {
         return;
     }
