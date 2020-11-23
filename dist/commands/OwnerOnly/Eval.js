@@ -34,14 +34,14 @@ class Eval extends Command_1.default {
             const embed = new discord_js_1.MessageEmbed()
                 .addField("Input", makeCodeBlock(script, "js"))
                 .addField("Output", makeCodeBlock(exec, "js"))
-                .setFooter(`Script Executed in ${end - start}ms`);
+                .setFooter(`Script executed in ${end - start}ms`);
             event.send({ embed: embed });
         }
         else {
             const embed = new discord_js_1.MessageEmbed()
                 .addField("Input", makeCodeBlock(script, "js"))
                 .addField("Output", makeCodeBlock(`${exec.name}: ${exec.message}`))
-                .setFooter(`Script Executed in ${end - start}ms`);
+                .setFooter(`Script executed in ${end - start}ms`);
             event.send(embed);
         }
     }

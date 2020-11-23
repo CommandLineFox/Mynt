@@ -23,7 +23,7 @@ class Config extends Command_1.default {
         if (!guild) {
             return;
         }
-        const [subcommand, option, args] = event.argument.split(" ").reduce((r, s) => r.length > 2 ? [...r.slice(0, 2), r[2] + " " + s] : [...r, s], []);
+        const [subcommand, option, args] = Utils_1.splitArguments(event.argument, 3);
         if (!subcommand) {
             await displayAllSettings(event, guild);
             return;
@@ -382,7 +382,7 @@ async function loggingSettings(event, option, args, guild) {
         return;
     }
     if (!args) {
-        await event.send("You need to specify a type and the channel it will be logged in.");
+        await event.send("You need to specify a type.");
         return;
     }
     const [type, id] = args.split(/\s+/, 2);

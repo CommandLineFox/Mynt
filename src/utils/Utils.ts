@@ -329,7 +329,7 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
 }
 
 export function convertLogging(type: string): LoggingType[] | "None" {
-    switch (type) {
+    switch (type.toLowerCase()) {
         case "edits":
         case "deletes":
         case "edit_logs": {
@@ -423,4 +423,27 @@ async function checkLoggingChannels(event: CommandEvent, database: Database, gui
     }
 
     return `<#${channel.id}>`;
+}
+
+export function splitArguments(argument: string, amount: number): string[] {
+    const args = [];
+    let element = "";
+    for (let index = 0; index < argument.length; index++) {
+        if (args.length < amount - 1) {
+            if (argument[index].match(/\s/)) {
+                if (element.trim().length > 0) {
+                    args.push(element.trim());
+                }
+
+                element = "";
+            }
+        }
+        element += argument[index];
+    }
+
+    if (element.trim().length > 0) {
+        args.push(element.trim());
+    }
+
+    return args;
 }

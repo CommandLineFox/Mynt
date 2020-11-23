@@ -3,7 +3,7 @@ import {Administration} from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import {Guild} from "@models/Guild";
 import {MessageEmbed} from "discord.js";
-import {convertLogging, databaseCheck, displayData, mutePermissions} from "@utils/Utils";
+import {convertLogging, databaseCheck, displayData, mutePermissions, splitArguments} from "@utils/Utils";
 
 export default class Config extends Command {
     public constructor() {
@@ -24,7 +24,7 @@ export default class Config extends Command {
             return;
         }
 
-        const [subcommand, option, args] = event.argument.split(" ").reduce((r, s) => r.length > 2 ? [...r.slice(0, 2), r[2] + " " + s] : [...r, s], [] as string[]);
+        const [subcommand, option, args] = splitArguments(event.argument, 3);
         if (!subcommand) {
             await displayAllSettings(event, guild);
             return;
@@ -452,7 +452,7 @@ async function loggingSettings(event: CommandEvent, option: string, args: string
     }
 
     if (!args) {
-        await event.send("You need to specify a type and the channel it will be logged in.");
+        await event.send("You need to specify a type.");
         return;
     }
     

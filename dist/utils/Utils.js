@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.convertLogging = exports.displayData = exports.mutePermissions = exports.databaseCheck = void 0;
+exports.splitArguments = exports.convertLogging = exports.displayData = exports.mutePermissions = exports.databaseCheck = void 0;
 const discord_js_1 = require("discord.js");
 async function databaseCheck(database, guild, option) {
     var _a;
@@ -287,7 +287,7 @@ async function displayData(event, guild, type, specific) {
 }
 exports.displayData = displayData;
 function convertLogging(type) {
-    switch (type) {
+    switch (type.toLowerCase()) {
         case "edits":
         case "deletes":
         case "edit_logs": {
@@ -366,4 +366,24 @@ async function checkLoggingChannels(event, database, guild, type) {
     }
     return `<#${channel.id}>`;
 }
+function splitArguments(argument, amount) {
+    const args = [];
+    let element = "";
+    for (let index = 0; index < argument.length; index++) {
+        if (args.length < amount - 1) {
+            if (argument[index].match(/\s/)) {
+                if (element.trim().length > 0) {
+                    args.push(element.trim());
+                }
+                element = "";
+            }
+        }
+        element += argument[index];
+    }
+    if (element.trim().length > 0) {
+        args.push(element.trim());
+    }
+    return args;
+}
+exports.splitArguments = splitArguments;
 //# sourceMappingURL=Utils.js.map
