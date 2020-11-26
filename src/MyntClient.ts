@@ -1,10 +1,9 @@
 import {Client, ClientOptions, User, Guild, GuildMember, MessageEmbed, Message, TextChannel} from "discord.js";
 import configTemplate from "~/Config";
 import {IFunctionType} from "~/ConfigHandler";
-import CommandHandler from "@command/CommandHandler";
-import {EventHandler} from "@event/EventHandler";
 import {Database} from "@utils/Database";
 import {Guild as GuildModel} from "@models/Guild";
+import { load } from "@utils/Utils";
 
 type configTemplate = typeof configTemplate;
 
@@ -18,15 +17,12 @@ export default class MyntClient extends Client {
         this.config = config;
         this.database = database;
         this.once("ready", () => {
-            EventHandler(this).catch((err) => {
-                console.log(err);
-            });
-            new CommandHandler(this);
+            load(this);
         });
-        this.on("message", (message) => {
+        this.on("message", async (message) => {
             if (!message.guild && !message.author.bot) {
                 this.lastDmAuthor = message.author;
-                this.generateMail(message);
+                await this.generateMail(message);
             }
         });
     }

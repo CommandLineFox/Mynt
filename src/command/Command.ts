@@ -13,6 +13,7 @@ interface CommandOptions {
     readonly modOnly?: boolean;
     readonly adminOnly?: boolean;
     readonly ownerOnly?: boolean;
+    readonly disabled?: boolean;
 }
 
 export default abstract class Command implements CommandOptions {
@@ -26,6 +27,7 @@ export default abstract class Command implements CommandOptions {
     public readonly modOnly?: boolean;
     public readonly adminOnly?: boolean;
     public readonly ownerOnly?: boolean;
+    public readonly disabled?: boolean;
 
     protected constructor(options: CommandOptions) {
         this.name = options.name;
@@ -38,6 +40,7 @@ export default abstract class Command implements CommandOptions {
         this.adminOnly = this.group.adminOnly ?? options.adminOnly ?? false;
         this.guildOnly = this.group.guildOnly ?? options.guildOnly ?? false;
         this.ownerOnly = this.group.ownerOnly ?? options.ownerOnly ?? false;
+        this.disabled = this.group.disabled ?? options.disabled ?? false;
     }
 
     public async execute(event: CommandEvent): Promise<void> {

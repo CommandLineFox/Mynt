@@ -8,6 +8,7 @@ interface GroupOptions {
     readonly modOnly?: boolean;
     readonly adminOnly?: boolean;
     readonly ownerOnly?: boolean;
+    readonly disabled?: boolean;
 }
 
 export default class Group implements GroupOptions {
@@ -17,6 +18,7 @@ export default class Group implements GroupOptions {
     public readonly modOnly: boolean;
     public readonly adminOnly: boolean;
     public readonly ownerOnly: boolean;
+    public readonly disabled: boolean;
 
     public constructor(options: GroupOptions) {
         this.name = options.name;
@@ -25,6 +27,7 @@ export default class Group implements GroupOptions {
         this.modOnly = options.modOnly ?? false;
         this.adminOnly = options.adminOnly ?? false;
         this.ownerOnly = options.ownerOnly ?? false;
+        this.disabled = options.disabled ?? false;
     }
 
     private _commands: readonly Command[] | undefined;

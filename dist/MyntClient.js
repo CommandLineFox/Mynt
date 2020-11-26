@@ -1,27 +1,20 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
-const CommandHandler_1 = __importDefault(require("./command/CommandHandler"));
-const EventHandler_1 = require("./event/EventHandler");
 const Guild_1 = require("./models/Guild");
+const Utils_1 = require("./utils/Utils");
 class MyntClient extends discord_js_1.Client {
     constructor(config, database, options) {
         super(options);
         this.config = config;
         this.database = database;
         this.once("ready", () => {
-            EventHandler_1.EventHandler(this).catch((err) => {
-                console.log(err);
-            });
-            new CommandHandler_1.default(this);
+            Utils_1.load(this);
         });
-        this.on("message", (message) => {
+        this.on("message", async (message) => {
             if (!message.guild && !message.author.bot) {
                 this.lastDmAuthor = message.author;
-                this.generateMail(message);
+                await this.generateMail(message);
             }
         });
     }

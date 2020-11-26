@@ -22,12 +22,7 @@ export default class Eval extends Command {
         }
 
         const script = parseBlock(argument);
-        const exec = await run(script, {
-            client,
-            message,
-            MessageEmbed,
-            author,
-        }, {filename: message.guild?.id.toString()});
+        const exec = await run(script, {client, message, MessageEmbed, author,}, {filename: message.guild?.id.toString()});
         const end = Date.now();
 
         if (typeof exec === "string") {
@@ -36,13 +31,13 @@ export default class Eval extends Command {
                 .addField("Output", makeCodeBlock(exec, "js"))
                 .setFooter(`Script executed in ${end - start}ms`);
 
-            event.send({embed: embed});
+            await event.send({embed: embed});
         } else {
             const embed = new MessageEmbed()
                 .addField("Input", makeCodeBlock(script, "js"))
                 .addField("Output", makeCodeBlock(`${exec.name}: ${exec.message}`))
                 .setFooter(`Script executed in ${end - start}ms`);
-            event.send(embed);
+            await event.send(embed);
         }
     }
 }

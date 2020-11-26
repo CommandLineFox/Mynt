@@ -1,6 +1,7 @@
 import Command from "@command/Command";
 import {Mail} from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
+import { splitArguments } from "@utils/Utils";
 
 export default class ReplyTo extends Command {
     public constructor() {
@@ -15,7 +16,7 @@ export default class ReplyTo extends Command {
     public async run(event: CommandEvent): Promise<void> {
         const client = event.client;
         const guild = event.guild;
-        const [user, text] = event.argument.split(/\s+/, 3);
+        const [user, text] = splitArguments(event.argument, 2);
         const member = await client.getMember(user, guild);
 
         if (!member) {

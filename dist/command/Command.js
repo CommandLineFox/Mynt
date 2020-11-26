@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class Command {
     constructor(options) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
         this.name = options.name;
         this.triggers = options.triggers;
         this.description = options.description;
@@ -13,6 +13,7 @@ class Command {
         this.adminOnly = (_f = (_e = this.group.adminOnly) !== null && _e !== void 0 ? _e : options.adminOnly) !== null && _f !== void 0 ? _f : false;
         this.guildOnly = (_h = (_g = this.group.guildOnly) !== null && _g !== void 0 ? _g : options.guildOnly) !== null && _h !== void 0 ? _h : false;
         this.ownerOnly = (_k = (_j = this.group.ownerOnly) !== null && _j !== void 0 ? _j : options.ownerOnly) !== null && _k !== void 0 ? _k : false;
+        this.disabled = (_m = (_l = this.group.disabled) !== null && _l !== void 0 ? _l : options.disabled) !== null && _m !== void 0 ? _m : false;
     }
     async execute(event) {
         var _a, _b, _c, _d;

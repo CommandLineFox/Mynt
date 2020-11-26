@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = __importDefault(require("../../command/Command"));
 const Groups_1 = require("../../Groups");
+const Utils_1 = require("../../utils/Utils");
 class ReplyTo extends Command_1.default {
     constructor() {
         super({
@@ -17,7 +18,7 @@ class ReplyTo extends Command_1.default {
     async run(event) {
         const client = event.client;
         const guild = event.guild;
-        const [user, text] = event.argument.split(/\s+/, 3);
+        const [user, text] = Utils_1.splitArguments(event.argument, 2);
         const member = await client.getMember(user, guild);
         if (!member) {
             await event.send("Couldn't find the user you're looking for");

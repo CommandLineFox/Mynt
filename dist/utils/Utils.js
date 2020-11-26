@@ -1,7 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.splitArguments = exports.convertLogging = exports.displayData = exports.mutePermissions = exports.databaseCheck = void 0;
+exports.load = exports.splitArguments = exports.convertLogging = exports.displayData = exports.mutePermissions = exports.databaseCheck = void 0;
 const discord_js_1 = require("discord.js");
+const CommandHandler_1 = __importDefault(require("../command/CommandHandler"));
+const EventHandler_1 = __importDefault(require("../event/EventHandler"));
 async function databaseCheck(database, guild, option) {
     var _a;
     switch (option.toLowerCase()) {
@@ -369,7 +374,8 @@ async function checkLoggingChannels(event, database, guild, type) {
 function splitArguments(argument, amount) {
     const args = [];
     let element = "";
-    for (let index = 0; index < argument.length; index++) {
+    let index = 0;
+    while (index < argument.length) {
         if (args.length < amount - 1) {
             if (argument[index].match(/\s/)) {
                 if (element.trim().length > 0) {
@@ -379,6 +385,7 @@ function splitArguments(argument, amount) {
             }
         }
         element += argument[index];
+        index++;
     }
     if (element.trim().length > 0) {
         args.push(element.trim());
@@ -386,4 +393,9 @@ function splitArguments(argument, amount) {
     return args;
 }
 exports.splitArguments = splitArguments;
+function load(client) {
+    new EventHandler_1.default(client);
+    new CommandHandler_1.default(client);
+}
+exports.load = load;
 //# sourceMappingURL=Utils.js.map

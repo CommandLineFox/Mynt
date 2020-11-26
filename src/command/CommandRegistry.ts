@@ -1,28 +1,10 @@
 import Command from "@command/Command";
 import Group from "@command/Group";
-import Help from "@commands/Basic/Help";
-import Ping from "@commands/Basic/Ping";
-import Config from "@commands/Administration/Config";
-import ReplyLast from "@commands/Mail/ReplyLast";
-import ReplyTo from "@commands/Mail/ReplyTo";
-import Avatar from "@commands/Moderation/Avatar";
-import Echo from "@commands/OwnerOnly/Echo";
-import Eval from "@commands/OwnerOnly/Eval";
-import LogOff from "@commands/OwnerOnly/LogOff";
+import { readdirSync, statSync } from "fs";
 
 class CommandRegistry {
-    public readonly commands: readonly Command[] = [
-        new Help(),
-        new Ping(),
-        new Config(),
-        new ReplyLast(),
-        new ReplyTo(),
-        new Avatar(),
-        new Echo(),
-        new Eval(),
-        new LogOff()
-    ];
-    public readonly groups: readonly Group[] = this.commands.map((command) => command.group).filter((group, index, self) => self.indexOf(group) === index);
+    public readonly commands: readonly Command[];
+    public readonly groups: readonly Group[];
 
     public getCommands(group: Group): readonly Command[] {
         return this.commands.filter((command) => command.group === group);
@@ -30,6 +12,49 @@ class CommandRegistry {
 
     public getCommand(trigger: string): Command | undefined {
         return this.commands.find((command) => command.triggers.includes(trigger.toLowerCase()));
+    }
+
+    public constructor() {
+        this.commands = this.loadCommands();
+        this.groups = this.loadGroups();
+    }
+
+    private loadCommands(): Command[] {
+        const commands = [];
+        const groups = readdirSync("./dist/commands");
+        for (const group of groups) {
+            const folder = statSync(`./dist/commands/${group}`);
+            if (!folder) {
+                continue;
+            }
+
+            const files = readdirSync(`./dist/commands/${group}`);
+            for (const file of files) {
+                if (!file.endsWith(".js")) {
+                    continue;
+                }
+
+                const path = `../commands/${group}/${file.slice(0, -3)}`;
+                let command;
+
+                try {
+                    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+                    command = require(path).default;
+                    delete require.cache[require.resolve(path)];
+
+                } catch (error) {
+                    console.log(error);
+                }
+                
+                commands.push(new command);
+            }
+        }
+
+        return commands;
+    }
+
+    private loadGroups() {
+        return this.commands.map((command) => command.group).filter((group, index, self) => self.indexOf(group) === index);
     }
 }
 

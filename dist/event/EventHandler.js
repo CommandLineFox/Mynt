@@ -1,19 +1,18 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EventHandler = void 0;
-const util_1 = require("util");
-const fs_1 = require("fs");
-async function EventHandler(client) {
-    const readDir = util_1.promisify(fs_1.readdir);
-    const events = await readDir("./dist/events");
-    for (const item of events) {
-        if (item.endsWith(".js")) {
-            const { event } = require(`../events/${item}`);
+const EventRegistry_1 = __importDefault(require("./EventRegistry"));
+class EventHandler {
+    constructor(client) {
+        this.client = client;
+        for (const event of EventRegistry_1.default.events) {
             client.on(event.name, (...args) => {
                 event.func(client, ...args);
             });
         }
     }
 }
-exports.EventHandler = EventHandler;
+exports.default = EventHandler;
 //# sourceMappingURL=EventHandler.js.map

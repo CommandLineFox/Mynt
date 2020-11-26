@@ -33,9 +33,6 @@
       "~/*": [
         "src/*"
       ],
-      "@arguments/*": [
-        "src/command/arguments/*"
-      ],
       "@command/*": [
         "src/command/*"
       ],
@@ -50,9 +47,6 @@
       ],
       "@event/*": [
         "src/event/*"
-      ],
-      "@config": [
-        "config.json"
       ]
     },
     "types": [
