@@ -1,21 +1,20 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const Guild_1 = require("./models/Guild");
-const Utils_1 = require("./utils/Utils");
+const CommandHandler_1 = __importDefault(require("./command/CommandHandler"));
+const EventHandler_1 = __importDefault(require("./event/EventHandler"));
 class MyntClient extends discord_js_1.Client {
     constructor(config, database, options) {
         super(options);
         this.config = config;
         this.database = database;
-        this.once("ready", () => {
-            Utils_1.load(this);
-        });
-        this.on("message", async (message) => {
-            if (!message.guild && !message.author.bot) {
-                this.lastDmAuthor = message.author;
-                await this.generateMail(message);
-            }
+        new EventHandler_1.default(this);
+        this.on("ready", () => {
+            new CommandHandler_1.default(this);
         });
     }
     async getGuildFromDatabase(database, id) {
@@ -84,23 +83,6 @@ class MyntClient extends discord_js_1.Client {
             }
         }
         return this.config.prefix;
-    }
-    async generateMail(message) {
-        var _a;
-        const client = message.client;
-        const author = message.author;
-        const received = new discord_js_1.MessageEmbed()
-            .setTitle(author.username)
-            .setDescription(message)
-            .setColor("#61e096")
-            .setFooter("ID: " + author.id, author.displayAvatarURL());
-        if (message.attachments && message.attachments.first()) {
-            received.setImage((_a = message.attachments.first()) === null || _a === void 0 ? void 0 : _a.url);
-        }
-        const channel = client.channels.cache.find(channel => channel.id == this.config.mail);
-        if (channel) {
-            await channel.send({ embed: received });
-        }
     }
 }
 exports.default = MyntClient;

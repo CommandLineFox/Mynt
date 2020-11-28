@@ -8,10 +8,7 @@ import {convertLogging, databaseCheck, displayData, mutePermissions, splitArgume
 export default class Config extends Command {
     public constructor() {
         super({
-            name: "Config",
-            triggers: ["config", "cfg", "setup"],
-            description: "Configures various settings for the guild",
-            group: Administration
+            name: "Config", triggers: ["config", "cfg", "setup"], description: "Configures various settings for the guild", group: Administration
         });
     }
 
@@ -455,7 +452,7 @@ async function loggingSettings(event: CommandEvent, option: string, args: string
         await event.send("You need to specify a type.");
         return;
     }
-    
+
     const [type, id] = args.split(/\s+/, 2);
     const log = convertLogging(type);
 

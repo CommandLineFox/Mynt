@@ -10,10 +10,7 @@ const CommandRegistry_1 = __importDefault(require("../../command/CommandRegistry
 class Help extends Command_1.default {
     constructor() {
         super({
-            name: "Help",
-            triggers: ["help", "commands", "cmds"],
-            description: "Displays all my commands",
-            group: Groups_1.Basic
+            name: "Help", triggers: ["help", "commands", "cmds"], description: "Displays all my commands", group: Groups_1.Basic
         });
     }
     async run(event) {

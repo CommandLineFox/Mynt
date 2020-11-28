@@ -1,12 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.load = exports.splitArguments = exports.convertLogging = exports.displayData = exports.mutePermissions = exports.databaseCheck = void 0;
+exports.splitArguments = exports.convertLogging = exports.displayData = exports.mutePermissions = exports.databaseCheck = void 0;
 const discord_js_1 = require("discord.js");
-const CommandHandler_1 = __importDefault(require("../command/CommandHandler"));
-const EventHandler_1 = __importDefault(require("../event/EventHandler"));
 async function databaseCheck(database, guild, option) {
     var _a;
     switch (option.toLowerCase()) {
@@ -393,9 +388,4 @@ function splitArguments(argument, amount) {
     return args;
 }
 exports.splitArguments = splitArguments;
-function load(client) {
-    new EventHandler_1.default(client);
-    new CommandHandler_1.default(client);
-}
-exports.load = load;
 //# sourceMappingURL=Utils.js.map

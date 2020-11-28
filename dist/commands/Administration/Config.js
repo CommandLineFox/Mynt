@@ -10,10 +10,7 @@ const Utils_1 = require("../../utils/Utils");
 class Config extends Command_1.default {
     constructor() {
         super({
-            name: "Config",
-            triggers: ["config", "cfg", "setup"],
-            description: "Configures various settings for the guild",
-            group: Groups_1.Administration
+            name: "Config", triggers: ["config", "cfg", "setup"], description: "Configures various settings for the guild", group: Groups_1.Administration
         });
     }
     async run(event) {

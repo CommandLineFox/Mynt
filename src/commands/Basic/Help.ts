@@ -7,10 +7,7 @@ import CommandRegistry from "@command/CommandRegistry";
 export default class Help extends Command {
     public constructor() {
         super({
-            name: "Help",
-            triggers: ["help", "commands", "cmds"],
-            description: "Displays all my commands",
-            group: Basic
+            name: "Help", triggers: ["help", "commands", "cmds"], description: "Displays all my commands", group: Basic
         });
     }
 

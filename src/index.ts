@@ -26,11 +26,6 @@ async function main() {
     await database.connect();
     const client = new MyntClient(config, database);
     await client.login(config.token);
-
-    client.on("ready", async () => {
-        console.log(`Logged in as ${client.user?.tag}`);
-        await client.user?.setActivity("with Alex", {type: "PLAYING"});
-    });
 }
 
 main().catch((err) => {

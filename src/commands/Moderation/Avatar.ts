@@ -6,8 +6,7 @@ import {MessageEmbed} from "discord.js";
 export default class Avatar extends Command {
     public constructor() {
         super({
-            name: "Avatar",
-            triggers: ["avatar", "av", "pfp"],
+            name: "Avatar",             triggers: ["avatar", "av", "pfp"],
             description: "Displays the specified user's avatar",
             group: Moderation
         });

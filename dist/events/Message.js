@@ -4,13 +4,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Event_1 = __importDefault(require("../event/Event"));
+const discord_js_1 = require("discord.js");
 class MessageEvent extends Event_1.default {
     constructor() {
         super({ name: "message" });
     }
-    async func(client, message) {
+    async callback(client, message) {
         if (message.author.bot) {
             return;
+        }
+        if (!message.guild && !message.author.bot) {
+            client.lastDmAuthor = message.author;
+            await this.generateMail(client, message);
         }
         if (!message.guild) {
             return;
@@ -21,6 +26,22 @@ class MessageEvent extends Event_1.default {
         }
         if (guild.config.automod) {
             this.autoMod(client, message, guild);
+        }
+    }
+    async generateMail(client, message) {
+        var _a;
+        const author = message.author;
+        const received = new discord_js_1.MessageEmbed()
+            .setTitle(author.username)
+            .setDescription(message)
+            .setColor("#61e096")
+            .setFooter("ID: " + author.id, author.displayAvatarURL());
+        if (message.attachments && message.attachments.first()) {
+            received.setImage((_a = message.attachments.first()) === null || _a === void 0 ? void 0 : _a.url);
+        }
+        const channel = client.channels.cache.find(channel => channel.id == client.config.mail);
+        if (channel) {
+            await channel.send({ embed: received });
         }
     }
     autoMod(client, message, guild) {

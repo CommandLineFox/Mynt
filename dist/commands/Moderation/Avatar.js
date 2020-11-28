@@ -9,8 +9,7 @@ const discord_js_1 = require("discord.js");
 class Avatar extends Command_1.default {
     constructor() {
         super({
-            name: "Avatar",
-            triggers: ["avatar", "av", "pfp"],
+            name: "Avatar", triggers: ["avatar", "av", "pfp"],
             description: "Displays the specified user's avatar",
             group: Groups_1.Moderation
         });

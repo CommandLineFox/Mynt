@@ -1,6 +1,6 @@
 import Event from "@event/Event";
 import MyntClient from "~/MyntClient";
-import { Message } from "discord.js";
+import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { Guild } from "@models/Guild";
 
 export default class MessageEvent extends Event {
@@ -8,9 +8,14 @@ export default class MessageEvent extends Event {
         super({ name: "message" });
     }
 
-    public async func(client: MyntClient, message: Message): Promise<void> {
+    public async callback(client: MyntClient, message: Message): Promise<void> {
         if (message.author.bot) {
             return;
+        }
+        
+        if (!message.guild && !message.author.bot) {
+            client.lastDmAuthor = message.author;
+            await this.generateMail(client, message);
         }
 
         if (!message.guild) {
@@ -26,7 +31,24 @@ export default class MessageEvent extends Event {
             this.autoMod(client, message, guild);
         }
     }
-    
+
+    private async generateMail(client: MyntClient, message: Message) {
+        const author = message.author;
+        const received = new MessageEmbed()
+            .setTitle(author.username)
+            .setDescription(message)
+            .setColor("#61e096")
+            .setFooter("ID: " + author.id, author.displayAvatarURL());
+        if (message.attachments && message.attachments.first()) {
+            received.setImage(message.attachments.first()?.url as string);
+        }
+
+        const channel = client.channels.cache.find(channel => channel.id == client.config.mail);
+
+        if (channel) {
+            await (channel as TextChannel).send({embed: received});
+        }
+    }
 
     private autoMod(client: MyntClient, message: Message, guild: Guild) {
         if (guild.config.staffBypass === true && client.isMod(message.member!, message.guild!)) {

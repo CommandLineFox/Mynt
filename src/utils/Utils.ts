@@ -3,9 +3,6 @@ import {Guild} from "@models/Guild";
 import {Database} from "@utils/Database";
 import {DatabaseCheckOption, DisplayData, LoggingType, MutePermissionOption} from "@utils/Types";
 import {MessageEmbed, Role} from "discord.js";
-import CommandHandler from "@command/CommandHandler";
-import EventHandler from "@event/EventHandler";
-import MyntClient from "~/MyntClient";
 
 export async function databaseCheck(database: Database, guild: Guild, option: DatabaseCheckOption): Promise<void> {
     switch (option.toLowerCase()) {
@@ -452,9 +449,4 @@ export function splitArguments(argument: string, amount: number): string[] {
     }
 
     return args;
-}
-
-export function load(client: MyntClient): void {
-    new EventHandler(client);
-    new CommandHandler(client);
 }
