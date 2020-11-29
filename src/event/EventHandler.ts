@@ -9,7 +9,6 @@ export default class EventHandler {
 
         for (const event of EventRegistry.events) {
             client.on(event.name, (...args) => {
-                console.log(`Haha yes fired ${event.name}`);
                 event.callback(client, ...args);
             });
         }

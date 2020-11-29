@@ -5,7 +5,13 @@ import {MessageEmbed, Message} from "discord.js";
 
 export default class Ping extends Command {
     public constructor() {
-        super({name: "Ping", triggers: ["ping"], description: "Shows the bot's response time", group: Basic});
+        super({
+            name: "Ping",
+            triggers: ["ping"],
+            description: "Shows the bot's response time",
+            group: Basic,
+            botPermissions: ["EMBED_LINKS"]
+        });
     }
 
     public run(event: CommandEvent): void {

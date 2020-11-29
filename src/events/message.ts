@@ -1,18 +1,18 @@
 import Event from "@event/Event";
 import MyntClient from "~/MyntClient";
-import { Message, MessageEmbed, TextChannel } from "discord.js";
-import { Guild } from "@models/Guild";
+import {Message, MessageEmbed, TextChannel} from "discord.js";
+import {Guild} from "@models/Guild";
 
 export default class MessageEvent extends Event {
     public constructor() {
-        super({ name: "message" });
+        super({name: "message"});
     }
 
     public async callback(client: MyntClient, message: Message): Promise<void> {
         if (message.author.bot) {
             return;
         }
-        
+
         if (!message.guild && !message.author.bot) {
             client.lastDmAuthor = message.author;
             await this.generateMail(client, message);
@@ -80,7 +80,7 @@ export default class MessageEvent extends Event {
 
         for (const word of guild.config.filter.list) {
             if (text.includes(word)) {
-                message.delete({ timeout: 100, reason: "AutoMod - Word filter" })
+                message.delete({timeout: 100, reason: "AutoMod - Word filter"})
                     .catch((err) => {
                         console.log(err);
                     });
@@ -96,7 +96,7 @@ export default class MessageEvent extends Event {
         const regex = new RegExp("(https?://)?(www.)?(discord.(gg|io|me|li)|discord(app)?.com/invite)/.+[a-z]");
 
         if (content.match(regex)) {
-            message.delete({ timeout: 100, reason: "AutoMod - Invite blocker" })
+            message.delete({timeout: 100, reason: "AutoMod - Invite blocker"})
                 .catch((err) => {
                     console.log(err);
                 });

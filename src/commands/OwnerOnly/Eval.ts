@@ -7,7 +7,13 @@ import {runInNewContext} from "vm";
 
 export default class Eval extends Command {
     public constructor() {
-        super({name: "Eval", triggers: ["eval", "evaluate"], description: "Runs given code", group: OwnerOnly});
+        super({
+            name: "Eval",
+            triggers: ["eval", "evaluate"],
+            description: "Runs given code",
+            group: OwnerOnly,
+            botPermissions: ["EMBED_LINKS"]
+        });
     }
 
     public async run(event: CommandEvent): Promise<void> {

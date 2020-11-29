@@ -6,9 +6,11 @@ import {MessageEmbed} from "discord.js";
 export default class Avatar extends Command {
     public constructor() {
         super({
-            name: "Avatar",             triggers: ["avatar", "av", "pfp"],
+            name: "Avatar",
+            triggers: ["avatar", "av", "pfp"],
             description: "Displays the specified user's avatar",
-            group: Moderation
+            group: Moderation,
+            botPermissions: ["EMBED_LINKS"]
         });
     }
 
@@ -16,7 +18,7 @@ export default class Avatar extends Command {
         const client = event.client;
         const guild = event.guild;
         const argument = event.argument;
-        
+
         let member = await client.getMember(argument, guild);
         if (!member) {
             member = event.member;

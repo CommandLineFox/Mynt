@@ -8,7 +8,11 @@ import {convertLogging, databaseCheck, displayData, mutePermissions, splitArgume
 export default class Config extends Command {
     public constructor() {
         super({
-            name: "Config", triggers: ["config", "cfg", "setup"], description: "Configures various settings for the guild", group: Administration
+            name: "Config",
+            triggers: ["config", "cfg", "setup"],
+            description: "Configures various settings for the guild",
+            group: Administration,
+            botPermissions: ["EMBED_LINKS", "MANAGE_ROLES"]
         });
     }
 

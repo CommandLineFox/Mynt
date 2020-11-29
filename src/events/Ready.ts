@@ -3,7 +3,7 @@ import MyntClient from "~/MyntClient";
 
 export default class Ready extends Event {
     public constructor() {
-        super({ name: "ready" });
+        super({name: "ready"});
     }
 
     public async callback(client: MyntClient): Promise<void> {

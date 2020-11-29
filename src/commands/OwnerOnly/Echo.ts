@@ -4,7 +4,12 @@ import CommandEvent from "@command/CommandEvent";
 
 export default class Echo extends Command {
     public constructor() {
-        super({name: "Echo", triggers: ["echo", "say"], description: "Repeats the message", group: OwnerOnly});
+        super({
+            name: "Echo",
+            triggers: ["echo", "say"],
+            description: "Repeats the message",
+            group: OwnerOnly
+        });
     }
 
     public async run(event: CommandEvent): Promise<void> {

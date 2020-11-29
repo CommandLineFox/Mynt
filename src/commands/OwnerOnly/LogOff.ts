@@ -4,7 +4,12 @@ import CommandEvent from "@command/CommandEvent";
 
 export default class LogOff extends Command {
     public constructor() {
-        super({name: "LogOff", triggers: ["logoff", "shutdown"], description: "Turns the bot off", group: OwnerOnly});
+        super({
+            name: "LogOff",
+            triggers: ["logoff", "shutdown"],
+            description: "Turns the bot off",
+            group: OwnerOnly
+        });
     }
 
     public async run(event: CommandEvent): Promise<void> {
