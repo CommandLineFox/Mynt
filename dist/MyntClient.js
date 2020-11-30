@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
-const Guild_1 = require("./models/Guild");
+const Guild_1 = require("./database/models/Guild");
 const CommandHandler_1 = __importDefault(require("./command/CommandHandler"));
 const EventHandler_1 = __importDefault(require("./event/EventHandler"));
 class MyntClient extends discord_js_1.Client {
@@ -13,7 +13,7 @@ class MyntClient extends discord_js_1.Client {
         this.config = config;
         this.database = database;
         new EventHandler_1.default(this);
-        this.on("ready", () => {
+        this.once("ready", () => {
             new CommandHandler_1.default(this);
         });
     }

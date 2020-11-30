@@ -7,7 +7,12 @@ const Command_1 = __importDefault(require("../../command/Command"));
 const Groups_1 = require("../../Groups");
 class LogOff extends Command_1.default {
     constructor() {
-        super({ name: "LogOff", triggers: ["logoff", "shutdown"], description: "Turns the bot off", group: Groups_1.OwnerOnly });
+        super({
+            name: "LogOff",
+            triggers: ["logoff", "shutdown"],
+            description: "Turns the bot off",
+            group: Groups_1.OwnerOnly
+        });
     }
     async run(event) {
         await event.message.delete();

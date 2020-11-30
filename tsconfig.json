@@ -36,17 +36,17 @@
       "@command/*": [
         "src/command/*"
       ],
-      "@commands/*": [
-        "src/commands/*"
+      "@event/*": [
+        "src/event/*"
       ],
       "@models/*": [
-        "src/models/*"
+        "src/database/models/*"
       ],
       "@utils/*": [
         "src/utils/*"
       ],
-      "@event/*": [
-        "src/event/*"
+      "@database": [
+        "src/database/Database.ts"
       ]
     },
     "types": [

@@ -1,7 +1,7 @@
 import {Client, ClientOptions, User, Guild, GuildMember} from "discord.js";
 import configTemplate from "~/Config";
 import {IFunctionType} from "~/ConfigHandler";
-import {Database} from "@utils/Database";
+import {Database} from "@database";
 import {Guild as GuildModel} from "@models/Guild";
 import CommandHandler from "@command/CommandHandler";
 import EventHandler from "@event/EventHandler";

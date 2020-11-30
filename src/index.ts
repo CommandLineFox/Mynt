@@ -2,7 +2,7 @@ import * as fs from "fs";
 import configTemplate from "~/Config";
 import {generateConfig, getConfig} from "~/ConfigHandler";
 import MyntClient from "~/MyntClient";
-import {Database} from "@utils/Database";
+import {Database} from "@database";
 
 async function main() {
     const configFile = "config.json";

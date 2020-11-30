@@ -1,5 +1,5 @@
 import Event from "@event/Event";
-import { readdirSync } from "fs";
+import {readdirSync} from "fs";
 
 class EventRegistry {
     public readonly events: readonly Event[];

@@ -10,7 +10,13 @@ const util_1 = require("util");
 const vm_1 = require("vm");
 class Eval extends Command_1.default {
     constructor() {
-        super({ name: "Eval", triggers: ["eval", "evaluate"], description: "Runs given code", group: Groups_1.OwnerOnly });
+        super({
+            name: "Eval",
+            triggers: ["eval", "evaluate"],
+            description: "Runs given code",
+            group: Groups_1.OwnerOnly,
+            botPermissions: ["EMBED_LINKS"]
+        });
     }
     async run(event) {
         var _a;

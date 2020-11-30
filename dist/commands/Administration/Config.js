@@ -6,11 +6,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Command_1 = __importDefault(require("../../command/Command"));
 const Groups_1 = require("../../Groups");
 const discord_js_1 = require("discord.js");
+const CommandUtils_1 = require("../../utils/CommandUtils");
 const Utils_1 = require("../../utils/Utils");
 class Config extends Command_1.default {
     constructor() {
         super({
-            name: "Config", triggers: ["config", "cfg", "setup"], description: "Configures various settings for the guild", group: Groups_1.Administration
+            name: "Config",
+            triggers: ["config", "cfg", "setup"],
+            description: "Configures various settings for the guild",
+            group: Groups_1.Administration,
+            botPermissions: ["EMBED_LINKS", "MANAGE_ROLES"]
         });
     }
     async run(event) {
@@ -81,7 +86,7 @@ async function prefixSettings(event, option, args, guild) {
     const client = event.client;
     const database = client.database;
     if (!option) {
-        await Utils_1.displayData(event, guild, "prefix", true);
+        await CommandUtils_1.displayData(event, guild, "prefix", true);
         return;
     }
     switch (option.toLowerCase()) {
@@ -104,9 +109,9 @@ async function prefixSettings(event, option, args, guild) {
 async function moderatorSettings(event, option, args, guild) {
     var _a, _b, _c, _d;
     const database = event.client.database;
-    await Utils_1.databaseCheck(database, guild, "moderator");
+    await CommandUtils_1.databaseCheck(database, guild, "moderator");
     if (!option) {
-        await Utils_1.displayData(event, guild, "moderators", true);
+        await CommandUtils_1.displayData(event, guild, "moderators", true);
         return;
     }
     if (!args) {
@@ -142,9 +147,9 @@ async function moderatorSettings(event, option, args, guild) {
 async function muteSettings(event, option, args, guild) {
     var _a, _b, _c, _d;
     const database = event.client.database;
-    await Utils_1.databaseCheck(database, guild, "roles");
+    await CommandUtils_1.databaseCheck(database, guild, "roles");
     if (!option) {
-        await Utils_1.displayData(event, guild, "muteRole", true);
+        await CommandUtils_1.displayData(event, guild, "muteRole", true);
         return;
     }
     switch (option.toLowerCase()) {
@@ -167,7 +172,7 @@ async function muteSettings(event, option, args, guild) {
             await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles.muted": role.id } }));
             await event.send(`Set \`${role.name}\` as the mute role.`);
             if (option === "setauto") {
-                Utils_1.mutePermissions(event, role, "set");
+                CommandUtils_1.mutePermissions(event, role, "set");
                 await event.send(`Automatically set permission overwrites for \`${role.name}\`.`);
             }
             break;
@@ -187,7 +192,7 @@ async function muteSettings(event, option, args, guild) {
             await (database === null || database === void 0 ? void 0 : database.guilds.updateOne({ id: guild.id }, { "$unset": { "config.roles.muted": "" } }));
             await event.send(`\`${role.name}\` is no longer the mute role.`);
             if (option === "autoremove") {
-                Utils_1.mutePermissions(event, role, "remove");
+                CommandUtils_1.mutePermissions(event, role, "remove");
                 await event.send(`Automatically removed permission overwrites for \`${role.name}\`.`);
             }
             break;
@@ -206,7 +211,7 @@ async function muteSettings(event, option, args, guild) {
                 await event.send("The role that used to be the mute role was deleted or can't be found.");
                 return;
             }
-            Utils_1.mutePermissions(event, role, "set");
+            CommandUtils_1.mutePermissions(event, role, "set");
             await event.send(`Set permission overwrites for \`${role.name}\`.`);
             break;
         }
@@ -222,7 +227,7 @@ async function muteSettings(event, option, args, guild) {
                 await event.send("The role that used to be the mute role was deleted or can't be found.");
                 return;
             }
-            Utils_1.mutePermissions(event, role, "remove");
+            CommandUtils_1.mutePermissions(event, role, "remove");
             await event.send(`Removed permission overwrites for \`${role.name}\`.`);
             break;
         }
@@ -230,9 +235,9 @@ async function muteSettings(event, option, args, guild) {
 }
 async function autoModSettings(event, option, guild) {
     const database = event.client.database;
-    await Utils_1.databaseCheck(database, guild, "autoMod");
+    await CommandUtils_1.databaseCheck(database, guild, "autoMod");
     if (!option) {
-        await Utils_1.displayData(event, guild, "autoMod", true);
+        await CommandUtils_1.displayData(event, guild, "autoMod", true);
         return;
     }
     switch (option.toLowerCase()) {
@@ -259,9 +264,9 @@ async function autoModSettings(event, option, guild) {
 async function filterSettings(event, option, args, guild) {
     var _a, _b, _c, _d, _e, _f;
     const database = event.client.database;
-    await Utils_1.databaseCheck(database, guild, "filter");
+    await CommandUtils_1.databaseCheck(database, guild, "filter");
     if (!option) {
-        await Utils_1.displayData(event, guild, "filter", true);
+        await CommandUtils_1.displayData(event, guild, "filter", true);
         return;
     }
     switch (option.toLowerCase()) {
@@ -315,9 +320,9 @@ async function filterSettings(event, option, args, guild) {
 }
 async function inviteBlockerSettings(event, option, guild) {
     const database = event.client.database;
-    await Utils_1.databaseCheck(database, guild, "inviteBlocker");
+    await CommandUtils_1.databaseCheck(database, guild, "inviteBlocker");
     if (!option) {
-        await Utils_1.displayData(event, guild, "inviteBlocker", true);
+        await CommandUtils_1.displayData(event, guild, "inviteBlocker", true);
     }
     switch (option) {
         case "enable": {
@@ -343,7 +348,7 @@ async function inviteBlockerSettings(event, option, guild) {
 async function overwriteSettings(event, option, args, guild) {
     const database = event.client.database;
     if (!option) {
-        await Utils_1.displayData(event, guild, "overwrites", true);
+        await CommandUtils_1.displayData(event, guild, "overwrites", true);
         return;
     }
     switch (option.toLowerCase()) {
@@ -373,9 +378,9 @@ async function overwriteSettings(event, option, args, guild) {
 }
 async function loggingSettings(event, option, args, guild) {
     const database = event.client.database;
-    await Utils_1.databaseCheck(database, guild, "channels");
+    await CommandUtils_1.databaseCheck(database, guild, "channels");
     if (!option) {
-        await Utils_1.displayData(event, guild, "logging", true);
+        await CommandUtils_1.displayData(event, guild, "logging", true);
         return;
     }
     if (!args) {
@@ -383,7 +388,7 @@ async function loggingSettings(event, option, args, guild) {
         return;
     }
     const [type, id] = args.split(/\s+/, 2);
-    const log = Utils_1.convertLogging(type);
+    const log = CommandUtils_1.convertLogging(type);
     if (log === "None") {
         await event.send("You need to specify a valid logging type.");
         return;
@@ -451,14 +456,14 @@ async function loggingSettings(event, option, args, guild) {
 async function displayAllSettings(event, guild) {
     const embed = new discord_js_1.MessageEmbed()
         .setTitle("The current settings for this server:")
-        .addField("Prefix", await Utils_1.displayData(event, guild, "prefix"), true)
-        .addField("Moderators", await Utils_1.displayData(event, guild, "moderators"), true)
-        .addField("Mute role", await Utils_1.displayData(event, guild, "muteRole"), true)
-        .addField("Automod", await Utils_1.displayData(event, guild, "autoMod"), true)
-        .addField("Overwrites", await Utils_1.displayData(event, guild, "overwrites"), true)
-        .addField("Logging", await Utils_1.displayData(event, guild, "logging"), true)
-        .addField("Filter", await Utils_1.displayData(event, guild, "filter"), true)
-        .addField("Invite blocker", await Utils_1.displayData(event, guild, "inviteBlocker"), true)
+        .addField("Prefix", await CommandUtils_1.displayData(event, guild, "prefix"), true)
+        .addField("Moderators", await CommandUtils_1.displayData(event, guild, "moderators"), true)
+        .addField("Mute role", await CommandUtils_1.displayData(event, guild, "muteRole"), true)
+        .addField("Automod", await CommandUtils_1.displayData(event, guild, "autoMod"), true)
+        .addField("Overwrites", await CommandUtils_1.displayData(event, guild, "overwrites"), true)
+        .addField("Logging", await CommandUtils_1.displayData(event, guild, "logging"), true)
+        .addField("Filter", await CommandUtils_1.displayData(event, guild, "filter"), true)
+        .addField("Invite blocker", await CommandUtils_1.displayData(event, guild, "inviteBlocker"), true)
         .setColor("#61e096")
         .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
     await event.send({ embed: embed });

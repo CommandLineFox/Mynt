@@ -3,7 +3,8 @@ import {Administration} from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import {Guild} from "@models/Guild";
 import {MessageEmbed} from "discord.js";
-import {convertLogging, databaseCheck, displayData, mutePermissions, splitArguments} from "@utils/Utils";
+import {convertLogging, databaseCheck, displayData, mutePermissions} from "@utils/CommandUtils";
+import {splitArguments} from "@utils/Utils";
 
 export default class Config extends Command {
     public constructor() {
