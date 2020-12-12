@@ -56,8 +56,8 @@ async function run(script, ctx, opts) {
         }
         return result;
     }
-    catch (err) {
-        return err;
+    catch (error) {
+        return error;
     }
 }
 function parseBlock(script) {

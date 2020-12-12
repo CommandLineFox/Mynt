@@ -1,7 +1,7 @@
 import Command from "@command/Command";
-import {Basic} from "~/Groups";
+import { Basic } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import {MessageEmbed} from "discord.js";
+import { MessageEmbed } from "discord.js";
 import CommandRegistry from "@command/CommandRegistry";
 
 export default class Help extends Command {
@@ -17,32 +17,36 @@ export default class Help extends Command {
 
     public async run(event: CommandEvent): Promise<void> {
         const client = event.client;
-        const author = event.author;
-        const member = event.member;
-        const guild = event.guild;
-        const mod = await client.isMod(member, guild);
+        try {
+            const author = event.author;
+            const member = event.member;
+            const guild = event.guild;
+            const mod = await client.isMod(member, guild);
 
-        const help = new MessageEmbed()
-            .setTitle("Here's the list of all my commands")
-            .setColor("#61e096")
-            .setFooter(`Requested by ${author.tag}`, author.displayAvatarURL());
-        CommandRegistry.groups.forEach((group) => {
-            if (group.ownerOnly && !client.isOwner(event.author)) {
-                return;
-            } else if (group.adminOnly && !client.isAdmin(member)) {
-                return;
-            } else if (group.modOnly && !mod) {
-                return;
-            }
+            const help = new MessageEmbed()
+                .setTitle("Here's the list of all my commands")
+                .setColor("#61e096")
+                .setFooter(`Requested by ${author.tag}`, author.displayAvatarURL());
+            CommandRegistry.groups.forEach((group) => {
+                if (group.ownerOnly && !client.isOwner(event.author)) {
+                    return;
+                } else if (group.adminOnly && !client.isAdmin(member)) {
+                    return;
+                } else if (group.modOnly && !mod) {
+                    return;
+                }
 
-            const commands = group.commands.map((command) => `${command.name} (\`${command.triggers.join("`,`")}\`) -> ${command.description}`);
-            if (commands.length === 0) {
-                return;
-            }
+                const commands = group.commands.map((command) => `${command.name} (\`${command.triggers.join("`,`")}\`) -> ${command.description}`);
+                if (commands.length === 0) {
+                    return;
+                }
 
-            help.addField(group.name, commands.join("\n"));
-        });
+                help.addField(group.name, commands.join("\n"));
+            });
 
-        await event.send({embed: help});
+            await event.send({ embed: help });
+        } catch (error) {
+            client.emit("error", error);
+        }
     }
 }

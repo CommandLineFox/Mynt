@@ -14,8 +14,8 @@ export class Database {
 
     public async connect(): Promise<void> {
         const client = await connect(this.config.url, this.config.mongoOptions)
-            .catch(err => {
-                throw err;
+            .catch(error => {
+                throw error;
             });
         this.db = client.db(this.config.name);
         console.log("Connected to database");
@@ -24,7 +24,7 @@ export class Database {
     public get guilds(): Collection<Guild> {
         return this.db.collection("guilds");
     }
-    
+
     public get users(): Collection<User> {
         return this.db.collection("users");
     }

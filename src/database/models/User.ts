@@ -1,5 +1,5 @@
-import {ObjectId} from "bson";
-import {InfractionAction} from "@utils/Types";
+import { ObjectId } from "bson";
+import { InfractionAction } from "@utils/Types";
 
 export interface UserInfraction {
     action: InfractionAction;

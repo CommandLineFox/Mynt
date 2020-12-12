@@ -1,44 +1,44 @@
 import CommandEvent from "@command/CommandEvent";
-import {Guild} from "@models/Guild";
-import {Database} from "@database";
-import {DatabaseCheckOption, DisplayData, LoggingType, MutePermissionOption} from "@utils/Types";
-import {MessageEmbed, Role} from "discord.js";
+import { Guild } from "@models/Guild";
+import { Database } from "@database/Database";
+import { DatabaseCheckOption, DisplayData, LoggingType, MutePermissionOption } from "@utils/Types";
+import { MessageEmbed, Role } from "discord.js";
 
 export async function databaseCheck(database: Database, guild: Guild, option: DatabaseCheckOption): Promise<void> {
     switch (option.toLowerCase()) {
         case "roles": {
             if (!guild.config.roles) {
-                await database.guilds.updateOne({id: guild.id}, {"$set": {"config.roles": {}}});
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": {} } });
             }
             break;
         }
 
         case "moderator": {
             if (!guild.config.roles) {
-                await database.guilds.updateOne({id: guild.id}, {"$set": {"config.roles": {"moderator": []}}});
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": { "moderator": [] } } });
             } else if (!guild.config.roles?.moderator) {
-                await database.guilds.updateOne({id: guild.id}, {"$set": {"config.roles.moderator": []}});
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles.moderator": [] } });
             }
             break;
         }
 
         case "channels": {
             if (!guild.config.channels) {
-                await database.guilds.updateOne({id: guild.id}, {"$set": {"config.channels": {}}});
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.channels": {} } });
             }
             break;
         }
 
         case "automod": {
             if (!guild.config.automod) {
-                await database.guilds.updateOne({id: guild.id}, {"$set": {"config.automod": {"enabled": false}}});
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod": { "enabled": false } } });
             }
             break;
         }
 
         case "filter": {
             if (!guild.config.filter) {
-                await database.guilds.updateOne({id: guild.id}, {
+                await database.guilds.updateOne({ id: guild.id }, {
                     "$set": {
                         "config.autoMod": {
                             "filter": {
@@ -54,7 +54,7 @@ export async function databaseCheck(database: Database, guild: Guild, option: Da
 
         case "inviteblocker": {
             if (!guild.config.inviteBlocker) {
-                await database.guilds.updateOne({id: guild.id}, {"$set": {"config.inviteblocker": false}});
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.inviteblocker": false } });
             }
             break;
         }
@@ -85,7 +85,7 @@ export function mutePermissions(event: CommandEvent, role: Role, option: MutePer
                 }
 
                 if (channel.type === "voice" && !channel.permissionsLocked) {
-                    await channel.updateOverwrite(role, {"SPEAK": false}, "Mute role setup");
+                    await channel.updateOverwrite(role, { "SPEAK": false }, "Mute role setup");
                 }
             });
             break;
@@ -129,7 +129,7 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
                 for (const mod of mods) {
                     const role = event.guild.roles.cache.get(mod);
                     if (!role) {
-                        await database?.guilds.updateOne({id: guild.id}, {"$pull": {"config.roles.moderator": mod}});
+                        await database?.guilds.updateOne({ id: guild.id }, { "$pull": { "config.roles.moderator": mod } });
                     } else {
                         list += `${role.name}\n`;
                     }
@@ -150,7 +150,7 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
 
                 const role = event.guild.roles.cache.get(id);
                 if (!role) {
-                    await database?.guilds.updateOne({id: guild.id}, {"$unset": {"config.roles.muted": ""}});
+                    await database?.guilds.updateOne({ id: guild.id }, { "$unset": { "config.roles.muted": "" } });
                     return "No mute role";
                 }
 
@@ -207,14 +207,14 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
                 for (const mod of mods) {
                     const role = event.guild.roles.cache.get(mod);
                     if (!role) {
-                        await database?.guilds.updateOne({id: guild.id}, {"$pull": {"config.roles.moderator": mod}});
+                        await database?.guilds.updateOne({ id: guild.id }, { "$pull": { "config.roles.moderator": mod } });
                     } else {
                         list += `${role.name}\n`;
                     }
                 }
 
                 embed.setDescription(list);
-                await event.send({embed: embed});
+                await event.send({ embed: embed });
                 break;
             }
 
@@ -227,7 +227,7 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
 
                 const role = event.guild.roles.cache.get(id);
                 if (!role) {
-                    await database?.guilds.updateOne({id: guild.id}, {"$unset": {"config.roles.muted": ""}});
+                    await database?.guilds.updateOne({ id: guild.id }, { "$unset": { "config.roles.muted": "" } });
                     await event.send("The role that used to be the mute role was deleted or can't be found.");
                     return;
                 }
@@ -252,7 +252,7 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
                     .setColor("#61e096")
                     .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
-                await event.send({embed: embed});
+                await event.send({ embed: embed });
                 break;
             }
 
@@ -279,7 +279,7 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
                 });
 
                 embed.setDescription(list);
-                await event.send({embed: embed});
+                await event.send({ embed: embed });
                 break;
             }
 
@@ -290,7 +290,7 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
                     .setColor("#61e096")
                     .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
-                await event.send({embed: embed});
+                await event.send({ embed: embed });
                 break;
             }
 
@@ -315,7 +315,7 @@ export async function displayData(event: CommandEvent, guild: Guild, type: Displ
                     .setColor("#61e096")
                     .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
-                await event.send({embed: embed});
+                await event.send({ embed: embed });
                 break;
             }
 
@@ -418,7 +418,7 @@ async function checkLoggingChannels(event: CommandEvent, database: Database, gui
 
     const channel = event.guild.channels.cache.get(guild.config.channels[type]!);
     if (!channel) {
-        await database.guilds.updateOne({id: guild.id}, {"$unset": {[`config.channels.${type}`]: ""}});
+        await database.guilds.updateOne({ id: guild.id }, { "$unset": { [`config.channels.${type}`]: "" } });
         return "Not set";
     }
 

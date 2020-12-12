@@ -18,17 +18,22 @@ class Avatar extends Command_1.default {
     }
     async run(event) {
         const client = event.client;
-        const guild = event.guild;
-        const argument = event.argument;
-        let member = await client.getMember(argument, guild);
-        if (!member) {
-            member = event.member;
+        try {
+            const guild = event.guild;
+            const argument = event.argument;
+            let member = await client.getMember(argument, guild);
+            if (!member) {
+                member = event.member;
+            }
+            const avatar = new discord_js_1.MessageEmbed()
+                .setTitle(`${member.user.tag}'s avatar:`)
+                .setImage(member.user.displayAvatarURL())
+                .setFooter(`Requested by ${event.author.username}`, event.author.displayAvatarURL());
+            event.channel.send({ embed: avatar });
         }
-        const avatar = new discord_js_1.MessageEmbed()
-            .setTitle(`${member.user.tag}'s avatar:`)
-            .setImage(member.user.displayAvatarURL())
-            .setFooter(`Requested by ${event.author.username}`, event.author.displayAvatarURL());
-        event.channel.send({ embed: avatar });
+        catch (error) {
+            client.emit("error", error);
+        }
     }
 }
 exports.default = Avatar;

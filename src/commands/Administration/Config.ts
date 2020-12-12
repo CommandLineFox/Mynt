@@ -1,10 +1,10 @@
 import Command from "@command/Command";
-import {Administration} from "~/Groups";
+import { Administration } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import {Guild} from "@models/Guild";
-import {MessageEmbed} from "discord.js";
-import {convertLogging, databaseCheck, displayData, mutePermissions} from "@utils/CommandUtils";
-import {splitArguments} from "@utils/Utils";
+import { Guild } from "@models/Guild";
+import { MessageEmbed } from "discord.js";
+import { convertLogging, databaseCheck, displayData, mutePermissions } from "@utils/CommandUtils";
+import { splitArguments } from "@utils/Utils";
 
 export default class Config extends Command {
     public constructor() {
@@ -19,74 +19,78 @@ export default class Config extends Command {
 
     protected async run(event: CommandEvent): Promise<void> {
         const client = event.client;
-        const database = client.database;
+        try {
+            const database = client.database;
 
-        const guild = await client.getGuildFromDatabase(database!, event.guild.id);
-        if (!guild) {
-            return;
-        }
-
-        const [subcommand, option, args] = splitArguments(event.argument, 3);
-        if (!subcommand) {
-            await displayAllSettings(event, guild);
-            return;
-        }
-
-        switch (subcommand.toLowerCase()) {
-            case "prefix": {
-                await prefixSettings(event, option, args, guild);
-                break;
+            const guild = await client.getGuildFromDatabase(database!, event.guild.id);
+            if (!guild) {
+                return;
             }
 
-            case "mod":
-            case "mods":
-            case "moderator":
-            case "moderators":
-            case "staff": {
-                await moderatorSettings(event, option, args, guild);
-                break;
+            const [subcommand, option, args] = splitArguments(event.argument, 3);
+            if (!subcommand) {
+                await displayAllSettings(event, guild);
+                return;
             }
 
-            case "mute":
-            case "muted":
-            case "muterole": {
-                await muteSettings(event, option, args, guild);
-                break;
-            }
+            switch (subcommand.toLowerCase()) {
+                case "prefix": {
+                    await prefixSettings(event, option, args, guild);
+                    break;
+                }
 
-            case "automod": {
-                await autoModSettings(event, option, guild);
-                break;
-            }
+                case "mod":
+                case "mods":
+                case "moderator":
+                case "moderators":
+                case "staff": {
+                    await moderatorSettings(event, option, args, guild);
+                    break;
+                }
 
-            case "badwords":
-            case "filter": {
-                await filterSettings(event, option, args, guild);
-                break;
-            }
+                case "mute":
+                case "muted":
+                case "muterole": {
+                    await muteSettings(event, option, args, guild);
+                    break;
+                }
 
-            case "overwrites":
-            case "overwrite":
-            case "special": {
-                await overwriteSettings(event, option, args, guild!);
-                break;
-            }
+                case "automod": {
+                    await autoModSettings(event, option, guild);
+                    break;
+                }
 
-            case "log":
-            case "logs":
-            case "logging": {
-                await loggingSettings(event, option, args, guild!);
-                break;
-            }
+                case "badwords":
+                case "filter": {
+                    await filterSettings(event, option, args, guild);
+                    break;
+                }
 
-            case "invite":
-            case "inviteblock":
-            case "ads":
-            case "adblock":
-            case "inviteblocker": {
-                await inviteBlockerSettings(event, option, guild!);
-                break;
+                case "overwrites":
+                case "overwrite":
+                case "special": {
+                    await overwriteSettings(event, option, args, guild!);
+                    break;
+                }
+
+                case "log":
+                case "logs":
+                case "logging": {
+                    await loggingSettings(event, option, args, guild!);
+                    break;
+                }
+
+                case "invite":
+                case "inviteblock":
+                case "ads":
+                case "adblock":
+                case "inviteblocker": {
+                    await inviteBlockerSettings(event, option, guild!);
+                    break;
+                }
             }
+        } catch (error) {
+            client.emit("error", error);
         }
     }
 }
@@ -107,13 +111,13 @@ async function prefixSettings(event: CommandEvent, option: string, args: string,
                 break;
             }
 
-            await database?.guilds.updateOne({id: guild?.id}, {"$set": {"config.prefix": args}});
+            await database?.guilds.updateOne({ id: guild?.id }, { "$set": { "config.prefix": args } });
             await event.send(`The prefix has been set to \`${args}\``);
             break;
         }
 
         case "reset": {
-            await database?.guilds.updateOne({id: guild?.id}, {"$unset": {"config.prefix": ""}});
+            await database?.guilds.updateOne({ id: guild?.id }, { "$unset": { "config.prefix": "" } });
             await event.send(`The prefix has been set to \`${client.config.prefix}\``);
             break;
         }
@@ -147,7 +151,7 @@ async function moderatorSettings(event: CommandEvent, option: string, args: stri
                 break;
             }
 
-            await database?.guilds.updateOne({id: guild.id}, {"$push": {"config.roles.moderator": role.id}});
+            await database?.guilds.updateOne({ id: guild.id }, { "$push": { "config.roles.moderator": role.id } });
             await event.send(`Added \`${role.name}\` as a moderator role.`);
             break;
         }
@@ -157,7 +161,7 @@ async function moderatorSettings(event: CommandEvent, option: string, args: stri
                 break;
             }
 
-            await database?.guilds.updateOne({id: guild.id}, {"$pull": {"config.roles.moderator": role.id}});
+            await database?.guilds.updateOne({ id: guild.id }, { "$pull": { "config.roles.moderator": role.id } });
             await event.send(`\`${role.name}\` is no longer a moderator role.`);
             break;
         }
@@ -195,7 +199,7 @@ async function muteSettings(event: CommandEvent, option: string, args: string, g
                 return;
             }
 
-            await database?.guilds.updateOne({id: guild.id}, {"$set": {"config.roles.muted": role.id}});
+            await database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles.muted": role.id } });
             await event.send(`Set \`${role.name}\` as the mute role.`);
 
             if (option === "setauto") {
@@ -214,12 +218,12 @@ async function muteSettings(event: CommandEvent, option: string, args: string, g
 
             const role = event.guild.roles.cache.get(guild.config.roles.muted);
             if (!role) {
-                await database?.guilds.updateOne({id: guild.id}, {"$unset": {"config.roles.muted": ""}});
+                await database?.guilds.updateOne({ id: guild.id }, { "$unset": { "config.roles.muted": "" } });
                 await event.send("The role that used to be the mute role was deleted or can't be found.");
                 return;
             }
 
-            await database?.guilds.updateOne({id: guild.id}, {"$unset": {"config.roles.muted": ""}});
+            await database?.guilds.updateOne({ id: guild.id }, { "$unset": { "config.roles.muted": "" } });
             await event.send(`\`${role.name}\` is no longer the mute role.`);
 
             if (option === "autoremove") {
@@ -240,7 +244,7 @@ async function muteSettings(event: CommandEvent, option: string, args: string, g
 
             const role = event.guild.roles.cache.get(guild.config.roles.muted);
             if (!role) {
-                await database?.guilds.updateOne({id: guild.id}, {"$unset": {"config.roles.muted": ""}});
+                await database?.guilds.updateOne({ id: guild.id }, { "$unset": { "config.roles.muted": "" } });
                 await event.send("The role that used to be the mute role was deleted or can't be found.");
                 return;
             }
@@ -259,7 +263,7 @@ async function muteSettings(event: CommandEvent, option: string, args: string, g
 
             const role = event.guild.roles.cache.get(guild.config.roles.muted);
             if (!role) {
-                await database?.guilds.updateOne({id: guild.id}, {"$unset": {"config.roles.muted": ""}});
+                await database?.guilds.updateOne({ id: guild.id }, { "$unset": { "config.roles.muted": "" } });
                 await event.send("The role that used to be the mute role was deleted or can't be found.");
                 return;
             }
@@ -287,7 +291,7 @@ async function autoModSettings(event: CommandEvent, option: string, guild: Guild
                 return;
             }
 
-            database?.guilds.updateOne({id: guild.id}, {"$set": {"config.automod": true}});
+            database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod": true } });
             await event.send("Successfully enabled automod features.");
             break;
         }
@@ -298,7 +302,7 @@ async function autoModSettings(event: CommandEvent, option: string, guild: Guild
                 return;
             }
 
-            database?.guilds.updateOne({id: guild.id}, {"$unset": {"config.automod": ""}});
+            database?.guilds.updateOne({ id: guild.id }, { "$unset": { "config.automod": "" } });
             await event.send("Successfully disabled automod features.");
             break;
         }
@@ -328,7 +332,7 @@ async function filterSettings(event: CommandEvent, option: string, args: string,
                 return;
             }
 
-            await database?.guilds.updateOne({id: guild.id}, {"$push": {"config.filter.list": word}});
+            await database?.guilds.updateOne({ id: guild.id }, { "$push": { "config.filter.list": word } });
             await event.send(`Added \`${word}\` to the filter.`);
             break;
         }
@@ -345,7 +349,7 @@ async function filterSettings(event: CommandEvent, option: string, args: string,
                 return;
             }
 
-            await database?.guilds.updateOne({id: guild.id}, {"$pull": {"config.filter.list": word}});
+            await database?.guilds.updateOne({ id: guild.id }, { "$pull": { "config.filter.list": word } });
             await event.send(`Removed \`${word}\` from the filter.`);
             break;
         }
@@ -356,7 +360,7 @@ async function filterSettings(event: CommandEvent, option: string, args: string,
                 return;
             }
 
-            await database?.guilds.updateOne({id: guild.id}, {"$set": {"config.filter.enabled": true}});
+            await database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.filter.enabled": true } });
             await event.send("Enabled the word filter.");
             break;
         }
@@ -367,7 +371,7 @@ async function filterSettings(event: CommandEvent, option: string, args: string,
                 return;
             }
 
-            await database?.guilds.updateOne({id: guild.id}, {"$set": {"config.filter.enabled": false}});
+            await database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.filter.enabled": false } });
             await event.send("Disabled the word filter.");
             break;
         }
@@ -389,7 +393,7 @@ async function inviteBlockerSettings(event: CommandEvent, option: string, guild:
                 return;
             }
 
-            database?.guilds.updateOne({id: guild.id}, {"$set": {"config.inviteBlocker": true}});
+            database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.inviteBlocker": true } });
             await event.send("The invite blocker has been enabled.");
             break;
         }
@@ -400,7 +404,7 @@ async function inviteBlockerSettings(event: CommandEvent, option: string, guild:
                 return;
             }
 
-            database?.guilds.updateOne({id: guild.id}, {"$unset": {"config.inviteBlocker": ""}});
+            database?.guilds.updateOne({ id: guild.id }, { "$unset": { "config.inviteBlocker": "" } });
             await event.send("The invite blocker has been disabled.");
             break;
         }
@@ -424,7 +428,7 @@ async function overwriteSettings(event: CommandEvent, option: string, args: stri
                         return;
                     }
 
-                    database?.guilds.updateOne({id: guild.id}, {"$set": {"config.staffBypass": true}});
+                    database?.guilds.updateOne({ id: guild.id }, { "$set": { "config.staffBypass": true } });
                     await event.send("Enabled staff's ability to bypass automod.");
                     break;
                 }
@@ -435,7 +439,7 @@ async function overwriteSettings(event: CommandEvent, option: string, args: stri
                         return;
                     }
 
-                    database?.guilds.updateOne({id: guild.id}, {"$unset": {"config.staffBypass": ""}});
+                    database?.guilds.updateOne({ id: guild.id }, { "$unset": { "config.staffBypass": "" } });
                     await event.send("Disabled staff's ability to bypass automod.");
                     break;
                 }
@@ -493,7 +497,7 @@ async function loggingSettings(event: CommandEvent, option: string, args: string
                     continue;
                 }
 
-                await database?.guilds.updateOne({id: guild.id}, {"$set": {[`config.channels.${logType}`]: channel.id}});
+                await database?.guilds.updateOne({ id: guild.id }, { "$set": { [`config.channels.${logType}`]: channel.id } });
                 successful.push(logType);
             }
 
@@ -523,7 +527,7 @@ async function loggingSettings(event: CommandEvent, option: string, args: string
                     continue;
                 }
 
-                await database?.guilds.updateOne({id: guild.id}, {"$unset": {[`config.channels.${logType}`]: ""}});
+                await database?.guilds.updateOne({ id: guild.id }, { "$unset": { [`config.channels.${logType}`]: "" } });
                 successful.push(logType);
             }
 
@@ -556,5 +560,5 @@ async function displayAllSettings(event: CommandEvent, guild: Guild) {
         .setColor("#61e096")
         .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
-    await event.send({embed: embed});
+    await event.send({ embed: embed });
 }

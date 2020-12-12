@@ -1,8 +1,8 @@
 import * as fs from "fs";
 import configTemplate from "~/Config";
-import {generateConfig, getConfig} from "~/ConfigHandler";
+import { generateConfig, getConfig } from "~/ConfigHandler";
 import MyntClient from "~/MyntClient";
-import {Database} from "@database";
+import { Database } from "@database/Database";
 
 async function main() {
     const configFile = "config.json";
@@ -28,6 +28,6 @@ async function main() {
     await client.login(config.token);
 }
 
-main().catch((err) => {
-    console.log(err);
+main().catch((error) => {
+    console.log(error);
 });

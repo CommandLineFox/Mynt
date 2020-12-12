@@ -45,7 +45,7 @@ class Command {
             this.run(event);
         }
         catch (error) {
-            console.log(error);
+            event.client.emit("error", error);
         }
     }
 }

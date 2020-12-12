@@ -15,23 +15,29 @@ class ReplyLast extends Command_1.default {
         });
     }
     async run(event) {
-        const argument = event.argument;
-        const lastDm = event.client.lastDmAuthor;
-        if (!lastDm) {
-            await event.send("Unable to find the last DM.");
-            return;
+        const client = event.client;
+        try {
+            const argument = event.argument;
+            const lastDm = event.client.lastDmAuthor;
+            if (!lastDm) {
+                await event.send("Unable to find the last DM.");
+                return;
+            }
+            if (!argument) {
+                await event.reply("you can't send an empty message to users.");
+            }
+            lastDm.send(argument)
+                .catch(() => {
+                event.reply("the specified user has their DMs disabled or has me blocked.");
+                return;
+            })
+                .then(() => {
+                event.send(`Successfully sent the message to ${lastDm.tag}.`);
+            });
         }
-        if (!argument) {
-            await event.reply("you can't send an empty message to users.");
+        catch (error) {
+            client.emit("error", error);
         }
-        lastDm.send(argument)
-            .catch(() => {
-            event.reply("the specified user has their DMs disabled or has me blocked.");
-            return;
-        })
-            .then(() => {
-            event.send(`Successfully sent the message to ${lastDm.tag}.`);
-        });
     }
 }
 exports.default = ReplyLast;

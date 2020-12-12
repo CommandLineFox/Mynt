@@ -17,21 +17,26 @@ class ReplyTo extends Command_1.default {
     }
     async run(event) {
         const client = event.client;
-        const guild = event.guild;
-        const [user, text] = Utils_1.splitArguments(event.argument, 2);
-        const member = await client.getMember(user, guild);
-        if (!member) {
-            await event.send("Couldn't find the user you're looking for");
-            return;
+        try {
+            const guild = event.guild;
+            const [user, text] = Utils_1.splitArguments(event.argument, 2);
+            const member = await client.getMember(user, guild);
+            if (!member) {
+                await event.send("Couldn't find the user you're looking for");
+                return;
+            }
+            member.user.send(text)
+                .catch(() => {
+                event.reply("the specified user has their DMs disabled or has me blocked.");
+                return;
+            })
+                .then(() => {
+                event.send(`Successfully sent the message to ${member.user.tag}.`);
+            });
         }
-        member.user.send(text)
-            .catch(() => {
-            event.reply("the specified user has their DMs disabled or has me blocked.");
-            return;
-        })
-            .then(() => {
-            event.send(`Successfully sent the message to ${member.user.tag}.`);
-        });
+        catch (error) {
+            client.emit("error", error);
+        }
     }
 }
 exports.default = ReplyTo;

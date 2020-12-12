@@ -26,7 +26,7 @@ const fs = __importStar(require("fs"));
 const Config_1 = __importDefault(require("./Config"));
 const ConfigHandler_1 = require("./ConfigHandler");
 const MyntClient_1 = __importDefault(require("./MyntClient"));
-const _database_1 = require("./database/Database.ts");
+const Database_1 = require("./database/Database");
 async function main() {
     const configFile = "config.json";
     if (!fs.existsSync(configFile)) {
@@ -41,12 +41,12 @@ async function main() {
         console.info("Please use the above errors to fix your config before restarting the bot");
         return;
     }
-    const database = new _database_1.Database(config.db);
+    const database = new Database_1.Database(config.db);
     await database.connect();
     const client = new MyntClient_1.default(config, database);
     await client.login(config.token);
 }
-main().catch((err) => {
-    console.log(err);
+main().catch((error) => {
+    console.log(error);
 });
 //# sourceMappingURL=index.js.map

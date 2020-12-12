@@ -14,5 +14,5 @@ export default abstract class Event implements EventOptions {
         this.disabled = options.disabled ?? false;
     }
 
-    public abstract callback(client:MyntClient, ...args: any[]): void;
+    public abstract callback(client: MyntClient, ...args: any[]): void;
 }

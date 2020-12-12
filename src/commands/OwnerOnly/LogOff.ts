@@ -1,5 +1,5 @@
 import Command from "@command/Command";
-import {OwnerOnly} from "~/Groups";
+import { OwnerOnly } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 
 export default class LogOff extends Command {
@@ -13,7 +13,12 @@ export default class LogOff extends Command {
     }
 
     public async run(event: CommandEvent): Promise<void> {
-        await event.message.delete();
-        event.client.destroy();
+        const client = event.client;
+        try {
+            await event.message.delete();
+            event.client.destroy();
+        } catch (error) {
+            client.emit("error", error);
+        }
     }
 }

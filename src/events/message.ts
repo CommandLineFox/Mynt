@@ -1,11 +1,11 @@
 import Event from "@event/Event";
 import MyntClient from "~/MyntClient";
-import {Message} from "discord.js";
+import { Message } from "discord.js";
 import { generateMail, autoMod } from "@utils/EventUtils";
 
 export default class MessageEvent extends Event {
     public constructor() {
-        super({name: "message"});
+        super({ name: "message" });
     }
 
     public async callback(client: MyntClient, message: Message): Promise<void> {

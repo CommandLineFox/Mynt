@@ -1,4 +1,4 @@
-import {PermissionResolvable} from "discord.js";
+import { PermissionResolvable } from "discord.js";
 import CommandEvent from "@command/CommandEvent";
 import Group from "@command/Group";
 
@@ -74,11 +74,7 @@ export default abstract class Command implements CommandOptions {
             }
         }
 
-        try {
-            this.run(event);
-        } catch (error) {
-            console.log(error);
-        }
+        this.run(event);
     }
 
     protected abstract run(event: CommandEvent): void;

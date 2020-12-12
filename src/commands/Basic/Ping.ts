@@ -1,7 +1,7 @@
 import Command from "@command/Command";
-import {Basic} from "~/Groups";
+import { Basic } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import {MessageEmbed, Message} from "discord.js";
+import { MessageEmbed, Message } from "discord.js";
 
 export default class Ping extends Command {
     public constructor() {
@@ -15,13 +15,18 @@ export default class Ping extends Command {
     }
 
     public run(event: CommandEvent): void {
-        event.send("Pinging...")
-            .then(async (msg) => {
-                msg = msg as Message;
-                const ping = new MessageEmbed()
-                    .addField(":hourglass: Response time: ", `${msg.createdTimestamp - event.message.createdTimestamp}ms`, false)
-                    .addField(":heartbeat: Bot ping: ", `${Math.round(event.client.ws.ping)}ms`, true);
-                await msg.edit({content: "", embed: ping});
-            });
+        const client = event.client;
+        try {
+            event.send("Pinging...")
+                .then(async (msg) => {
+                    msg = msg as Message;
+                    const ping = new MessageEmbed()
+                        .addField(":hourglass: Response time: ", `${msg.createdTimestamp - event.message.createdTimestamp}ms`, false)
+                        .addField(":heartbeat: Bot ping: ", `${Math.round(event.client.ws.ping)}ms`, true);
+                    await msg.edit({ content: "", embed: ping });
+                });
+        } catch (error) {
+            client.emit("error", error);
+        }
     }
 }

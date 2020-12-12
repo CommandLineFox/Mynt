@@ -1,5 +1,5 @@
 import Command from "@command/Command";
-import {Mail} from "~/Groups";
+import { Mail } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 
 export default class ReplyLast extends Command {
@@ -13,25 +13,30 @@ export default class ReplyLast extends Command {
     }
 
     public async run(event: CommandEvent): Promise<void> {
-        const argument = event.argument;
-        const lastDm = event.client.lastDmAuthor;
+        const client = event.client;
+        try {
+            const argument = event.argument;
+            const lastDm = event.client.lastDmAuthor;
 
-        if (!lastDm) {
-            await event.send("Unable to find the last DM.");
-            return;
-        }
-
-        if (!argument) {
-            await event.reply("you can't send an empty message to users.");
-        }
-
-        lastDm!.send(argument)
-            .catch(() => {
-                event.reply("the specified user has their DMs disabled or has me blocked.");
+            if (!lastDm) {
+                await event.send("Unable to find the last DM.");
                 return;
-            })
-            .then(() => {
-                event.send(`Successfully sent the message to ${lastDm!.tag}.`);
-            });
+            }
+
+            if (!argument) {
+                await event.reply("you can't send an empty message to users.");
+            }
+
+            lastDm!.send(argument)
+                .catch(() => {
+                    event.reply("the specified user has their DMs disabled or has me blocked.");
+                    return;
+                })
+                .then(() => {
+                    event.send(`Successfully sent the message to ${lastDm!.tag}.`);
+                });
+        } catch (error) {
+            client.emit("error", error);
+        }
     }
 }

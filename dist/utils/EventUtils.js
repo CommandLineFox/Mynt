@@ -46,8 +46,8 @@ function filter(message, guild) {
     for (const word of guild.config.filter.list) {
         if (text.includes(word)) {
             message.delete({ timeout: 100, reason: "AutoMod - Word filter" })
-                .catch((err) => {
-                console.log(err);
+                .catch((error) => {
+                console.log(error);
             });
             return true;
         }
@@ -60,8 +60,8 @@ function inviteBlock(message) {
     const regex = new RegExp("(https?://)?(www.)?(discord.(gg|io|me|li)|discord(app)?.com/invite)/.+[a-z]");
     if (content.match(regex)) {
         message.delete({ timeout: 100, reason: "AutoMod - Invite blocker" })
-            .catch((err) => {
-            console.log(err);
+            .catch((error) => {
+            console.log(error);
         });
         return true;
     }

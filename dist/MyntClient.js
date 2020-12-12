@@ -51,18 +51,15 @@ class MyntClient extends discord_js_1.Client {
             return false;
         }
         const moderators = (_b = guildModel.config.roles) === null || _b === void 0 ? void 0 : _b.moderator;
-        if (!moderators) {
-            return false;
-        }
-        if (moderators.length === 0) {
+        if (!moderators || moderators.length === 0) {
             return false;
         }
         let mod = false;
-        moderators.forEach(id => {
+        for (const id in moderators) {
             if (member.roles.cache.some(role => role.id === id)) {
                 mod = true;
             }
-        });
+        }
         return mod;
     }
     isAdmin(member) {

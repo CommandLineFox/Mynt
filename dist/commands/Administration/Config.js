@@ -20,64 +20,69 @@ class Config extends Command_1.default {
     }
     async run(event) {
         const client = event.client;
-        const database = client.database;
-        const guild = await client.getGuildFromDatabase(database, event.guild.id);
-        if (!guild) {
-            return;
+        try {
+            const database = client.database;
+            const guild = await client.getGuildFromDatabase(database, event.guild.id);
+            if (!guild) {
+                return;
+            }
+            const [subcommand, option, args] = Utils_1.splitArguments(event.argument, 3);
+            if (!subcommand) {
+                await displayAllSettings(event, guild);
+                return;
+            }
+            switch (subcommand.toLowerCase()) {
+                case "prefix": {
+                    await prefixSettings(event, option, args, guild);
+                    break;
+                }
+                case "mod":
+                case "mods":
+                case "moderator":
+                case "moderators":
+                case "staff": {
+                    await moderatorSettings(event, option, args, guild);
+                    break;
+                }
+                case "mute":
+                case "muted":
+                case "muterole": {
+                    await muteSettings(event, option, args, guild);
+                    break;
+                }
+                case "automod": {
+                    await autoModSettings(event, option, guild);
+                    break;
+                }
+                case "badwords":
+                case "filter": {
+                    await filterSettings(event, option, args, guild);
+                    break;
+                }
+                case "overwrites":
+                case "overwrite":
+                case "special": {
+                    await overwriteSettings(event, option, args, guild);
+                    break;
+                }
+                case "log":
+                case "logs":
+                case "logging": {
+                    await loggingSettings(event, option, args, guild);
+                    break;
+                }
+                case "invite":
+                case "inviteblock":
+                case "ads":
+                case "adblock":
+                case "inviteblocker": {
+                    await inviteBlockerSettings(event, option, guild);
+                    break;
+                }
+            }
         }
-        const [subcommand, option, args] = Utils_1.splitArguments(event.argument, 3);
-        if (!subcommand) {
-            await displayAllSettings(event, guild);
-            return;
-        }
-        switch (subcommand.toLowerCase()) {
-            case "prefix": {
-                await prefixSettings(event, option, args, guild);
-                break;
-            }
-            case "mod":
-            case "mods":
-            case "moderator":
-            case "moderators":
-            case "staff": {
-                await moderatorSettings(event, option, args, guild);
-                break;
-            }
-            case "mute":
-            case "muted":
-            case "muterole": {
-                await muteSettings(event, option, args, guild);
-                break;
-            }
-            case "automod": {
-                await autoModSettings(event, option, guild);
-                break;
-            }
-            case "badwords":
-            case "filter": {
-                await filterSettings(event, option, args, guild);
-                break;
-            }
-            case "overwrites":
-            case "overwrite":
-            case "special": {
-                await overwriteSettings(event, option, args, guild);
-                break;
-            }
-            case "log":
-            case "logs":
-            case "logging": {
-                await loggingSettings(event, option, args, guild);
-                break;
-            }
-            case "invite":
-            case "inviteblock":
-            case "ads":
-            case "adblock":
-            case "inviteblocker": {
-                await inviteBlockerSettings(event, option, guild);
-                break;
-            }
+        catch (error) {
+            client.emit("error", error);
         }
     }
 }

@@ -51,8 +51,8 @@ export function filter(message: Message, guild: Guild): boolean {
     for (const word of guild.config.filter.list) {
         if (text.includes(word)) {
             message.delete({ timeout: 100, reason: "AutoMod - Word filter" })
-                .catch((err) => {
-                    console.log(err);
+                .catch((error) => {
+                    console.log(error);
                 });
             return true;
         }
@@ -67,8 +67,8 @@ export function inviteBlock(message: Message): boolean {
 
     if (content.match(regex)) {
         message.delete({ timeout: 100, reason: "AutoMod - Invite blocker" })
-            .catch((err) => {
-                console.log(err);
+            .catch((error) => {
+                console.log(error);
             });
         return true;
     }

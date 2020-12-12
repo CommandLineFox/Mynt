@@ -45,7 +45,7 @@ class CommandRegistry {
                 } catch (error) {
                     console.log(error);
                 }
-                
+
                 commands.push(new command);
             }
         }

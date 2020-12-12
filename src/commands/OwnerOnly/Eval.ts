@@ -1,9 +1,9 @@
 import Command from "@command/Command";
-import {OwnerOnly} from "~/Groups";
+import { OwnerOnly } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
-import {MessageEmbed} from "discord.js";
-import {inspect} from "util";
-import {runInNewContext} from "vm";
+import { MessageEmbed } from "discord.js";
+import { inspect } from "util";
+import { runInNewContext } from "vm";
 
 export default class Eval extends Command {
     public constructor() {
@@ -18,32 +18,36 @@ export default class Eval extends Command {
 
     public async run(event: CommandEvent): Promise<void> {
         const client = event.client;
-        const message = event.message;
-        let argument = event.argument;
-        const author = event.author;
-        const start = Date.now();
+        try {
+            const message = event.message;
+            let argument = event.argument;
+            const author = event.author;
+            const start = Date.now();
 
-        if (argument.startsWith("```js") && argument.endsWith("```")) {
-            argument = argument.slice(5, argument.length - 3);
-        }
+            if (argument.startsWith("```js") && argument.endsWith("```")) {
+                argument = argument.slice(5, argument.length - 3);
+            }
 
-        const script = parseBlock(argument);
-        const exec = await run(script, {client, message, MessageEmbed, author,}, {filename: message.guild?.id.toString()});
-        const end = Date.now();
+            const script = parseBlock(argument);
+            const exec = await run(script, { client, message, MessageEmbed, author, }, { filename: message.guild?.id.toString() });
+            const end = Date.now();
 
-        if (typeof exec === "string") {
-            const embed = new MessageEmbed()
-                .addField("Input", makeCodeBlock(script, "js"))
-                .addField("Output", makeCodeBlock(exec, "js"))
-                .setFooter(`Script executed in ${end - start}ms`);
+            if (typeof exec === "string") {
+                const embed = new MessageEmbed()
+                    .addField("Input", makeCodeBlock(script, "js"))
+                    .addField("Output", makeCodeBlock(exec, "js"))
+                    .setFooter(`Script executed in ${end - start}ms`);
 
-            await event.send({embed: embed});
-        } else {
-            const embed = new MessageEmbed()
-                .addField("Input", makeCodeBlock(script, "js"))
-                .addField("Output", makeCodeBlock(`${exec.name}: ${exec.message}`))
-                .setFooter(`Script executed in ${end - start}ms`);
-            await event.send(embed);
+                await event.send({ embed: embed });
+            } else {
+                const embed = new MessageEmbed()
+                    .addField("Input", makeCodeBlock(script, "js"))
+                    .addField("Output", makeCodeBlock(`${exec.name}: ${exec.message}`))
+                    .setFooter(`Script executed in ${end - start}ms`);
+                await event.send(embed);
+            }
+        } catch (error) {
+            client.emit("error", error);
         }
     }
 }
@@ -57,8 +61,8 @@ async function run(script: string, ctx: object, opts: object): Promise<string | 
         }
 
         return result;
-    } catch (err) {
-        return err;
+    } catch (error) {
+        return error;
     }
 }
 

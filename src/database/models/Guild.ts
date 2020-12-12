@@ -1,4 +1,4 @@
-import {ObjectId} from "bson";
+import { ObjectId } from "bson";
 
 export interface Roles {
     muted?: string;
