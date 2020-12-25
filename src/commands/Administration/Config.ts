@@ -21,8 +21,11 @@ export default class Config extends Command {
         const client = event.client;
         try {
             const database = client.database;
+            if (!database) {
+                return;
+            }
 
-            const guild = await client.getGuildFromDatabase(database!, event.guild.id);
+            const guild = await database.getGuild(event.guild.id);
             if (!guild) {
                 return;
             }

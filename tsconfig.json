@@ -41,7 +41,7 @@
         "src/event/*"
       ],
       "@models/*": [
-        "src/database/models/*"
+        "src/models/*"
       ],
       "@utils/*": [
         "src/utils/*"

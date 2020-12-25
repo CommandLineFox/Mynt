@@ -2,6 +2,7 @@ import Command from "@command/Command";
 import { Moderation } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import { MessageEmbed } from "discord.js";
+import { getMember } from "@utils/CommandUtils";
 
 export default class Avatar extends Command {
     public constructor() {
@@ -20,7 +21,7 @@ export default class Avatar extends Command {
             const guild = event.guild;
             const argument = event.argument;
 
-            let member = await client.getMember(argument, guild);
+            let member = await getMember(argument, guild);
             if (!member) {
                 member = event.member;
             }

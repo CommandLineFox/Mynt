@@ -21,6 +21,17 @@ export class Database {
         console.log("Connected to database");
     }
 
+    public async getGuild(id: string): Promise<Guild | null> {
+        let guild = await this.guilds.findOne({ id: id });
+        if (!guild) {
+            const newGuild = new Guild({ id: id });
+            await this.guilds.insertOne(newGuild);
+            guild = await this.guilds.findOne({ id: id });
+        }
+
+        return guild;
+    }
+
     public get guilds(): Collection<Guild> {
         return this.db.collection("guilds");
     }

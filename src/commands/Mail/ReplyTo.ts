@@ -2,6 +2,7 @@ import Command from "@command/Command";
 import { Mail } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import { splitArguments } from "@utils/Utils";
+import { getMember } from "@utils/CommandUtils";
 
 export default class ReplyTo extends Command {
     public constructor() {
@@ -18,7 +19,7 @@ export default class ReplyTo extends Command {
         try {
             const guild = event.guild;
             const [user, text] = splitArguments(event.argument, 2);
-            const member = await client.getMember(user, guild);
+            const member = await getMember(user, guild);
 
             if (!member) {
                 await event.send("Couldn't find the user you're looking for");

@@ -9,26 +9,30 @@ export default class MessageEvent extends Event {
     }
 
     public async callback(client: MyntClient, message: Message): Promise<void> {
-        if (message.author.bot) {
-            return;
-        }
+        try {
+            if (message.author.bot) {
+                return;
+            }
 
-        if (!message.guild && !message.author.bot) {
-            client.lastDmAuthor = message.author;
-            await generateMail(client, message);
-        }
+            if (!message.guild && !message.author.bot) {
+                client.lastDmAuthor = message.author;
+                await generateMail(client, message);
+            }
 
-        if (!message.guild) {
-            return;
-        }
+            if (!message.guild) {
+                return;
+            }
 
-        const guild = await client.getGuildFromDatabase(client.database!, message.guild.id);
-        if (!guild) {
-            return;
-        }
+            const guild = await client.database?.getGuild(message.guild.id);
+            if (!guild) {
+                return;
+            }
 
-        if (guild.config.automod) {
-            autoMod(client, message, guild);
+            if (guild.config.automod) {
+                autoMod(client, message, guild);
+            }
+        } catch (error) {
+            client.emit("error", error);
         }
     }
 }
