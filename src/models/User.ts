@@ -3,11 +3,11 @@ import { InfractionAction } from "@utils/Types";
 
 export interface UserInfraction {
     action: InfractionAction;
-    active: boolean;
     guild: string;
     id: number;
     moderator: string;
     reason: string;
+    duration: Date;
     time: Date;
 }
 

@@ -1,6 +1,7 @@
 import { connect, Db, MongoClientOptions, Collection } from "mongodb";
 import { Guild } from "@models/Guild";
 import { User } from "@models/User";
+import { Infraction } from "@models/Infraction";
 
 interface DatabaseConfig {
     url: string;
@@ -38,5 +39,9 @@ export class Database {
 
     public get users(): Collection<User> {
         return this.db.collection("users");
+    }
+
+    public get infractions(): Collection<Infraction> {
+        return this.db.collection("infractions");
     }
 }
