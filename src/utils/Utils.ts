@@ -1,3 +1,6 @@
+import { Infraction } from "@models/Infraction";
+import MyntClient from "~/MyntClient";
+
 export function splitArguments(argument: string, amount: number): string[] {
     const args = [];
     let element = "";
@@ -22,4 +25,16 @@ export function splitArguments(argument: string, amount: number): string[] {
     }
 
     return args;
+}
+
+export async function pullInfractions(client: MyntClient): Promise<Infraction[]> {
+    const database = client.database;
+    if (!database) {
+        return [];
+    }
+
+    const cursor = database.infractions.find({ end: { "$lt": Date.now() + 60 * 60 * 24 } });
+    cursor.sort("end", 1);
+    const infractions = await cursor.toArray();
+    return infractions;
 }

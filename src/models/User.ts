@@ -7,8 +7,8 @@ export interface UserInfraction {
     id: number;
     moderator: string;
     reason: string;
-    duration: Date;
-    time: Date;
+    time: number;
+    end?: number;
 }
 
 export interface UserDoc {
