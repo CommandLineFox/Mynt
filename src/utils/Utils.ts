@@ -42,3 +42,8 @@ export async function pullInfractions(client: MyntClient): Promise<InfractionDat
         return { action, end, user, guild };
     });
 }
+
+export function handleInfraction(infraction: InfractionData): void {
+    console.log(infraction);
+    return;
+}

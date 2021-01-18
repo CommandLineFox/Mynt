@@ -25,7 +25,7 @@ export class Database {
     public async getGuild(id: string): Promise<Guild | null> {
         let guild = await this.guilds.findOne({ id: id });
         if (!guild) {
-            const newGuild = new Guild({ id: id });
+            const newGuild = ({ id: id, config: {} });
             await this.guilds.insertOne(newGuild);
             guild = await this.guilds.findOne({ id: id });
         }

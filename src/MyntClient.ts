@@ -4,7 +4,6 @@ import { IFunctionType } from "~/ConfigHandler";
 import { Database } from "@database/Database";
 import CommandHandler from "@command/CommandHandler";
 import EventHandler from "@event/EventHandler";
-import { pullInfractions } from "@utils/Utils";
 import { InfractionData } from "@utils/Types";
 
 type configTemplate = typeof configTemplate;
@@ -22,7 +21,6 @@ export default class MyntClient extends Client {
         new EventHandler(this);
         this.once("ready", async () => {
             new CommandHandler(this);
-            this.infractions = await pullInfractions(this);
         });
     }
 
