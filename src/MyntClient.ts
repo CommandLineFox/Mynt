@@ -4,15 +4,15 @@ import { IFunctionType } from "~/ConfigHandler";
 import { Database } from "@database/Database";
 import CommandHandler from "@command/CommandHandler";
 import EventHandler from "@event/EventHandler";
-import { Infraction } from "@models/Infraction";
-import { pullInfractions } from "./utils/Utils";
+import { pullInfractions } from "@utils/Utils";
+import { InfractionData } from "@utils/Types";
 
 type configTemplate = typeof configTemplate;
 
 export default class MyntClient extends Client {
     public readonly config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> };
     public readonly database?: Database;
-    public infractions?: Infraction[];
+    public infractions?: InfractionData[];
     public lastDmAuthor?: User;
 
     public constructor(config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> }, database?: Database, options?: ClientOptions) {
