@@ -45,31 +45,30 @@ export default abstract class Command implements CommandOptions {
 
     public async execute(event: CommandEvent): Promise<void> {
         if (this.ownerOnly && !event.client.isOwner(event.author)) {
-            await event.reply("you do not own me!");
+            event.reply("you do not own me!");
             return;
         }
 
         if ((this.modOnly && !(await event.client.isMod(event.member, event.guild))) || (this.adminOnly && !event.client.isAdmin(event.member))) {
-            await event.reply("you do not have permission to run this command.");
+            event.reply("you do not have permission to run this command.");
             return;
         }
 
         if (this.guildOnly && !event.isFromGuild) {
-            await event.reply("this command can only be used in servers.");
+            event.reply("this command can only be used in servers.");
             return;
         }
 
         if (event.isFromGuild) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const missingBotPermission = event.textChannel?.permissionsFor(event.guild.me!)?.missing(this.botPermissions);
             if (!missingBotPermission) {
-                await event.reply("I am not allowed to run this command.");
+                event.reply("I am not allowed to run this command.");
                 return;
             }
 
             const missingUserPermission = event.textChannel?.permissionsFor(event.member)?.missing(this.userPermissions);
             if (!missingUserPermission) {
-                await event.reply("you are not allowed to run this command.");
+                event.reply("you are not allowed to run this command.");
                 return;
             }
         }

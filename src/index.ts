@@ -24,10 +24,14 @@ async function main() {
 
     const database = new Database(config.db);
     await database.connect();
+    if (!database) {
+        console.warn("Failed to connect to database");
+        console.info("Please make sure the bot can connect to the database before restarting");
+        return;
+    }
+
     const client = new MyntClient(config, database);
-    await client.login(config.token);
+    client.login(config.token);
 }
 
-main().catch((error) => {
-    console.log(error);
-});
+main();

@@ -38,13 +38,13 @@ export default class Eval extends Command {
                     .addField("Output", makeCodeBlock(exec, "js"))
                     .setFooter(`Script executed in ${end - start}ms`);
 
-                await event.send({ embed: embed });
+                event.send({ embed: embed });
             } else {
                 const embed = new MessageEmbed()
                     .addField("Input", makeCodeBlock(script, "js"))
                     .addField("Output", makeCodeBlock(`${exec.name}: ${exec.message}`))
                     .setFooter(`Script executed in ${end - start}ms`);
-                await event.send(embed);
+                event.send(embed);
             }
         } catch (error) {
             client.emit("error", error);

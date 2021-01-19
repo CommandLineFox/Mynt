@@ -2,7 +2,7 @@ import Command from "@command/Command";
 import { Mail } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import { splitArguments } from "@utils/Utils";
-import { getMember } from "@utils/CommandUtils";
+import { getMember } from "@utils/Utils";
 
 export default class ReplyTo extends Command {
     public constructor() {
@@ -22,12 +22,12 @@ export default class ReplyTo extends Command {
             const member = await getMember(user, guild);
 
             if (!member) {
-                await event.send("Couldn't find the user you're looking for");
+                event.send("Couldn't find the user you're looking for");
                 return;
             }
 
             member.user.send(text)
-                .catch(() => {
+                .catch(async () => {
                     event.reply("the specified user has their DMs disabled or has me blocked.");
                     return;
                 })

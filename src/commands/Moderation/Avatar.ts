@@ -2,7 +2,7 @@ import Command from "@command/Command";
 import { Moderation } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import { MessageEmbed } from "discord.js";
-import { getMember } from "@utils/CommandUtils";
+import { getMember } from "@utils/Utils";
 
 export default class Avatar extends Command {
     public constructor() {

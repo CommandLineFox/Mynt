@@ -1,5 +1,5 @@
+import { Guild, GuildMember } from "discord.js";
 import MyntClient from "~/MyntClient";
-import { InfractionData } from "./Types";
 
 export function splitArguments(argument: string, amount: number): string[] {
     const args = [];
@@ -27,23 +27,47 @@ export function splitArguments(argument: string, amount: number): string[] {
     return args;
 }
 
-export async function pullInfractions(client: MyntClient): Promise<InfractionData[]> {
-    const database = client.database;
-    if (!database) {
-        return [];
+export async function getMember(argument: string, guild: Guild): Promise<GuildMember | undefined> {
+    if (!argument) {
+        return;
     }
 
-    let cursor = database.infractions.find({ end: { "$lt": Date.now() + 60 * 60 * 24 } });
-    cursor = cursor.sort([["end", 1], ["date", -1], ["_id", 1]]);
+    const regex = argument.match(/^((?<username>.+?)#(?<discrim>\d{4})|<?@?!?(?<id>\d{16,18})>?)$/);
+    if (regex && regex.groups) {
+        if (regex.groups.username) {
+            return (await guild.members.fetch({ query: regex.groups.username, limit: 1 })).first();
+        } else if (regex.groups.id) {
+            return guild.members.fetch(regex.groups.id);
+        }
+    }
 
-    const infractions = await cursor.toArray();
-
-    return infractions.map(({ action, end = 0, user, guild }) => {
-        return { action, end, user, guild };
-    });
+    return (await guild.members.fetch({ query: argument, limit: 1 })).first();
 }
 
-export function handleInfraction(infraction: InfractionData): void {
-    console.log(infraction);
+export async function unmute(client: MyntClient, guildId: string, user: string): Promise<void> {
+    const guild = await client.guilds.fetch(guildId, false);
+    const member = await getMember(user, guild);
+    
+    if (!member) {
+        return;
+    }
+
+    const guildDb = await client.database.getGuild(guildId);
+    if (!guildDb || !guildDb.config.roles || !guildDb.config.roles.muted) {
+        return;
+    }
+
+    const role = await guild.roles.fetch(guildDb.config.roles.muted);
+    if (!role) {
+        return;
+    }
+
+    await member.roles.remove(role, "Mute expired");
+}
+
+export async function unban(client: MyntClient, guildId: string, user: string): Promise<void> {
+    const guild = await client.guilds.fetch(guildId, false);
+    
+    guild.members.unban(user, "Ban expired");
     return;
 }

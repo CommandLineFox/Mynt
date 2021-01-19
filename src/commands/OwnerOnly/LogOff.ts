@@ -13,12 +13,7 @@ export default class LogOff extends Command {
     }
 
     public async run(event: CommandEvent): Promise<void> {
-        const client = event.client;
-        try {
-            await event.message.delete();
-            event.client.destroy();
-        } catch (error) {
-            client.emit("error", error);
-        }
+        await event.message.delete();
+        event.client.destroy();
     }
 }
