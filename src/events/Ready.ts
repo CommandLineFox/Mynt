@@ -9,7 +9,6 @@ export default class Ready extends Event {
 
     public async callback(client: MyntClient): Promise<void> {
         console.log(`Logged in as ${client.user?.tag}`);
-        client.user?.setActivity("with Alex", { type: "PLAYING" });
 
         const database = client.database;
         const cursor = database.infractions.find({ complete: false, end: { "$lt": Date.now() + 24 * 60 * 60 } });
@@ -25,24 +24,22 @@ export default class Ready extends Event {
                     // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
                     switch (infraction.action) {
                         case "Ban": {
-                            unmute(client, infraction.guild, infraction.user);
-                            break;
-                        }
-    
-                        case "Mute": {
                             unban(client, infraction.guild, infraction.user);
                             break;
                         }
+
+                        case "Mute": {
+                            unmute(client, infraction.guild, infraction.user);
+                            break;
+                        }
                     }
-    
+
                     client.database.infractions.updateOne({ _id: infraction._id }, { "complete": true });
                     indexes.push(index);
                 }
             });
-    
-            indexes.sort((a, b) => b - a).forEach((index) => {
-                client.infractions.splice(index, 1);
-            });
+
+            client.infractions = client.infractions.filter((_, index) => !indexes.includes(index));
         }, 1000);
     }
 }
