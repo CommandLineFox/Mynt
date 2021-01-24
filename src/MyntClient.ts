@@ -4,14 +4,12 @@ import { IFunctionType } from "~/ConfigHandler";
 import { Database } from "@database/Database";
 import CommandHandler from "@command/CommandHandler";
 import EventHandler from "@event/EventHandler";
-import { InfractionData } from "./models/Infraction";
 
 type configTemplate = typeof configTemplate;
 
 export default class MyntClient extends Client {
     public readonly config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> };
     public readonly database: Database;
-    public infractions: InfractionData[];
     public interval?: NodeJS.Timeout;
     public lastDmAuthor?: User;
 
@@ -19,7 +17,6 @@ export default class MyntClient extends Client {
         super(options);
         this.config = config;
         this.database = database;
-        this.infractions = [];
         new EventHandler(this);
         this.once("ready", async () => {
             new CommandHandler(this);
