@@ -30,7 +30,7 @@ async function main() {
         return;
     }
 
-    const client = new MyntClient(config, database);
+    const client = new MyntClient(config, database, config.options);
     client.login(config.token);
 }
 

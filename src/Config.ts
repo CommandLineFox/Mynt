@@ -1,9 +1,12 @@
-import { string, base, array, object, boolean } from "~/ConfigHandler";
+import { string, base, array, object, boolean, optional } from "~/ConfigHandler";
 
 export default {
     token: string(""),
     prefix: string("!"),
     owners: array(base.string),
+    options: object({
+        disableMentions: optional(base.string) 
+    }),
     mail: string(""),
     errors: string(""),
     db: object({
