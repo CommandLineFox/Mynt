@@ -1,4 +1,4 @@
-import { Guild, GuildMember } from "discord.js";
+import { Guild, GuildChannel, GuildMember, User } from "discord.js";
 import MyntClient from "~/MyntClient";
 
 export function splitArguments(argument: string, amount: number): string[] {
@@ -47,7 +47,7 @@ export async function getMember(argument: string, guild: Guild): Promise<GuildMe
 export async function unmute(client: MyntClient, guildId: string, user: string): Promise<void> {
     const guild = await client.guilds.fetch(guildId, false);
     const member = await getMember(user, guild);
-    
+
     if (!member) {
         return;
     }
@@ -67,7 +67,46 @@ export async function unmute(client: MyntClient, guildId: string, user: string):
 
 export async function unban(client: MyntClient, guildId: string, user: string): Promise<void> {
     const guild = await client.guilds.fetch(guildId, false);
-    
+
     guild.members.unban(user, "Ban expired");
     return;
+}
+
+export function sanitize(argument: string): string {
+    const chars = ["`", ":", "*"];
+    let sanitized = "";
+
+    let index = 0;
+    while (index < argument.length) {
+        if (chars.includes(argument[index])) {
+            sanitized += "\\";
+        }
+
+        sanitized += argument[index];
+        index++;
+    }
+
+    return sanitized;
+}
+
+export function formatTime(date: Date): string {
+    const hours = date.getUTCHours() < 10 ? `0${date.getUTCHours()}` : date.getUTCHours();
+    const minutes = date.getUTCMinutes() < 10 ? `0${date.getUTCMinutes()}` : date.getUTCMinutes();
+    const seconds = date.getUTCSeconds() < 10 ? `0${date.getUTCSeconds()}` : date.getUTCSeconds();
+
+    return `[\`${hours}:${minutes}:${seconds}\`]`;
+}
+
+export function formatUser(user: User): string {
+    return `**${user.tag} (${user.id})**`;
+}
+
+export function formatChannel(channel: GuildChannel): string {
+    if (channel.type === "category") {
+        return `**${channel.name}**`;
+    }
+
+    const parent = channel.parent ? ` in the **${channel.parent.name}** category` : "";
+    const tag = channel.type === "text" ? `**${channel.name} (<#${channel.id}>)**` : `**${channel.name}**`;
+    return `${tag} ${parent}`;
 }

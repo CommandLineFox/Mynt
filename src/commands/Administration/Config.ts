@@ -845,11 +845,6 @@ async function displayData(event: CommandEvent, guild: Guild, type: DisplayData,
             }
 
             case "logging": {
-                if (!guild.config.channels) {
-                    event.send("Logging isn't set up.");
-                    return;
-                }
-
                 const embed = new MessageEmbed()
                     .setTitle("This is the list of logging modules for this server:")
                     .addField("Edits / Deletions", await checkLoggingChannels(event, database!, guild, "editLogs"), true)
