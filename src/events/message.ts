@@ -17,6 +17,7 @@ export default class MessageEvent extends Event {
             if (!message.guild && !message.author.bot) {
                 client.lastDmAuthor = message.author;
                 await generateMail(client, message);
+                return;
             }
 
             if (!message.guild) {
@@ -60,7 +61,7 @@ function autoMod(client: MyntClient, message: Message, guild: Guild): void {
         return;
     }
 
-    if (guild.config.filter && guild.config.filter.enabled && filter(message, guild)) {
+    if (guild.config.filter?.enabled && filter(message, guild)) {
         return;
     }
 

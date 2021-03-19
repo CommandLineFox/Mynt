@@ -1,4 +1,4 @@
-import { Guild, GuildChannel, GuildMember, User } from "discord.js";
+import { Guild, GuildMember, User } from "discord.js";
 import MyntClient from "~/MyntClient";
 
 export function splitArguments(argument: string, amount: number): string[] {
@@ -99,14 +99,4 @@ export function formatTime(date: Date): string {
 
 export function formatUser(user: User): string {
     return `**${user.tag} (${user.id})**`;
-}
-
-export function formatChannel(channel: GuildChannel): string {
-    if (channel.type === "category") {
-        return `**${channel.name}**`;
-    }
-
-    const parent = channel.parent ? ` in the **${channel.parent.name}** category` : "";
-    const tag = channel.type === "text" ? `**${channel.name} (<#${channel.id}>)**` : `**${channel.name}**`;
-    return `${tag} ${parent}`;
 }

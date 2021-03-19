@@ -693,7 +693,7 @@ async function displayData(event: CommandEvent, guild: Guild, type: DisplayData,
                     return "Not set up";
                 }
 
-                const id = guild?.config.roles.muted;
+                const id = guild.config.roles.muted;
                 if (!id) {
                     return "No mute role";
                 }
@@ -737,7 +737,7 @@ async function displayData(event: CommandEvent, guild: Guild, type: DisplayData,
     } else {
         switch (type.toLowerCase()) {
             case "prefix": {
-                event.send(`The prefix is currently set to \`${guild?.config.prefix ?? client.config.prefix}\``);
+                event.send(`The prefix is currently set to \`${guild.config.prefix ?? client.config.prefix}\``);
                 break;
             }
 
@@ -807,7 +807,7 @@ async function displayData(event: CommandEvent, guild: Guild, type: DisplayData,
             }
 
             case "filter": {
-                if (!guild.config.filter || !guild.config.filter.enabled) {
+                if (!guild.config.filter?.enabled) {
                     event.send("The filter is disabled.");
                     return;
                 }
@@ -847,16 +847,16 @@ async function displayData(event: CommandEvent, guild: Guild, type: DisplayData,
             case "logging": {
                 const embed = new MessageEmbed()
                     .setTitle("This is the list of logging modules for this server:")
-                    .addField("Edits / Deletions", await checkLoggingChannels(event, database!, guild, "editLogs"), true)
-                    .addField("Bulk deletes", await checkLoggingChannels(event, database!, guild, "bulkDeletes"), true)
-                    .addField("Mod actions", await checkLoggingChannels(event, database!, guild, "modActions"), true)
-                    .addField("Command used", await checkLoggingChannels(event, database!, guild, "commandUsed"), true)
-                    .addField("Name changes", await checkLoggingChannels(event, database!, guild, "nameChanges"), true)
-                    .addField("Role updates", await checkLoggingChannels(event, database!, guild, "roleUpdates"), true)
-                    .addField("Guild changes", await checkLoggingChannels(event, database!, guild, "guildChanges"), true)
-                    .addField("Channel changes", await checkLoggingChannels(event, database!, guild, "channelChanges"), true)
-                    .addField("Voice changes", await checkLoggingChannels(event, database!, guild, "voiceChanges"), true)
-                    .addField("Joins", await checkLoggingChannels(event, database!, guild, "joinLogs"), true)
+                    .addField("Edits / Deletions", await checkLoggingChannels(event, database, guild, "editLogs"), true)
+                    .addField("Bulk deletes", await checkLoggingChannels(event, database, guild, "bulkDeletes"), true)
+                    .addField("Mod actions", await checkLoggingChannels(event, database, guild, "modActions"), true)
+                    .addField("Command used", await checkLoggingChannels(event, database, guild, "commandUsed"), true)
+                    .addField("Name changes", await checkLoggingChannels(event, database, guild, "nameChanges"), true)
+                    .addField("Role updates", await checkLoggingChannels(event, database, guild, "roleUpdates"), true)
+                    .addField("Guild changes", await checkLoggingChannels(event, database, guild, "guildChanges"), true)
+                    .addField("Channel changes", await checkLoggingChannels(event, database, guild, "channelChanges"), true)
+                    .addField("Voice changes", await checkLoggingChannels(event, database, guild, "voiceChanges"), true)
+                    .addField("Joins", await checkLoggingChannels(event, database, guild, "joinLogs"), true)
                     .setColor("#61e096")
                     .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
