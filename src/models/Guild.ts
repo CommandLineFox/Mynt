@@ -32,10 +32,12 @@ export interface GuildConfig {
     filter?: Filter;
     inviteBlocker?: boolean;
     staffBypass?: boolean;
+    inviteLogging?: boolean;
 }
 
 export interface Guild {
     _id: ObjectId;
     id: string;
     config: GuildConfig;
+    invites?: []
 }

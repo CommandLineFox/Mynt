@@ -1,7 +1,7 @@
 import Event from "@event/Event";
 import { DMChannel, GuildChannel, TextChannel } from "discord.js";
 import MyntClient from "~/MyntClient";
-import { formatTime, formatUser } from "~/utils/Utils";
+import { formatTime, formatUser } from "@utils/Utils";
 
 export default class ChannelDelete extends Event {
     public constructor() {
@@ -53,7 +53,7 @@ function formatChannelDelete(channel: GuildChannel): string {
         return `category **${channel.name}**`;
     }
 
-    const parent = channel.parent ? ` that was in the **${channel.parent.name}** category` : "";
+    const parent = channel.parent ? `that was in the **${channel.parent.name}** category` : "";
     const tag = `channel **${channel.name}**`;
     return `${tag} ${parent}`;
 }

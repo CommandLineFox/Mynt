@@ -73,7 +73,7 @@ export async function unban(client: MyntClient, guildId: string, user: string): 
 }
 
 export function sanitize(argument: string): string {
-    const chars = ["`", ":", "*"];
+    const chars = ["|", "~", "`", "*", "_"];
     let sanitized = "";
 
     let index = 0;
@@ -90,9 +90,9 @@ export function sanitize(argument: string): string {
 }
 
 export function formatTime(date: Date): string {
-    const hours = date.getUTCHours() < 10 ? `0${date.getUTCHours()}` : date.getUTCHours();
-    const minutes = date.getUTCMinutes() < 10 ? `0${date.getUTCMinutes()}` : date.getUTCMinutes();
-    const seconds = date.getUTCSeconds() < 10 ? `0${date.getUTCSeconds()}` : date.getUTCSeconds();
+    const hours = `0${date.getUTCHours()}`.slice(-2);
+    const minutes = `0${date.getUTCMinutes()}`.slice(-2);
+    const seconds = `0${date.getUTCSeconds()}`.slice(-2);
 
     return `[\`${hours}:${minutes}:${seconds}\`]`;
 }
