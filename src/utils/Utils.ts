@@ -89,10 +89,14 @@ export function sanitize(argument: string): string {
     return sanitized;
 }
 
-export function formatTime(date: Date): string {
+export function formatTime(date: Date, file?: boolean): string {
     const hours = `0${date.getUTCHours()}`.slice(-2);
     const minutes = `0${date.getUTCMinutes()}`.slice(-2);
     const seconds = `0${date.getUTCSeconds()}`.slice(-2);
+
+    if (file) {
+        return `[${hours}:${minutes}:${seconds}]`;
+    }
 
     return `[\`${hours}:${minutes}:${seconds}\`]`;
 }
