@@ -61,7 +61,7 @@ function formatMessageDeleteBulk(messages: Collection<Snowflake, Message>): stri
     const array = messages.array();
     for (let i = messages.size - 1; i >= 0; i--) {
         const message = array[i];
-        contents += `${formatTime(message.createdAt, true)} ${message.author.tag}: ${message.cleanContent}\n`;
+        contents += `${formatTime(message.createdAt, true)} ${message.author.tag} (${message.author.id}): ${message.cleanContent}\n`;
     }
 
     return contents;
