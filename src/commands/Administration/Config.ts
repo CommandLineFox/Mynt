@@ -877,6 +877,7 @@ function convertLogging(type: string): LoggingType[] | "None" {
     switch (type.toLowerCase()) {
         case "edits":
         case "deletes":
+        case "editlogs":
         case "edit_logs": {
             return ["editLogs"];
         }

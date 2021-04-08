@@ -14,6 +14,10 @@ export default class MessageDelete extends Event {
                 return;
             }
 
+            if (message.content.length == 0) {
+                return;
+            }
+
             const guild = message.guild;
             if (!guild) {
                 return;
@@ -43,12 +47,12 @@ export default class MessageDelete extends Event {
 
             if (file) {
                 const content = formatMessageDelete(message, true);
-                const line = `${time} Message sent by ${user} has been edited ${channel}:`;
+                const line = `${time} <:messageDelete:829444584575598612> Message sent by ${user} has been edited ${channel}:`;
                 const attachment = { attachment: Buffer.from(content, "utf8"), name: "DeleteLog.txt" };
                 log.send(line, { files: [attachment] });
             } else {
                 const content = formatMessageDelete(message);
-                const line = `${time} Message sent by ${user} has been edited ${channel}: ${content}`;
+                const line = `${time} <:messageDelete:829444584575598612> Message sent by ${user} has been edited ${channel}: ${content}`;
                 log.send(line);
             }
         } catch (error) {

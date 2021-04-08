@@ -43,7 +43,7 @@ export default class MessageDeleteBulk extends Event {
             const channel = formatChannel(first.channel as TextChannel);
             const contents = formatMessageDeleteBulk(messages);
 
-            const line = `${time} **${messages.size}** messages were deleted by ${user} ${channel}:`;
+            const line = `${time} <:channelDelete:829446173655171123> **${messages.size}** messages were deleted by ${user} ${channel}:`;
             const attachment = { attachment: Buffer.from(contents, "utf8"), name: "BulkDeleteLog.txt" };
             log.send(line, { files: [attachment] });
         } catch (error) {
@@ -58,9 +58,8 @@ function formatChannel(channel: TextChannel): string {
 
 function formatMessageDeleteBulk(messages: Collection<Snowflake, Message>): string {
     let contents = "";
-    const array = messages.array();
-    for (let i = messages.size - 1; i >= 0; i--) {
-        const message = array[i];
+    const array = messages.array().reverse();
+    for (const message of array) {
         contents += `${formatTime(message.createdAt, true)} ${message.author.tag} (${message.author.id}): ${message.cleanContent}\n`;
     }
 

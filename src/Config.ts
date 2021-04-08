@@ -9,6 +9,7 @@ export default {
     }),
     mail: string(""),
     errors: string(""),
+    emotes: array(base.string),
     db: object({
         name: string(""),
         url: string(""),

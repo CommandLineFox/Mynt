@@ -1,5 +1,6 @@
 import { Guild, GuildMember, User } from "discord.js";
 import MyntClient from "~/MyntClient";
+import moment from "moment";
 
 export function splitArguments(argument: string, amount: number): string[] {
     const args = [];
@@ -73,7 +74,7 @@ export async function unban(client: MyntClient, guildId: string, user: string): 
 }
 
 export function sanitize(argument: string): string {
-    const chars = ["|", "~", "`", "*", "_"];
+    const chars = ["|", "~", "`", "*", "_", "\\", "/", ":"];
     let sanitized = "";
 
     let index = 0;
@@ -99,6 +100,10 @@ export function formatTime(date: Date, file?: boolean): string {
     }
 
     return `[\`${hours}:${minutes}:${seconds}\`]`;
+}
+
+export function formatDuration(date: Date, withoutSuffix?: boolean): string {
+    return moment(date).fromNow(withoutSuffix);
 }
 
 export function formatUser(user: User): string {

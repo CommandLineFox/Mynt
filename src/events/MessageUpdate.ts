@@ -14,6 +14,10 @@ export default class MessageUpdate extends Event {
                 return;
             }
 
+            if (newMessage.content == oldMessage.content) {
+                return;
+            }
+
             const guild = newMessage.guild;
             if (!guild) {
                 return;
@@ -43,12 +47,12 @@ export default class MessageUpdate extends Event {
 
             if (file) {
                 const content = formatMessageUpdate(oldMessage, newMessage, true);
-                const line = `${time} Message sent by ${user} has been edited ${channel}:`;
+                const line = `${time} <:messageUpdate:829446237220634664> Message sent by ${user} has been edited ${channel}:`;
                 const attachment = { attachment: Buffer.from(content, "utf8"), name: "EditLog.txt" };
                 log.send(line, { files: [attachment] });
             } else {
                 const content = formatMessageUpdate(oldMessage, newMessage);
-                const line = `${time} Message sent by ${user} has been edited ${channel}: ${content}`;
+                const line = `${time} <:messageUpdate:829446237220634664> Message sent by ${user} has been edited ${channel}: ${content}`;
                 log.send(line);
             }
         } catch (error) {

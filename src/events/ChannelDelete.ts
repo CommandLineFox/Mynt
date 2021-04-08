@@ -40,7 +40,7 @@ export default class ChannelDelete extends Event {
             const user = formatUser(executor!);
             const tag = formatChannelDelete(channel);
 
-            const line = `${time} ${user} deleted a ${tag}`;
+            const line = `${time} <:channelDelete:829446173655171123> ${user} deleted a ${tag}`;
             log.send(line);
         } catch (error) {
             client.emit("error", error);
