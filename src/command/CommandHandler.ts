@@ -42,7 +42,11 @@ export default class CommandHandler {
             return;
         }
 
-        await command.execute(new CommandEvent(message, this.client, args));
+        try {
+            await command.execute(new CommandEvent(message, this.client, args));
+        } catch (error) {
+            this.client.emit("error", error);
+        }
     }
 
     private async handleMention(message: Message, content: string) {

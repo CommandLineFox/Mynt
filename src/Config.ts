@@ -5,11 +5,11 @@ export default {
     prefix: string("!"),
     owners: array(base.string),
     options: object({
-        disableMentions: optional(base.string) 
+        disableMentions: optional(base.string),
+        partials: array(base.string, [])
     }),
     mail: string(""),
     errors: string(""),
-    emotes: array(base.string),
     db: object({
         name: string(""),
         url: string(""),

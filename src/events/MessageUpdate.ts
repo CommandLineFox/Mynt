@@ -2,6 +2,7 @@ import Event from "@event/Event";
 import MyntClient from "~/MyntClient";
 import { Message, TextChannel } from "discord.js";
 import { formatTime, formatUser, sanitize } from "@utils/Utils";
+import { autoMod } from "@utils/Automod";
 
 export default class MessageUpdate extends Event {
     public constructor() {
@@ -25,8 +26,15 @@ export default class MessageUpdate extends Event {
 
             const database = client.database;
             const guildDb = await database.getGuild(guild.id);
+            if (!guildDb) {
+                return;
+            }
 
-            if (!guildDb?.config.channels?.editLogs) {
+            if (guildDb.config.automod) {
+                autoMod(client, newMessage, guildDb);
+            }
+
+            if (!guildDb.config.channels?.editLogs) {
                 return;
             }
 
