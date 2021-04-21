@@ -1,4 +1,4 @@
-import { string, base, array, object, boolean, optional } from "~/ConfigHandler";
+import { string, base, array, object, boolean, optional, optionalArray } from "~/ConfigHandler";
 
 export default {
     token: string(""),
@@ -6,7 +6,7 @@ export default {
     owners: array(base.string),
     options: object({
         disableMentions: optional(base.string),
-        partials: array(base.string, [])
+        partials: optionalArray(base.string)
     }),
     mail: string(""),
     errors: string(""),
