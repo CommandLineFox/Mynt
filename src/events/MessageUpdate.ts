@@ -1,7 +1,7 @@
 import Event from "@event/Event";
 import MyntClient from "~/MyntClient";
 import { Message, TextChannel } from "discord.js";
-import { formatTime, formatUser, sanitize } from "@utils/Utils";
+import { formatTime, formatUser, sanitize } from "@utils/Format";
 import { autoMod } from "@utils/Automod";
 
 export default class MessageUpdate extends Event {

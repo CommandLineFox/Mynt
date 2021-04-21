@@ -1,7 +1,7 @@
 import Event from "@event/Event";
 import MyntClient from "~/MyntClient";
 import { Collection, Message, Snowflake, TextChannel } from "discord.js";
-import { formatTime, formatUser } from "@utils/Utils";
+import { formatTime, formatUser } from "@utils/Format";
 
 export default class MessageDeleteBulk extends Event {
     public constructor() {

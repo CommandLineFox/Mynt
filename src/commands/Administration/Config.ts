@@ -3,9 +3,9 @@ import { Administration } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import { Guild } from "@models/Guild";
 import { MessageEmbed, Role } from "discord.js";
-import { splitArguments } from "@utils/Utils";
+import { splitArguments } from "@utils/Argument";
 import { Database } from "~/database/Database";
-import { DatabaseCheckOption, MutePermissionOption, DisplayData, LoggingType } from "~/utils/Types";
+import { DatabaseCheckOption, DisplayData, LoggingType } from "~/utils/Types";
 
 export default class Config extends Command {
     public constructor() {
@@ -83,9 +83,9 @@ export default class Config extends Command {
                 case "invite":
                 case "inviteblock":
                 case "ads":
-                case "adblock":
+                case "antiadvert":
                 case "inviteblocker": {
-                    await inviteBlockerSettings(event, option, guild);
+                    await antiAdvertSettings(event, option, guild);
                     break;
                 }
             }
@@ -173,7 +173,7 @@ async function muteSettings(event: CommandEvent, option: string, args: string, g
     await databaseCheck(database, guild, "roles");
 
     if (!option) {
-        await displayData(event, guild, "muteRole", true);
+        await displayData(event, guild, "muterole", true);
         return;
     }
 
@@ -277,10 +277,10 @@ async function muteSettings(event: CommandEvent, option: string, args: string, g
 
 async function autoModSettings(event: CommandEvent, option: string, guild: Guild) {
     const database = event.client.database;
-    await databaseCheck(database, guild, "autoMod");
+    await databaseCheck(database, guild, "automod");
 
     if (!option) {
-        await displayData(event, guild, "autoMod", true);
+        await displayData(event, guild, "automod", true);
         return;
     }
 
@@ -378,34 +378,34 @@ async function filterSettings(event: CommandEvent, option: string, args: string,
     }
 }
 
-async function inviteBlockerSettings(event: CommandEvent, option: string, guild: Guild) {
+async function antiAdvertSettings(event: CommandEvent, option: string, guild: Guild) {
     const database = event.client.database;
-    await databaseCheck(database, guild, "inviteBlocker");
+    await databaseCheck(database, guild, "antiadvert");
 
     if (!option) {
-        await displayData(event, guild, "inviteBlocker", true);
+        await displayData(event, guild, "antiadvert", true);
     }
 
     switch (option) {
         case "enable": {
-            if (guild.config.inviteBlocker === true) {
-                event.send("The invite blocker is already enabled");
+            if (guild.config.antiAdvert === true) {
+                event.send("The anti-advert is already enabled");
                 return;
             }
 
-            database.guilds.updateOne({ id: guild.id }, { "$set": { "config.inviteBlocker": true } });
-            await event.send("The invite blocker has been enabled.");
+            database.guilds.updateOne({ id: guild.id }, { "$set": { "config.antiadvert": true } });
+            await event.send("The anti-advert has been enabled.");
             break;
         }
 
         case "disable": {
-            if (guild.config.inviteBlocker !== true) {
-                event.send("The invite blocker is already disabled");
+            if (guild.config.antiAdvert !== true) {
+                event.send("The anti-advert is already disabled");
                 return;
             }
 
-            database.guilds.updateOne({ id: guild.id }, { "$unset": { "config.inviteBlocker": "" } });
-            await event.send("The invite blocker has been disabled.");
+            database.guilds.updateOne({ id: guild.id }, { "$unset": { "config.antiadvert": "" } });
+            await event.send("The anti-advert has been disabled.");
             break;
         }
     }
@@ -551,12 +551,12 @@ async function displayAllSettings(event: CommandEvent, guild: Guild) {
         .setTitle("The current settings for this server:")
         .addField("Prefix", await displayData(event, guild, "prefix"), true)
         .addField("Moderators", await displayData(event, guild, "moderators"), true)
-        .addField("Mute role", await displayData(event, guild, "muteRole"), true)
-        .addField("Automod", await displayData(event, guild, "autoMod"), true)
+        .addField("Mute role", await displayData(event, guild, "muterole"), true)
+        .addField("Automod", await displayData(event, guild, "automod"), true)
         .addField("Overwrites", await displayData(event, guild, "overwrites"), true)
         .addField("Logging", await displayData(event, guild, "logging"), true)
         .addField("Filter", await displayData(event, guild, "filter"), true)
-        .addField("Invite blocker", await displayData(event, guild, "inviteBlocker"), true)
+        .addField("Invite blocker", await displayData(event, guild, "antiadvert"), true)
         .setColor("#61e096")
         .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
@@ -603,15 +603,15 @@ async function databaseCheck(database: Database, guild: Guild, option: DatabaseC
         }
 
         case "inviteblocker": {
-            if (!guild.config.inviteBlocker) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.inviteblocker": false } });
+            if (!guild.config.antiAdvert) {
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.antiAdvert": false } });
             }
             break;
         }
     }
 }
 
-function mutePermissions(event: CommandEvent, role: Role, option: MutePermissionOption): void {
+function mutePermissions(event: CommandEvent, role: Role, option: "set" | "remove"): void {
     const guild = event.guild;
 
     switch (option) {
@@ -730,8 +730,8 @@ async function displayData(event: CommandEvent, guild: Guild, type: DisplayData,
                 return guild.config.logging === true ? "Enabled" : "Disabled";
             }
 
-            case "inviteblocker": {
-                return guild.config.inviteBlocker === true ? "Enabled" : "Disabled";
+            case "antiadvert": {
+                return guild.config.antiAdvert === true ? "Enabled" : "Disabled";
             }
         }
     } else {
@@ -794,7 +794,7 @@ async function displayData(event: CommandEvent, guild: Guild, type: DisplayData,
                 }
 
                 const filter = guild.config.filter;
-                const inviteBlocker = guild.config.inviteBlocker;
+                const inviteBlocker = guild.config.antiAdvert;
                 const embed = new MessageEmbed()
                     .setTitle("Here's a list of automod features:")
                     .addField("Word filter", `\`${(filter && filter.enabled) ? "Enabled" : "Disabled"}\``, true)
@@ -864,8 +864,8 @@ async function displayData(event: CommandEvent, guild: Guild, type: DisplayData,
                 break;
             }
 
-            case "inviteblocker": {
-                await event.send(`${guild.config.inviteBlocker === true ? "The invite blocker is enabled." : "The invite blocker is disabled."}`);
+            case "antiadvert": {
+                await event.send(`${guild.config.antiAdvert === true ? "The anti-advert is enabled." : "The anti-advert is disabled."}`);
                 break;
             }
         }

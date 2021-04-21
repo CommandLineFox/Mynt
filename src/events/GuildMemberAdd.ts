@@ -1,7 +1,7 @@
 import Event from "@event/Event";
 import { GuildMember, TextChannel } from "discord.js";
 import MyntClient from "~/MyntClient";
-import { formatDuration, formatTime, formatUser } from "@utils/Utils";
+import { formatDuration, formatTime, formatUser } from "@utils/Format";
 
 export default class GuildMemberAdd extends Event {
     public constructor() {

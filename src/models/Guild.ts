@@ -30,14 +30,12 @@ export interface GuildConfig {
     roles?: Roles;
     channels?: Channels;
     filter?: Filter;
-    inviteBlocker?: boolean;
+    antiAdvert?: boolean;
     staffBypass?: boolean;
-    inviteLogging?: boolean;
 }
 
 export interface Guild {
     _id: ObjectId;
     id: string;
     config: GuildConfig;
-    invites?: []
 }

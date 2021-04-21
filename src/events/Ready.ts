@@ -1,6 +1,6 @@
 import Event from "@event/Event";
 import MyntClient from "~/MyntClient";
-import { unban, unmute } from "@utils/Utils";
+import { unban, unmute } from "@utils/Moderation";
 
 export default class Ready extends Event {
     public constructor() {

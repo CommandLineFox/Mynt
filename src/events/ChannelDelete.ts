@@ -1,7 +1,7 @@
 import Event from "@event/Event";
 import { DMChannel, GuildChannel, TextChannel } from "discord.js";
 import MyntClient from "~/MyntClient";
-import { formatTime, formatUser } from "@utils/Utils";
+import { formatTime, formatUser } from "@utils/Format";
 
 export default class ChannelDelete extends Event {
     public constructor() {

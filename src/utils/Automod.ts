@@ -11,7 +11,7 @@ export function autoMod(client: MyntClient, message: Message, guild: Guild): voi
         return;
     }
 
-    if (guild.config.inviteBlocker === true && inviteBlock(message)) {
+    if (guild.config.antiAdvert === true && inviteBlock(message)) {
         return;
     }
 }
