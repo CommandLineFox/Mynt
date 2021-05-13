@@ -30,7 +30,7 @@ export default class ChannelCreate extends Event {
             const audit = await guild.fetchAuditLogs({ type: "CHANNEL_CREATE", limit: 1 });
             const entry = audit.entries.first();
             if (!entry) {
-                log.send(`A new channel has been created, <£${channel.id}>.`);
+                log.send(`A new channel has been created, <#${channel.id}>.`);
             }
 
             const date = entry?.createdAt;
@@ -40,7 +40,7 @@ export default class ChannelCreate extends Event {
             const user = formatUser(executor!);
             const tag = formatChannelCreate(channel);
 
-            const line = `${time} <:channelCreate:829444455417249862> ${user} created a new ${tag}`;
+            const line = `${time} <:channelCreate:829444455417249862> ${user} created a ${tag}`;
             log.send(line);
         } catch (error) {
             client.emit("error", error);

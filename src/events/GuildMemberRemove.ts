@@ -13,13 +13,13 @@ export default class GuildMemberRemove extends Event {
             const guild = member.guild;
             const database = client.database;
             const guildDb = await database.getGuild(guild.id);
-            if (!guildDb?.config.channels?.joinLogs) {
+            if (!guildDb?.config.channels?.travelLogs) {
                 return;
             }
 
-            const log = guild.channels.cache.get(guildDb.config.channels.joinLogs) as TextChannel;
+            const log = guild.channels.cache.get(guildDb.config.channels.travelLogs) as TextChannel;
             if (!log) {
-                await database.guilds.updateOne({ id: guild.id }, { "$unset": { "config.channels.joinLogs": "" } });
+                await database.guilds.updateOne({ id: guild.id }, { "$unset": { "config.channels.travelLogs": "" } });
                 return;
             }
 

@@ -126,7 +126,7 @@ async function prefixSettings(event: CommandEvent, option: string, args: string,
 
 async function moderatorSettings(event: CommandEvent, option: string, args: string, guild: Guild) {
     const database = event.client.database;
-    await databaseCheck(database, guild, "moderator");
+    guild = await databaseCheck(database, guild, "moderator");
 
     if (!option) {
         await displayData(event, guild, "moderators", true);
@@ -170,7 +170,7 @@ async function moderatorSettings(event: CommandEvent, option: string, args: stri
 
 async function muteSettings(event: CommandEvent, option: string, args: string, guild: Guild) {
     const database = event.client.database;
-    await databaseCheck(database, guild, "roles");
+    guild = await databaseCheck(database, guild, "roles");
 
     if (!option) {
         await displayData(event, guild, "muterole", true);
@@ -277,7 +277,6 @@ async function muteSettings(event: CommandEvent, option: string, args: string, g
 
 async function autoModSettings(event: CommandEvent, option: string, guild: Guild) {
     const database = event.client.database;
-    await databaseCheck(database, guild, "automod");
 
     if (!option) {
         await displayData(event, guild, "automod", true);
@@ -311,7 +310,7 @@ async function autoModSettings(event: CommandEvent, option: string, guild: Guild
 
 async function filterSettings(event: CommandEvent, option: string, args: string, guild: Guild) {
     const database = event.client.database;
-    await databaseCheck(database, guild, "filter");
+    guild = await databaseCheck(database, guild, "filter");
 
     if (!option) {
         await displayData(event, guild, "filter", true);
@@ -380,7 +379,6 @@ async function filterSettings(event: CommandEvent, option: string, args: string,
 
 async function antiAdvertSettings(event: CommandEvent, option: string, guild: Guild) {
     const database = event.client.database;
-    await databaseCheck(database, guild, "antiadvert");
 
     if (!option) {
         await displayData(event, guild, "antiadvert", true);
@@ -450,7 +448,8 @@ async function overwriteSettings(event: CommandEvent, option: string, args: stri
 
 async function loggingSettings(event: CommandEvent, option: string, args: string, guild: Guild) {
     const database = event.client.database;
-    await databaseCheck(database, guild, "channels");
+    guild = await databaseCheck(database, guild, "channels");
+    console.log(guild.config.channels);
 
     if (!option) {
         await displayData(event, guild, "logging", true);
@@ -458,7 +457,6 @@ async function loggingSettings(event: CommandEvent, option: string, args: string
     }
 
     if (!args) {
-        event.send("You need to specify a type.");
         return;
     }
 
@@ -563,11 +561,12 @@ async function displayAllSettings(event: CommandEvent, guild: Guild) {
     event.send({ embed: embed });
 }
 
-async function databaseCheck(database: Database, guild: Guild, option: DatabaseCheckOption): Promise<void> {
+async function databaseCheck(database: Database, guild: Guild, option: DatabaseCheckOption): Promise<Guild> {
     switch (option.toLowerCase()) {
         case "roles": {
             if (!guild.config.roles) {
                 await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": {} } });
+                guild.config.roles = {};
             }
             break;
         }
@@ -575,8 +574,10 @@ async function databaseCheck(database: Database, guild: Guild, option: DatabaseC
         case "moderator": {
             if (!guild.config.roles) {
                 await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": { "moderator": [] } } });
+                guild.config.roles = { moderator: [] };
             } else if (!guild.config.roles?.moderator) {
                 await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles.moderator": [] } });
+                guild.config.roles.moderator = [];
             }
             break;
         }
@@ -584,31 +585,21 @@ async function databaseCheck(database: Database, guild: Guild, option: DatabaseC
         case "channels": {
             if (!guild.config.channels) {
                 await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.channels": {} } });
-            }
-            break;
-        }
-
-        case "automod": {
-            if (!guild.config.automod) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod": { "enabled": false } } });
+                guild.config.channels = {};
             }
             break;
         }
 
         case "filter": {
             if (!guild.config.filter) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.autoMod": { "filter": { "enabled": false, "list": [] } } } });
-            }
-            break;
-        }
-
-        case "inviteblocker": {
-            if (!guild.config.antiAdvert) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.antiAdvert": false } });
+                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.filter": { "enabled": false, "list": [] } } });
+                guild.config.filter = { enabled: false, list: [] };
             }
             break;
         }
     }
+
+    return guild;
 }
 
 function mutePermissions(event: CommandEvent, role: Role, option: "set" | "remove"): void {
@@ -852,11 +843,11 @@ async function displayData(event: CommandEvent, guild: Guild, type: DisplayData,
                     .addField("Mod actions", await checkLoggingChannels(event, database, guild, "modActions"), true)
                     .addField("Command used", await checkLoggingChannels(event, database, guild, "commandUsed"), true)
                     .addField("Name changes", await checkLoggingChannels(event, database, guild, "nameChanges"), true)
-                    .addField("Role updates", await checkLoggingChannels(event, database, guild, "roleUpdates"), true)
+                    .addField("Role changes", await checkLoggingChannels(event, database, guild, "roleChanges"), true)
                     .addField("Guild changes", await checkLoggingChannels(event, database, guild, "guildChanges"), true)
                     .addField("Channel changes", await checkLoggingChannels(event, database, guild, "channelChanges"), true)
                     .addField("Voice changes", await checkLoggingChannels(event, database, guild, "voiceChanges"), true)
-                    .addField("Joins", await checkLoggingChannels(event, database, guild, "joinLogs"), true)
+                    .addField("Joins", await checkLoggingChannels(event, database, guild, "travelLogs"), true)
                     .setColor("#61e096")
                     .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
@@ -907,9 +898,9 @@ function convertLogging(type: string): LoggingType[] | "None" {
         }
 
         case "roles":
-        case "roleupdates":
-        case "role_updates": {
-            return ["roleUpdates"];
+        case "rolechanges":
+        case "role_changes": {
+            return ["roleChanges"];
         }
 
         case "guild":
@@ -930,8 +921,10 @@ function convertLogging(type: string): LoggingType[] | "None" {
         }
 
         case "joins":
-        case "join_logs": {
-            return ["joinLogs"];
+        case "join_logs":
+        case "travel":
+        case "travel_logs": {
+            return ["travelLogs"];
         }
 
         case "messages": {
@@ -942,13 +935,13 @@ function convertLogging(type: string): LoggingType[] | "None" {
             return ["modActions", "commandUsed"];
         }
 
-        case "updates": {
-            return ["guildChanges", "roleUpdates", "nameChanges"];
+        case "changes": {
+            return ["guildChanges", "roleChanges", "nameChanges"];
         }
 
         case "everything":
         case "all": {
-            return ["editLogs", "bulkDeletes", "modActions", "commandUsed", "nameChanges", "roleUpdates", "guildChanges", "channelChanges", "voiceChanges", "joinLogs"];
+            return ["editLogs", "bulkDeletes", "modActions", "commandUsed", "nameChanges", "roleChanges", "guildChanges", "channelChanges", "voiceChanges", "travelLogs"];
         }
 
         default: {

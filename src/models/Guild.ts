@@ -11,11 +11,11 @@ export interface Channels {
     modActions?: string;
     commandUsed?: string;
     nameChanges?: string;
-    roleUpdates?: string;
+    roleChanges?: string;
     guildChanges?: string;
     channelChanges?: string;
     voiceChanges?: string;
-    joinLogs?: string;
+    travelLogs?: string;
 }
 
 export interface Filter {
