@@ -1,7 +1,7 @@
 import Event from "@event/Event";
 import MyntClient from "~/MyntClient";
 import { Message, TextChannel } from "discord.js";
-import { formatTime, formatUser, sanitize } from "@utils/Format";
+import { formatDuration, formatTime, formatUser, sanitize } from "@utils/Format";
 
 export default class MessageDelete extends Event {
     public constructor() {
@@ -43,16 +43,17 @@ export default class MessageDelete extends Event {
             const user = formatUser(author);
             const channel = formatChannel(message.channel as TextChannel);
             const content = formatMessageDelete(message);
+            const creation = formatDuration(message.createdAt);
             const file = content.length > 1000 || (content.match(/\n/g) ?? []).length > 12;
 
             if (file) {
                 const content = formatMessageDelete(message, true);
-                const line = `${time} <:messageDelete:829444584575598612> Message sent by ${user} has been edited ${channel}:`;
+                const line = `${time} <:messageDelete:829444584575598612> Message sent by ${user} has been deleted ${channel} that was sent **${creation}**:`;
                 const attachment = { attachment: Buffer.from(content, "utf8"), name: "DeleteLog.txt" };
                 log.send(line, { files: [attachment] });
             } else {
                 const content = formatMessageDelete(message);
-                const line = `${time} <:messageDelete:829444584575598612> Message sent by ${user} has been edited ${channel}: ${content}`;
+                const line = `${time} <:messageDelete:829444584575598612> Message sent by ${user} has been deleted ${channel} that was sent **${creation}**: ${content}`;
                 log.send(line);
             }
         } catch (error) {

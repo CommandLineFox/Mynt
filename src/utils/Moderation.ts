@@ -1,5 +1,5 @@
 import MyntClient from "~/MyntClient";
-import { getMember } from "@utils/GetMember";
+import { getMember } from "@utils/GetArgument";
 
 export async function mute(client: MyntClient, guildId: string, user: string): Promise<void> {
     const guild = await client.guilds.fetch(guildId, false);

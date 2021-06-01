@@ -2,7 +2,7 @@ import Command from "@command/Command";
 import { Mail } from "~/Groups";
 import CommandEvent from "@command/CommandEvent";
 import { splitArguments } from "@utils/Argument";
-import { getMember } from "@utils/GetMember";
+import { getMember } from "@utils/GetArgument";
 
 export default class ReplyTo extends Command {
     public constructor() {
