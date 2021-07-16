@@ -1,11 +1,11 @@
 import { ObjectId } from "bson";
 
-export interface Roles {
+interface Roles {
     muted?: string;
     moderator?: string[];
 }
 
-export interface Channels {
+interface Channels {
     editLogs?: string;
     bulkDeletes?: string;
     modActions?: string;
@@ -18,12 +18,12 @@ export interface Channels {
     travelLogs?: string;
 }
 
-export interface Filter {
+interface Filter {
     enabled: boolean;
     list?: string[];
 }
 
-export interface GuildConfig {
+interface GuildConfig {
     prefix?: string;
     logging?: boolean;
     automod?: boolean;

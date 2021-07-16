@@ -1,4 +1,4 @@
-import { string, base, array, object, boolean, optional, optionalArray } from "~/ConfigHandler";
+import { string, base, array, object, boolean, optional, optionalArray, number } from "~/ConfigHandler";
 
 export default {
     token: string(""),
@@ -10,6 +10,10 @@ export default {
     }),
     mail: string(""),
     errors: string(""),
+    intervals: object({
+        moderation: number(0),
+        logging: number(0)
+    }),
     db: object({
         name: string(""),
         url: string(""),

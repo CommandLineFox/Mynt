@@ -7,8 +7,12 @@ export default class Disconnect extends Event {
     }
 
     public callback(client: MyntClient): void {
-        if (client.interval) {
-            client.clearInterval(client.interval);
+        if (client.moderationInterval) {
+            client.clearInterval(client.moderationInterval);
+        }
+
+        if (client.logInterval) {
+            client.clearInterval(client.logInterval);
         }
     }
 }
