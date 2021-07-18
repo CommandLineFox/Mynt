@@ -26,7 +26,7 @@ export default class RoleCreate extends Event {
             const audit = await guild.fetchAuditLogs({ type: "ROLE_CREATE", limit: 1 });
             const entry = audit.entries.first();
             if (!entry) {
-                log.send(`A new role has been created, ${role.name}.`);
+                client.logs.push({ channel: log.id, content: `A new role has been created, **${role.name}**` });
             }
 
             const date = entry?.createdAt;
@@ -36,7 +36,7 @@ export default class RoleCreate extends Event {
             const user = formatUser(executor!);
 
             const line = `${time} <:roleCreate:829444888093130782> ${user} created a role **${role.name}**`;
-            log.send(line);
+            client.logs.push({ channel: log.id, content: line });
         } catch (error) {
             client.emit("error", error);
         }

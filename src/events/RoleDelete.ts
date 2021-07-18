@@ -26,7 +26,7 @@ export default class RoleDelete extends Event {
             const audit = await guild.fetchAuditLogs({ type: "ROLE_DELETE", limit: 1 });
             const entry = audit.entries.first();
             if (!entry) {
-                log.send(`A role has been deleted, **${role.name}**.`);
+                client.logs.push({ channel: log.id, content: `A role has been deleted, **${role.name}**` });
             }
 
             const date = entry?.createdAt;
@@ -36,7 +36,7 @@ export default class RoleDelete extends Event {
             const user = formatUser(executor!);
 
             const line = `${time} <:roleDelete:829444972864471060> ${user} deleted a role **${role.name}**`;
-            log.send(line);
+            client.logs.push({ channel: log.id, content: line });
         } catch (error) {
             client.emit("error", error);
         }

@@ -30,7 +30,7 @@ export default class ChannelDelete extends Event {
             const audit = await guild.fetchAuditLogs({ type: "CHANNEL_DELETE", limit: 1 });
             const entry = audit.entries.first();
             if (!entry) {
-                log.send(`A channel has been deleted, **${channel.name}**.`);
+                client.logs.push({ channel: log.id, content: `A channel has been deleted, **${channel.name}**` });
             }
 
             const date = entry?.createdAt;
@@ -41,7 +41,7 @@ export default class ChannelDelete extends Event {
             const tag = formatChannelDelete(channel);
 
             const line = `${time} <:channelDelete:829446173655171123> ${user} deleted a ${tag}`;
-            log.send(line);
+            client.logs.push({ channel: log.id, content: line });
         } catch (error) {
             client.emit("error", error);
         }

@@ -44,8 +44,7 @@ export default class MessageDeleteBulk extends Event {
             const contents = formatMessageDeleteBulk(messages);
 
             const line = `${time} <:channelDelete:829446173655171123> **${messages.size}** messages were deleted by ${user} from ${channel}:`;
-            const attachment = { attachment: Buffer.from(contents, "utf8"), name: "BulkDeleteLog.txt" };
-            log.send(line, { files: [attachment] });
+            client.logs.push({ channel: log.id, content: line, attachment: { file: contents, name: "BulkDeleteLog.txt" } });
         } catch (error) {
             client.emit("error", error);
         }

@@ -56,12 +56,11 @@ export default class MessageUpdate extends Event {
             if (file) {
                 const content = formatMessageUpdate(oldMessage, newMessage, true);
                 const line = `${time} <:messageUpdate:829446237220634664> Message sent by ${user} has been edited in ${channel}:`;
-                const attachment = { attachment: Buffer.from(content, "utf8"), name: "EditLog.txt" };
-                log.send(line, { files: [attachment] });
+                client.logs.push({ channel: log.id, content: line, attachment: { file: content, name: "EditLog.txt" } });
             } else {
                 const content = formatMessageUpdate(oldMessage, newMessage);
                 const line = `${time} <:messageUpdate:829446237220634664> Message sent by ${user} has been edited in ${channel}: ${content}`;
-                log.send(line);
+                client.logs.push({ channel: log.id, content: line });
             }
         } catch (error) {
             client.emit("error", error);

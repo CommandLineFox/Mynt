@@ -30,7 +30,7 @@ export default class GuildMemberAdd extends Event {
             const age = formatDuration(member.user.createdAt);
 
             const line = `${time} <:userJoin:829444334021640223> ${user} joined the server. (Created ${age})`;
-            log.send(line);
+            client.logs.push({ channel: log.id, content: line });
         } catch (error) {
             client.emit("error", error);
         }

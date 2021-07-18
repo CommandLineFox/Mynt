@@ -49,12 +49,11 @@ export default class MessageDelete extends Event {
             if (file) {
                 const content = formatMessageDelete(message, true);
                 const line = `${time} <:messageDelete:829444584575598612> Message sent by ${user} has been deleted from ${channel} that was sent **${creation}**:\n**Content:**`;
-                const attachment = { attachment: Buffer.from(content, "utf8"), name: "DeleteLog.txt" };
-                log.send(line, { files: [attachment] });
+                client.logs.push({ channel: log.id, content: line, attachment: { file: content, name: "DeleteLog.txt" } });
             } else {
                 const content = formatMessageDelete(message);
                 const line = `${time} <:messageDelete:829444584575598612> Message sent by ${user} has been deleted from ${channel} that was sent **${creation}**: ${content}`;
-                log.send(line);
+                client.logs.push({ channel: log.id, content: line });
             }
         } catch (error) {
             client.emit("error", error);
