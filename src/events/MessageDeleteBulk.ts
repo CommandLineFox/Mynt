@@ -19,7 +19,7 @@ export default class MessageDeleteBulk extends Event {
             const database = client.database;
             const guildDb = await database.getGuild(guild.id);
 
-            if (!guildDb?.config.logging?.bulkDeletes) {
+            if (!guildDb?.config.logging?.enabled || !guildDb.config.logging.bulkDeletes) {
                 return;
             }
 

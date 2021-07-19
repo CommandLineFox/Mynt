@@ -13,7 +13,7 @@ export default class GuildMemberRemove extends Event {
             const guild = member.guild;
             const database = client.database;
             const guildDb = await database.getGuild(guild.id);
-            if (!guildDb?.config.logging?.travelLogs) {
+            if (!guildDb?.config.logging?.enabled || !guildDb.config.logging.travelLogs) {
                 return;
             }
 

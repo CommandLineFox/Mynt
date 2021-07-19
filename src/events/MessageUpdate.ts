@@ -26,15 +26,11 @@ export default class MessageUpdate extends Event {
 
             const database = client.database;
             const guildDb = await database.getGuild(guild.id);
-            if (!guildDb) {
-                return;
-            }
-
-            if (guildDb.config.automod) {
+            if (guildDb?.config.automod) {
                 autoMod(client, newMessage, guildDb);
             }
 
-            if (!guildDb.config.logging?.editLogs) {
+            if (!guildDb?.config.logging?.enabled || !guildDb.config.logging.editLogs) {
                 return;
             }
 

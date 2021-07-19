@@ -29,7 +29,7 @@ export default class MessageEvent extends Event {
                 return;
             }
 
-            if (guild.config.automod) {
+            if (guild.config.automod?.enabled) {
                 autoMod(client, message, guild);
             }
         } catch (error) {

@@ -26,7 +26,7 @@ export default class MessageDelete extends Event {
             const database = client.database;
             const guildDb = await database.getGuild(guild.id);
 
-            if (!guildDb?.config.logging?.editLogs) {
+            if (!guildDb?.config.logging?.enabled || !guildDb.config.logging.editLogs) {
                 return;
             }
 

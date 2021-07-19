@@ -1,7 +1,7 @@
 import Event from "@event/Event";
 import { DMChannel, GuildChannel, TextChannel } from "discord.js";
 import MyntClient from "~/MyntClient";
-import { formatTime, formatUser } from "@utils/Format";
+import { formatChannel, formatTime, formatUser } from "@utils/Format";
 
 export default class ChannelCreate extends Event {
     public constructor() {
@@ -17,7 +17,7 @@ export default class ChannelCreate extends Event {
             const guild = channel.guild;
             const database = client.database;
             const guildDb = await database.getGuild(guild.id);
-            if (!guildDb?.config.logging?.channelChanges) {
+            if (!guildDb?.config.logging?.enabled || !guildDb.config.logging.channelChanges) {
                 return;
             }
 
@@ -38,7 +38,7 @@ export default class ChannelCreate extends Event {
 
             const time = formatTime(date!);
             const user = formatUser(executor!);
-            const tag = formatChannelCreate(channel);
+            const tag = formatChannel(channel, true, false);
 
             const line = `${time} <:channelCreate:829444455417249862> ${user} created a ${tag}`;
             client.logs.push({ channel: log.id, content: line });
@@ -46,14 +46,4 @@ export default class ChannelCreate extends Event {
             client.emit("error", error);
         }
     }
-}
-
-function formatChannelCreate(channel: GuildChannel): string {
-    if (channel.type === "category") {
-        return `category **${channel.name}**`;
-    }
-
-    const parent = channel.parent ? `in the **${channel.parent.name}** category` : "";
-    const tag = channel.type === "text" ? `channel **${channel.name}** (<#${channel.id}>)` : `channel **${channel.name}**`;
-    return `${tag} ${parent}`;
 }
