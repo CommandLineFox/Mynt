@@ -19,13 +19,13 @@ export default class MessageDeleteBulk extends Event {
             const database = client.database;
             const guildDb = await database.getGuild(guild.id);
 
-            if (!guildDb?.config.channels?.bulkDeletes) {
+            if (!guildDb?.config.logging?.bulkDeletes) {
                 return;
             }
 
-            const log = guild.channels.cache.get(guildDb.config.channels.bulkDeletes) as TextChannel;
+            const log = guild.channels.cache.get(guildDb.config.logging.bulkDeletes) as TextChannel;
             if (!log) {
-                await database.guilds.updateOne({ id: guild.id }, { "$unset": { "config.channels.bulkDeletes": "" } });
+                await database.guilds.updateOne({ id: guild.id }, { "$unset": { "config.logging.bulkDeletes": "" } });
                 return;
             }
 

@@ -17,13 +17,13 @@ export default class ChannelDelete extends Event {
             const guild = channel.guild;
             const database = client.database;
             const guildDb = await database.getGuild(guild.id);
-            if (!guildDb?.config.channels?.channelChanges) {
+            if (!guildDb?.config.logging?.channelChanges) {
                 return;
             }
 
-            const log = guild.channels.cache.get(guildDb.config.channels.channelChanges) as TextChannel;
+            const log = guild.channels.cache.get(guildDb.config.logging.channelChanges) as TextChannel;
             if (!log) {
-                await database.guilds.updateOne({ id: guild.id }, { "$unset": { "config.channels.channelChanges": "" } });
+                await database.guilds.updateOne({ id: guild.id }, { "$unset": { "config.logging.channelChanges": "" } });
                 return;
             }
 

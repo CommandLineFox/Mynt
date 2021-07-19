@@ -34,13 +34,13 @@ export default class MessageUpdate extends Event {
                 autoMod(client, newMessage, guildDb);
             }
 
-            if (!guildDb.config.channels?.editLogs) {
+            if (!guildDb.config.logging?.editLogs) {
                 return;
             }
 
-            const log = guild.channels.cache.get(guildDb.config.channels.editLogs) as TextChannel;
+            const log = guild.channels.cache.get(guildDb.config.logging.editLogs) as TextChannel;
             if (!log) {
-                await database.guilds.updateOne({ id: guild.id }, { "$unset": { "config.channels.editLogs": "" } });
+                await database.guilds.updateOne({ id: guild.id }, { "$unset": { "config.logging.editLogs": "" } });
                 return;
             }
 

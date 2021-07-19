@@ -18,7 +18,7 @@ export function sanitize(argument: string): string {
     return sanitized;
 }
 
-export function formatTime(date: Date, file?: boolean): string {
+export function formatTime(date: Date, file?: boolean, dynamic?: boolean): string {
     if (file) {
         const hours = `0${date.getUTCHours()}`.slice(-2);
         const minutes = `0${date.getUTCMinutes()}`.slice(-2);
@@ -26,8 +26,15 @@ export function formatTime(date: Date, file?: boolean): string {
         return `[${hours}:${minutes}:${seconds}]`;
     }
 
-    const time = Math.floor(date.getTime() / 1000);
-    return `[<t:${time}:T>]`;
+    if (dynamic === true) {
+        const time = Math.floor(date.getTime() / 1000);
+        return `[<t:${time}:T>]`;
+    }
+
+    const hours = `0${date.getUTCHours()}`.slice(-2);
+    const minutes = `0${date.getUTCMinutes()}`.slice(-2);
+    const seconds = `0${date.getUTCSeconds()}`.slice(-2);
+    return `[\`${hours}:${minutes}:${seconds}\`]`;
 }
 
 export function formatDuration(date: Date, withoutSuffix?: boolean): string {

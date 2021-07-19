@@ -13,13 +13,13 @@ export default class RoleCreate extends Event {
             const guild = role.guild;
             const database = client.database;
             const guildDb = await database.getGuild(guild.id);
-            if (!guildDb?.config.channels?.roleChanges) {
+            if (!guildDb?.config.logging?.roleChanges) {
                 return;
             }
 
-            const log = guild.channels.cache.get(guildDb.config.channels.roleChanges) as TextChannel;
+            const log = guild.channels.cache.get(guildDb.config.logging.roleChanges) as TextChannel;
             if (!log) {
-                await database.guilds.updateOne({ id: guild.id }, { "$unset": { "config.channels.roleChanges": "" } });
+                await database.guilds.updateOne({ id: guild.id }, { "$unset": { "config.logging.roleChanges": "" } });
                 return;
             }
 

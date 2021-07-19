@@ -3,21 +3,21 @@ import { Guild } from "@models/Guild";
 import MyntClient from "~/MyntClient";
 
 export function autoMod(client: MyntClient, message: Message, guild: Guild): void {
-    if (guild.config.staffBypass === true && client.isMod(message.member!, message.guild!)) {
+    if (guild.config.options?.staffBypass === true && client.isMod(message.member!, message.guild!)) {
         return;
     }
 
-    if (guild.config.filter?.enabled && filter(message, guild)) {
+    if (guild.config.automod?.filter?.enabled === true && filter(message, guild)) {
         return;
     }
 
-    if (guild.config.antiAdvert === true && inviteBlock(message)) {
+    if (guild.config.automod?.antiAdvert === true && inviteBlock(message)) {
         return;
     }
 }
 
 function filter(message: Message, guild: Guild): boolean {
-    if (!guild.config.filter?.list || guild.config.filter.list.length === 0) {
+    if (!guild.config.automod?.filter?.list || guild.config.automod.filter.list.length === 0) {
         return false;
     }
 
@@ -30,7 +30,7 @@ function filter(message: Message, guild: Guild): boolean {
         }
     }
 
-    for (const word of guild.config.filter.list) {
+    for (const word of guild.config.automod.filter.list) {
         if (text.includes(word)) {
             message.delete({ timeout: 100, reason: "AutoMod - Word filter" })
                 .catch((error) => {
