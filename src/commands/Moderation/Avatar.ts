@@ -30,9 +30,9 @@ export default class Avatar extends Command {
                 .setTitle(`${member.user.tag}'s avatar:`)
                 .setImage(member.user.displayAvatarURL())
                 .setFooter(`Requested by ${event.author.username}`, event.author.displayAvatarURL());
-            event.channel.send({ embed: avatar });
+            event.send(avatar);
         } catch (error) {
-            client.emit("error", error);
+            client.emit("error", (error as Error));
         }
     }
 }

@@ -44,9 +44,9 @@ export default class Help extends Command {
                 help.addField(group.name, commands.join("\n"));
             });
 
-            event.send({ embed: help });
+            await event.send(help);
         } catch (error) {
-            client.emit("error", error);
+            client.emit("error", (error as Error));
         }
     }
 }

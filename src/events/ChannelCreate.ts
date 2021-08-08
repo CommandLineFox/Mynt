@@ -10,7 +10,7 @@ export default class ChannelCreate extends Event {
 
     public async callback(client: MyntClient, channel: DMChannel | GuildChannel): Promise<void> {
         try {
-            if (channel.type === "dm") {
+            if (channel.partial || channel.type === "DM") {
                 return;
             }
 
@@ -31,19 +31,20 @@ export default class ChannelCreate extends Event {
             const entry = audit.entries.first();
             if (!entry) {
                 client.logs.push({ channel: log.id, content: `A new channel has been created, <#${channel.id}>` });
+                return;
             }
 
-            const date = entry?.createdAt;
-            const executor = entry?.executor;
+            const date = entry.createdAt;
+            const executor = entry.executor;
 
-            const time = formatTime(date!);
+            const time = formatTime(date);
             const user = formatUser(executor!);
             const tag = formatChannel(channel, true, false);
 
             const line = `${time} <:channelCreate:829444455417249862> ${user} created a ${tag}`;
             client.logs.push({ channel: log.id, content: line });
         } catch (error) {
-            client.emit("error", error);
+            client.emit("error", (error as Error));
         }
     }
 }

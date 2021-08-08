@@ -91,7 +91,7 @@ export default class Config extends Command {
                 }
             }
         } catch (error) {
-            client.emit("error", error);
+            client.emit("error", (error as Error));
         }
     }
 }
@@ -576,76 +576,39 @@ async function displayAllSettings(event: CommandEvent, guild: Guild) {
         .setColor("#61e096")
         .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
-    await event.send({ embed: embed });
+    await event.send(embed);
 }
-/*
-async function databaseCheck(database: Database, guild: Guild, option: DatabaseCheckOption): Promise<Guild> {
-    switch (option.toLowerCase()) {
-        case "roles": {
-            if (!guild.config.roles) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": {} } });
-                guild.config.roles = {};
-            }
-            break;
-        }
- 
-        case "moderator": {
-            if (!guild.config.roles) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles": { "moderator": [] } } });
-                guild.config.roles = { moderator: [] };
-            } else if (!guild.config.roles.moderator) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.roles.moderator": [] } });
-                guild.config.roles.moderator = [];
-            }
-            break;
-        }
- 
-        case "logging": {
-            if (!guild.config.logging) {
-                await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.logging": {} } });
-                guild.config.logging = { enabled: false };
-            }
-            break;
-        }
- 
-        case "filter": {
-            if ()
-                if (!guild.config.automod?.filter) {
-                    await database.guilds.updateOne({ id: guild.id }, { "$set": { "config.automod.filter": { "enabled": false, "list": [] } } });
-                    guild.config.automod?.filter = { enabled: false, list: [] };
-                }
-            break;
-        }
-    }
- 
-    return guild;
-}
-*/
+
 function mutePermissions(event: CommandEvent, role: Role, option: "set" | "remove"): void {
     const guild = event.guild;
 
     switch (option) {
         case "set": {
-            guild.roles.cache.get(role.id)?.setPermissions(0);
+            guild.roles.cache.get(role.id)?.setPermissions("0");
 
             guild.channels.cache.forEach(async (channel) => {
-                if (channel.type === "category") {
-                    await channel.updateOverwrite(role, {
+                if (channel.type === "GUILD_CATEGORY") {
+                    await channel.permissionOverwrites.edit(role, {
                         "SEND_MESSAGES": false,
                         "ADD_REACTIONS": false,
+                        "USE_PUBLIC_THREADS": false,
+                        "USE_PRIVATE_THREADS": false,
                         "SPEAK": false
-                    }, "Mute role setup");
+                    }, { reason: "Mute role setup" });
                 }
 
-                if (channel.type === "text" && !channel.permissionsLocked) {
-                    await channel.updateOverwrite(role, {
+                if (channel.type === "GUILD_TEXT" && !channel.permissionsLocked) {
+                    await channel.permissionOverwrites.edit(role, {
                         "SEND_MESSAGES": false,
                         "ADD_REACTIONS": false
-                    }, "Mute role setup");
+                    }, { reason: "Mute role setup" });
                 }
 
-                if (channel.type === "voice" && !channel.permissionsLocked) {
-                    await channel.updateOverwrite(role, { "SPEAK": false }, "Mute role setup");
+                if (channel.isVoice() && !channel.permissionsLocked) {
+                    await channel.permissionOverwrites.edit(role, {
+                        "SPEAK": false,
+                        "STREAM": false
+                    }, { reason: "Mute role setup" });
                 }
             });
             break;
@@ -653,15 +616,11 @@ function mutePermissions(event: CommandEvent, role: Role, option: "set" | "remov
 
         case "remove": {
             guild.channels.cache.forEach((channel) => {
-                if (channel.type === "category") {
+                if (channel.type === "GUILD_CATEGORY") {
                     channel.permissionOverwrites.delete(role.id);
                 }
 
-                if (channel.type === "text" && !channel.permissionsLocked) {
-                    channel.permissionOverwrites.delete(role.id);
-                }
-
-                if (channel.type === "voice" && !channel.permissionsLocked) {
+                if (!channel.isThread() && !channel.permissionsLocked) {
                     channel.permissionOverwrites.delete(role.id);
                 }
             });
@@ -774,7 +733,7 @@ async function displayData(event: CommandEvent, guild: Guild, type: DisplayData,
                 }
 
                 embed.setDescription(list);
-                event.send({ embed: embed });
+                event.send(embed);
                 break;
             }
 
@@ -811,7 +770,7 @@ async function displayData(event: CommandEvent, guild: Guild, type: DisplayData,
                     .setColor("#61e096")
                     .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
-                event.send({ embed: embed });
+                event.send(embed);
                 break;
             }
 
@@ -838,7 +797,7 @@ async function displayData(event: CommandEvent, guild: Guild, type: DisplayData,
                 });
 
                 embed.setDescription(list);
-                event.send({ embed: embed });
+                event.send(embed);
                 break;
             }
 
@@ -849,7 +808,7 @@ async function displayData(event: CommandEvent, guild: Guild, type: DisplayData,
                     .setColor("#61e096")
                     .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
-                event.send({ embed: embed });
+                event.send(embed);
                 break;
             }
 
@@ -869,7 +828,7 @@ async function displayData(event: CommandEvent, guild: Guild, type: DisplayData,
                     .setColor("#61e096")
                     .setFooter(`Requested by ${event.author.tag}`, event.author.displayAvatarURL());
 
-                await event.send({ embed: embed });
+                await event.send(embed);
                 break;
             }
 

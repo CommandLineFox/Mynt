@@ -59,7 +59,7 @@ export default class MessageUpdate extends Event {
                 client.logs.push({ channel: log.id, content: line });
             }
         } catch (error) {
-            client.emit("error", error);
+            client.emit("error", (error as Error));
         }
     }
 }

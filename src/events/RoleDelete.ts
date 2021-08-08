@@ -27,18 +27,19 @@ export default class RoleDelete extends Event {
             const entry = audit.entries.first();
             if (!entry) {
                 client.logs.push({ channel: log.id, content: `A role has been deleted, **${role.name}**` });
+                return;
             }
 
-            const date = entry?.createdAt;
-            const executor = entry?.executor;
+            const date = entry.createdAt;
+            const executor = entry.executor;
 
-            const time = formatTime(date!);
+            const time = formatTime(date);
             const user = formatUser(executor!);
 
             const line = `${time} <:roleDelete:829444972864471060> ${user} deleted a role **${role.name}**`;
             client.logs.push({ channel: log.id, content: line });
         } catch (error) {
-            client.emit("error", error);
+            client.emit("error", (error as Error));
         }
     }
 }

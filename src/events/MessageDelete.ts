@@ -56,7 +56,7 @@ export default class MessageDelete extends Event {
                 client.logs.push({ channel: log.id, content: line });
             }
         } catch (error) {
-            client.emit("error", error);
+            client.emit("error", (error as Error));
         }
     }
 }

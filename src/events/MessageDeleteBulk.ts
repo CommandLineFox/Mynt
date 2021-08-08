@@ -10,7 +10,11 @@ export default class MessageDeleteBulk extends Event {
 
     public async callback(client: MyntClient, messages: Collection<Snowflake, Message>): Promise<void> {
         try {
-            const first = messages.array()[0];
+            const first = messages.first();
+            if (!first) {
+                return;
+            }
+
             const guild = first.guild;
             if (!guild) {
                 return;
@@ -32,13 +36,14 @@ export default class MessageDeleteBulk extends Event {
             const audit = await guild.fetchAuditLogs({ type: "MESSAGE_BULK_DELETE", limit: 1 });
             const entry = audit.entries.first();
             if (!entry) {
-                log.send(`${messages.size} messages were deleted.`);
+                client.logs.push({ channel: log.id, content: `${messages.size} messages were deleted.` });
+                return;
             }
 
-            const date = entry?.createdAt;
-            const executor = entry?.executor;
+            const date = entry.createdAt;
+            const executor = entry.executor;
 
-            const time = formatTime(date!);
+            const time = formatTime(date);
             const user = formatUser(executor!);
             const channel = formatChannel(first.channel as TextChannel);
             const contents = formatMessageDeleteBulk(messages);
@@ -46,7 +51,7 @@ export default class MessageDeleteBulk extends Event {
             const line = `${time} <:channelDelete:829446173655171123> **${messages.size}** messages were deleted by ${user} from ${channel}:`;
             client.logs.push({ channel: log.id, content: line, attachment: { file: contents, name: "BulkDeleteLog.txt" } });
         } catch (error) {
-            client.emit("error", error);
+            client.emit("error", (error as Error));
         }
     }
 }
@@ -57,7 +62,7 @@ function formatChannel(channel: TextChannel): string {
 
 function formatMessageDeleteBulk(messages: Collection<Snowflake, Message>): string {
     let contents = "";
-    const array = messages.array().reverse();
+    const array = messages.toJSON().reverse();
     for (const message of array) {
         contents += `${formatTime(message.createdAt, true)} ${message.author.tag} (${message.author.id}): ${message.cleanContent}\n`;
     }

@@ -10,11 +10,10 @@ export default class ChannelUpdate extends Event {
 
     public async callback(client: MyntClient, oldChannel: DMChannel | GuildChannel, newChannel: DMChannel | GuildChannel): Promise<void> {
         try {
-            if (oldChannel.type === "dm" || newChannel.type === "dm") {
+            if (oldChannel.partial || oldChannel.type === "DM" || newChannel.type === "DM") {
                 return;
             }
 
-            console.log("Henlo some shit changed");
             const guild = oldChannel.guild;
             const database = client.database;
             const guildDb = await database.getGuild(guild.id);
@@ -31,10 +30,11 @@ export default class ChannelUpdate extends Event {
             const entry = audit.entries.first();
             if (!entry) {
                 client.logs.push({ channel: log.id, content: `A new channel has been updated, <#${oldChannel.id}>` });
+                return;
             }
 
-            const date = entry?.createdAt;
-            const executor = entry?.executor;
+            const date = entry.createdAt;
+            const executor = entry.executor;
 
             const time = formatTime(date!);
             const user = formatUser(executor!);
@@ -44,17 +44,15 @@ export default class ChannelUpdate extends Event {
             const line = `${time} <:channelUpdate:829444517152423936> ${user} made the following changes to ${channel}:\n${changes}`;
             client.logs.push({ channel: log.id, content: line });
         } catch (error) {
-            client.emit("error", error);
+            client.emit("error", (error as Error));
         }
     }
 }
 
-function formatChannelUpdate(channel: GuildChannel, secondChannel: GuildChannel): string {
-    if (channel.type === "category") {
-        return `category **${secondChannel.name}**`;
-    }
-
-    const parent = channel.parent ? `in the **${channel.parent.name}** category` : "";
-    const tag = channel.type === "text" ? `channel **${channel.name}** (<#${channel.id}>)` : `channel **${channel.name}**`;
-    return `${tag} ${parent}`;
+function formatChannelUpdate(oldChannel?: GuildChannel, newChannel?: GuildChannel): string {
+    const changes = "";
+    let difference = newChannel;
+    difference = oldChannel;
+    console.log(difference);
+    return changes;
 }

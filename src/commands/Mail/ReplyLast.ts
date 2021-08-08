@@ -24,19 +24,19 @@ export default class ReplyLast extends Command {
             }
 
             if (!argument) {
-                await event.reply("you can't send an empty message to users.");
+                await event.send("you can't send an empty message to users.");
             }
 
             lastDm!.send(argument)
                 .catch(() => {
-                    event.reply("the specified user has their DMs disabled or has me blocked.");
+                    event.send("the specified user has their DMs disabled or has me blocked.");
                     return;
                 })
                 .then(() => {
                     event.send(`Successfully sent the message to ${lastDm!.tag}.`);
                 });
         } catch (error) {
-            client.emit("error", error);
+            client.emit("error", (error as Error));
         }
     }
 }

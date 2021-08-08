@@ -10,7 +10,7 @@ export default class ChannelDelete extends Event {
 
     public async callback(client: MyntClient, channel: DMChannel | GuildChannel): Promise<void> {
         try {
-            if (channel.type === "dm") {
+            if (channel.partial || channel.type === "DM") {
                 return;
             }
 
@@ -31,19 +31,20 @@ export default class ChannelDelete extends Event {
             const entry = audit.entries.first();
             if (!entry) {
                 client.logs.push({ channel: log.id, content: `A channel has been deleted, **${channel.name}**` });
+                return;
             }
 
-            const date = entry?.createdAt;
-            const executor = entry?.executor;
+            const date = entry.createdAt;
+            const executor = entry.executor;
 
-            const time = formatTime(date!);
+            const time = formatTime(date);
             const user = formatUser(executor!);
             const tag = formatChannel(channel, true, true);
 
             const line = `${time} <:channelDelete:829446173655171123> ${user} deleted a ${tag}`;
             client.logs.push({ channel: log.id, content: line });
         } catch (error) {
-            client.emit("error", error);
+            client.emit("error", (error as Error));
         }
     }
 }

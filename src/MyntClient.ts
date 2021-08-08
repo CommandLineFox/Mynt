@@ -16,7 +16,7 @@ export default class MyntClient extends Client {
     public logs: Log[];
     public lastDmAuthor?: User;
 
-    public constructor(config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> }, database: Database, options?: ClientOptions) {
+    public constructor(config: { [key in keyof configTemplate]: IFunctionType<configTemplate[key]> }, database: Database, options: ClientOptions) {
         super(options);
         this.config = config;
         this.database = database;

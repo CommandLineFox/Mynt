@@ -31,7 +31,7 @@ export default class GuildMemberRemove extends Event {
             const line = `${time} <:userLeave:829444398785232896> ${user} has left the server.`;
             client.logs.push({ channel: log.id, content: line });
         } catch (error) {
-            client.emit("error", error);
+            client.emit("error", (error as Error));
         }
     }
 }

@@ -3,9 +3,9 @@ import MyntClient from "~/MyntClient";
 import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { autoMod } from "@utils/Automod";
 
-export default class MessageEvent extends Event {
+export default class MessageCreate extends Event {
     public constructor() {
-        super({ name: "message" });
+        super({ name: "messageCreate" });
     }
 
     public async callback(client: MyntClient, message: Message): Promise<void> {
@@ -33,7 +33,7 @@ export default class MessageEvent extends Event {
                 autoMod(client, message, guild);
             }
         } catch (error) {
-            client.emit("error", error);
+            client.emit("error", (error as Error));
         }
     }
 }
@@ -42,7 +42,7 @@ async function generateMail(client: MyntClient, message: Message): Promise<void>
     const author = message.author;
     const received = new MessageEmbed()
         .setTitle(author.username)
-        .setDescription(message)
+        .setDescription(message.content)
         .setColor("#61e096")
         .setFooter("ID: " + author.id, author.displayAvatarURL());
     if (message.attachments && message.attachments.first()) {
@@ -52,6 +52,6 @@ async function generateMail(client: MyntClient, message: Message): Promise<void>
     const channel = client.channels.cache.find(channel => channel.id == client.config.mail);
 
     if (channel) {
-        await (channel as TextChannel).send({ embed: received });
+        await (channel as TextChannel).send({ embeds: [received] });
     }
 }

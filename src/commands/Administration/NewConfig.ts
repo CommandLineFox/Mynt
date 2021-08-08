@@ -37,7 +37,7 @@ export default class NewConfig extends Command {
 
             }*/
         } catch (error) {
-            client.emit("error", error);
+            client.emit("error", (error as Error));
         }
     }
 }

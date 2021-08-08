@@ -2,7 +2,7 @@ import MyntClient from "~/MyntClient";
 import { getMember } from "@utils/GetArgument";
 
 export async function mute(client: MyntClient, guildId: string, user: string): Promise<void> {
-    const guild = await client.guilds.fetch(guildId, false);
+    const guild = await client.guilds.fetch(guildId);
     const member = await getMember(user, guild);
 
     if (!member) {
@@ -23,7 +23,7 @@ export async function mute(client: MyntClient, guildId: string, user: string): P
 }
 
 export async function unmute(client: MyntClient, guildId: string, user: string): Promise<void> {
-    const guild = await client.guilds.fetch(guildId, false);
+    const guild = await client.guilds.fetch(guildId);
     const member = await getMember(user, guild);
 
     if (!member) {
@@ -44,7 +44,7 @@ export async function unmute(client: MyntClient, guildId: string, user: string):
 }
 
 export async function unban(client: MyntClient, guildId: string, user: string): Promise<void> {
-    const guild = await client.guilds.fetch(guildId, false);
+    const guild = await client.guilds.fetch(guildId);
 
     guild.members.unban(user, "Ban expired");
     return;

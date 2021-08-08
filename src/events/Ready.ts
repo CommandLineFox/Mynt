@@ -60,7 +60,7 @@ export default class Ready extends Event {
                     }
 
                     if (log.attachment) {
-                        await channel.send(message, { files: [{ name: log.attachment.name, attachment: Buffer.from(log.attachment.file, "utf8") }] });
+                        await channel.send({ content: message, files: [{ name: log.attachment.name, attachment: Buffer.from(log.attachment.file, "utf8") }] });
                         message = "";
                     }
                 }

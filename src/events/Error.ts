@@ -20,6 +20,6 @@ export default class Errors extends Event {
             .setColor("#61e096")
             .setDescription(`${error.message}\n\`\`\`${error.stack}\`\`\``);
 
-        channel.send({ embed: embed });
+        channel.send({ embeds: [embed] });
     }
 }

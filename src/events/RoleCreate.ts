@@ -27,10 +27,11 @@ export default class RoleCreate extends Event {
             const entry = audit.entries.first();
             if (!entry) {
                 client.logs.push({ channel: log.id, content: `A new role has been created, **${role.name}**` });
+                return;
             }
 
-            const date = entry?.createdAt;
-            const executor = entry?.executor;
+            const date = entry.createdAt;
+            const executor = entry.executor;
 
             const time = formatTime(date!);
             const user = formatUser(executor!);
@@ -38,7 +39,7 @@ export default class RoleCreate extends Event {
             const line = `${time} <:roleCreate:829444888093130782> ${user} created a role **${role.name}**`;
             client.logs.push({ channel: log.id, content: line });
         } catch (error) {
-            client.emit("error", error);
+            client.emit("error", (error as Error));
         }
     }
 }

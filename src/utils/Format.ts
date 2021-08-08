@@ -47,7 +47,7 @@ export function formatUser(user: User): string {
 }
 
 export function formatChannel(channel: GuildChannel, includeParent: boolean, past: boolean): string {
-    if (channel.type === "category") {
+    if (channel.type === "GUILD_CATEGORY") {
         return `category **${channel.name}**`;
     }
 

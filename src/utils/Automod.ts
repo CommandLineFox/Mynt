@@ -32,10 +32,12 @@ function filter(message: Message, guild: Guild): boolean {
 
     for (const word of guild.config.automod.filter.list) {
         if (text.includes(word)) {
-            message.delete({ timeout: 100, reason: "AutoMod - Word filter" })
-                .catch((error) => {
-                    console.log(error);
-                });
+            setTimeout(async () => {
+                await message.delete()
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }, 100);
             return true;
         }
     }
@@ -48,10 +50,12 @@ function inviteBlock(message: Message): boolean {
     const regex = new RegExp("(https?://)?(www.)?(discord.(gg|io|me|li)|discord(app)?.com/invite)/.+[a-z]");
 
     if (content.match(regex)) {
-        message.delete({ timeout: 100, reason: "AutoMod - Invite blocker" })
-            .catch((error) => {
-                console.log(error);
-            });
+        setTimeout(async () => {
+            await message.delete()
+                .catch((error) => {
+                    console.log(error);
+                });
+        }, 100);
         return true;
     }
 
