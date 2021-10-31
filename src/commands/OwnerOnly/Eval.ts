@@ -29,7 +29,7 @@ export default class Eval extends Command {
             }
 
             const script = parseBlock(argument);
-            const exec = await run(script, { client, message, MessageEmbed, author, }, { filename: message.guild?.id.toString() });
+            const exec = await run(script, { client, message, MessageEmbed, author, Buffer, }, { filename: message.guild?.id.toString() });
             const end = Date.now();
 
             if (typeof exec === "string") {
