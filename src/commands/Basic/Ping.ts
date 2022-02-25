@@ -3,9 +3,9 @@ import type { CommandInteraction } from "discord.js";
 
 export default class Ping extends Command {
     public constructor() {
-        super("ping", "Shows the bot's response time");
+        super("ping", "Pings the bot");
     }
     async execute(interaction: CommandInteraction) {
-        interaction.reply("Pinging...");
+        interaction.reply("Pong!");
     }
 }
