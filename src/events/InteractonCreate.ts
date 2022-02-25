@@ -32,9 +32,9 @@ export default class Ready extends Event {
 }
 
 function hasUserPermission(command: Command, interaction: Interaction) {
-    return interaction.memberPermissions && command.permissions && interaction.memberPermissions.has(command.permissions);
+    return interaction.memberPermissions && command.userPermissions && interaction.memberPermissions.has(command.userPermissions);
 }
 
 function hasBotPermission(command: Command, interaction: Interaction) {
-    return interaction.guild?.me?.permissions && command.permissions && interaction.guild.me.permissions.has(command.permissions);
+    return interaction.guild?.me?.permissions && command.botPermissions && interaction.guild.me.permissions.has(command.botPermissions);
 }
