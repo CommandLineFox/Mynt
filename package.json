@@ -4,6 +4,9 @@
   "description": "Moderation bot by Alex",
   "main": "dist/index.js",
   "dependencies": {
+    "@discordjs/builders": "^0.12.0",
+    "@discordjs/rest": "^0.3.0",
+    "discord-api-types": "^0.27.3",
     "discord.js": "^13.6.0",
     "mongodb": "^4.4.0",
     "typescript": "^4.5.5"

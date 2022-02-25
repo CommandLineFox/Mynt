@@ -8,7 +8,7 @@ export default class EventHandler {
 
     public constructor(client: BotClient) {
         this.client = client;
-        this.events = loadEvents();
+        this.events = getEvents();
 
         for (const event of this.events) {
             client.on(event.name, (...args) => {
@@ -18,7 +18,7 @@ export default class EventHandler {
     }
 }
 
-function loadEvents(): Event[] {
+function getEvents(): Event[] {
     const events = [];
     const folder = readdirSync("./dist/events");
     for (const file of folder) {

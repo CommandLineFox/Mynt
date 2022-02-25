@@ -3,7 +3,8 @@ import { existsSync, readFileSync } from "fs";
 
 export interface Config {
     token: string;
-    prefix: string;
+    id: string;
+    guild: string;
     owners: string[];
     options: {
         disableMentions: "all" | "everyone" | "none";
