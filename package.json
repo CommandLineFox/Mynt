@@ -1,0 +1,25 @@
+{
+  "name": "mynt",
+  "version": "2.0.0",
+  "description": "Moderation bot by Alex",
+  "main": "dist/index.js",
+  "dependencies": {
+    "discord.js": "^13.6.0",
+    "mongodb": "^4.4.0",
+    "typescript": "^4.5.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --project tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CommandLineFox/Mynt.git"
+  },
+  "author": "Alex",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CommandLineFox/Mynt/issues"
+  },
+  "homepage": "https://github.com/CommandLineFox/Mynt#readme"
+}
