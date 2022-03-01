@@ -5,7 +5,7 @@ export default class Ping extends Command {
     public constructor() {
         super("ping", "Pings the bot");
     }
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: CommandInteraction): Promise<void> {
         interaction.reply("Pong!");
     }
 }

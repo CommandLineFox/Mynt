@@ -3,6 +3,8 @@ import type { BotClient } from "../BotClient";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import type Command from "./Command";
+import type Subcommand from "./Subcommand";
+import { SlashCommandSubcommandBuilder } from "@discordjs/builders";
 
 export default class CommandHandler {
     protected client: BotClient;
@@ -22,8 +24,7 @@ function getCommands(client: BotClient): Command[] {
 
     const groups = readdirSync("./dist/commands");
     for (const group of groups) {
-        const folder = statSync(`./dist/commands/${group}`);
-        if (!folder) {
+        if (!statSync(`./dist/commands/${group}`)) {
             continue;
         }
 
@@ -42,7 +43,8 @@ function getCommands(client: BotClient): Command[] {
                 console.log(error);
             }
 
-            const cmd = new command;
+            let cmd = new command;
+            cmd = addSubCommands(cmd, `${group}/${file.slice(0, -3).toLowerCase()}`);
             commands.push(cmd.data.toJSON());
             client.commands.set(cmd.data.name, cmd);
         }
@@ -50,7 +52,7 @@ function getCommands(client: BotClient): Command[] {
     return commands;
 }
 
-export function loadCommands(client: BotClient, commands: Command[]) {
+export function loadCommands(client: BotClient, commands: Command[]): void {
     const rest = new REST({ version: '9' }).setToken(client.config.token);
 
     (async () => {
@@ -67,4 +69,41 @@ export function loadCommands(client: BotClient, commands: Command[]) {
             console.error(error);
         }
     })();
+}
+
+function addSubCommands(command: Command, location: string): Command {
+    if (!existsSync(`./dist/commands/${location}`)) {
+        return command;
+    }
+
+    if (!statSync(`./dist/commands/${location}`)) {
+        return command;
+    }
+
+    const files = readdirSync(`./dist/commands/${location}`);
+    if (!files) {
+        return command;
+    }
+
+    for (const file of files) {
+        if (!file.endsWith(".js")) {
+            continue;
+        }
+
+        const subcommandpath = `../commands/${location}/${file.slice(0, -3)}`;
+        let subcommand;
+
+        try {
+            subcommand = require(subcommandpath).default;
+        } catch (error) {
+            console.log(error);
+        }
+
+        const sbc = (new subcommand) as Subcommand;
+
+        command.data.addSubcommand(new SlashCommandSubcommandBuilder().setName(sbc.data.name).setDescription(sbc.data.description));
+        command.subcommands.push(sbc);
+    }
+
+    return command;
 }

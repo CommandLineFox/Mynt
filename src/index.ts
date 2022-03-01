@@ -2,7 +2,7 @@ import { BotClient } from "./BotClient";
 import { getConfig } from "./Config";
 import { Database } from "./Database";
 
-async function main() {
+async function main(): Promise<void> {
     const config = getConfig("config.json");
     if (!config) {
         return;

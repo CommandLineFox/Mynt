@@ -31,10 +31,18 @@ export default class Ready extends Event {
     }
 }
 
-function hasUserPermission(command: Command, interaction: Interaction) {
-    return interaction.memberPermissions && command.userPermissions && interaction.memberPermissions.has(command.userPermissions);
+function hasUserPermission(command: Command, interaction: Interaction): boolean {
+    if (interaction.memberPermissions && command.userPermissions) {
+        return interaction.memberPermissions.has(command.userPermissions);
+    }
+
+    return false;
 }
 
-function hasBotPermission(command: Command, interaction: Interaction) {
-    return interaction.guild?.me?.permissions && command.botPermissions && interaction.guild.me.permissions.has(command.botPermissions);
+function hasBotPermission(command: Command, interaction: Interaction): boolean {
+    if (interaction.guild?.me?.permissions && command.botPermissions) {
+        return interaction.guild.me.permissions.has(command.botPermissions);
+    }
+
+    return false;
 }
