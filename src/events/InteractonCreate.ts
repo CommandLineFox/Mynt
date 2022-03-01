@@ -15,11 +15,11 @@ export default class Ready extends Event {
                 return;
             }
 
-            if (!hasUserPermission) {
+            if (!hasUserPermission(command, interaction)) {
                 interaction.reply({ content: "You're not allowed to execute this command", ephemeral: true });
                 return;
             }
-            if (!hasBotPermission) {
+            if (!hasBotPermission(command, interaction)) {
                 interaction.reply({ content: "I'm not allowed to execute this command", ephemeral: true });
             }
             try {
