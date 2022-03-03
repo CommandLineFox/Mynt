@@ -1,10 +1,10 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import type { Interaction, PermissionResolvable } from "discord.js";
+import { Collection, Interaction, PermissionResolvable } from "discord.js";
 import type Subcommand from "./Subcommand";
 
 export default abstract class Command {
     public readonly data: SlashCommandBuilder;
-    public readonly subcommands: Subcommand[];
+    public readonly subcommands: Collection<string, Subcommand>;
     public readonly botPermissions: PermissionResolvable[];
     public readonly userPermissions: PermissionResolvable[];
 
@@ -12,7 +12,7 @@ export default abstract class Command {
         this.data = new SlashCommandBuilder()
             .setName(name)
             .setDescription(description);
-        this.subcommands = [];
+        this.subcommands = new Collection();
         this.botPermissions = botPermissions ?? [];
         this.userPermissions = userPermissions ?? [];
     }

@@ -102,7 +102,7 @@ function addSubCommands(command: Command, location: string): Command {
         const sbc = (new subcommand) as Subcommand;
 
         command.data.addSubcommand(new SlashCommandSubcommandBuilder().setName(sbc.data.name).setDescription(sbc.data.description));
-        command.subcommands.push(sbc);
+        command.subcommands.set(sbc.data.name, sbc);
     }
 
     return command;
