@@ -34,7 +34,6 @@ interface Options {
 }
 
 interface Config {
-    prefix?: string;
     automod?: Automod;
     roles?: Roles;
     logging?: Logging;

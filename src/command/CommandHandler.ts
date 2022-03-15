@@ -134,7 +134,7 @@ export default class CommandHandler {
         }
 
         const subcommand = this.getSubcommand(path);
-
+        command.subcommands.set(subcommand.data.name, subcommand);
         command.data.addSubcommand(new SlashCommandSubcommandBuilder().setName(subcommand.data.name).setDescription(subcommand.data.description));
     }
 
@@ -149,6 +149,7 @@ export default class CommandHandler {
             .setDescription(`group: ${groupName}`);
 
         for (const subcommand of subcommands) {
+            command.subcommands.set(subcommand.data.name, subcommand);
             subcommandGroup.addSubcommand(subcommand.data);
         }
 

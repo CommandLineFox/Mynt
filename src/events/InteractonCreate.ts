@@ -23,7 +23,7 @@ export default class Ready extends Event {
                 interaction.reply({ content: "I'm not allowed to execute this command", ephemeral: true });
             }
             try {
-                command.execute(interaction);
+                command.execute(interaction, client);
             } catch (error) {
                 await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
             }
