@@ -30,14 +30,16 @@ export default class CommandHandler {
         }
     }
 
-    readGroup(group: string) {
+    readGroup(group: string): void {
         const commandFiles = readdirSync(`./dist/commands/${group}`);
         for (const commandFile of commandFiles) {
             const commandStat = statSync(`./dist/commands/${group}/${commandFile}`);
 
             if (commandStat.isFile() && commandFile.endsWith(".js")) {
                 this.addCommand(`../commands/${group}/${commandFile.slice(0, -3)}`);
-            } else if (commandStat.isDirectory()) {
+                return;
+            }
+            if (commandStat.isDirectory()) {
                 const subcommandFolder = readdirSync(`./dist/commands/${group}/${commandFile}`);
 
                 for (const subcommandFile of subcommandFolder) {
@@ -47,13 +49,17 @@ export default class CommandHandler {
         }
     }
 
-    readSubcommand(group: string, command: string, subcommand: string) {
+    readSubcommand(group: string, command: string, subcommand: string): void {
         const subcommandStat = statSync(`./dist/commands/${group}/${command}/${subcommand}`);
         if (subcommandStat.isFile() && subcommand === "index.js") {
             this.addCommand(`../commands/${group}/${command}/${subcommand.slice(0, -3)}`);
-        } else if (subcommandStat.isFile() && subcommand.endsWith(".js")) {
+            return;
+        }
+        if (subcommandStat.isFile() && subcommand.endsWith(".js")) {
             this.addSubcommand(`../commands/${group}/${command}/${subcommand.slice(0, -3)}`, command, `../commands/${group}/${command}`);
-        } else if (subcommandStat.isDirectory()) {
+            return;
+        }
+        if (subcommandStat.isDirectory()) {
             const subcommandGroup = readdirSync(`./dist/commands/${group}/${command}/${subcommand}`);
             const subcommands = [] as Subcommand[];
 

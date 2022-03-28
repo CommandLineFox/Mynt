@@ -1,5 +1,6 @@
 # Files
 config.json
+package-lock.json
 *.tsbuildinfo
 
 #Folders
